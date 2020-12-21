@@ -1,0 +1,358 @@
+fileFormatVersion: 2
+guid: 7ffaa9cd3efe0af42beb259772c8e34a
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 22923703470775315
+    second: cannon_btn_0
+  - first:
+      213: 2794186787682292253
+    second: cannon_btn_1
+  - first:
+      213: 1215360464459229323
+    second: cannon_btn_2
+  - first:
+      213: -3212764936274607612
+    second: cannon_btn_3
+  - first:
+      213: -2444501931464931989
+    second: cannon_btn_4
+  - first:
+      213: -751152131687693351
+    second: cannon_btn_5
+  - first:
+      213: 5444072676612599554
+    second: cannon_btn_6
+  - first:
+      213: 5891555555665574242
+    second: cannon_btn_7
+  - first:
+      213: -2137688552892856578
+    second: cannon_btn_8
+  - first:
+      213: 7988338675174609258
+    second: cannon_btn_9
+  - first:
+      213: 4673241185288030084
+    second: cannon_btn_10
+  - first:
+      213: -7255040250749017071
+    second: cannon_btn_11
+  - first:
+      213: -6646844141652071214
+    second: cannon_btn_12
+  - first:
+      213: 6262333935064323790
+    second: cannon_btn_13
+  - first:
+      213: -816213101450497815
+    second: cannon_btn_14
+  - first:
+      213: 7506876539639414228
+    second: cannon_btn_15
+  - first:
+      213: 8112765276854841604
+    second: cannon_btn_16
+  - first:
+      213: -7080151282946226765
+    second: cannon_btn_17
+  - first:
+      213: 6225017292676283666
+    second: cannon_btn_18
+  - first:
+      213: -5753477645736839779
+    second: cannon_btn_19
+  - first:
+      213: -7160352791737009821
+    second: cannon_btn_20
+  - first:
+      213: 3991892264391465818
+    second: cannon_btn_21
+  - first:
+      213: 1015427840779055283
+    second: cannon_btn_22
+  - first:
+      213: 3084512782642053209
+    second: cannon_btn_23
+  - first:
+      213: -4550216026280027302
+    second: cannon_btn_24
+  - first:
+      213: -7645604616595040354
+    second: cannon_btn_25
+  - first:
+      213: -2604779987975928300
+    second: cannon_btn_26
+  - first:
+      213: 7533204469951592700
+    second: cannon_btn_27
+  - first:
+      213: -4740196677430467853
+    second: cannon_btn_28
+  - first:
+      213: -5911511582606104092
+    second: cannon_btn_29
+  - first:
+      213: -6605261561622047183
+    second: cannon_btn_30
+  - first:
+      213: -7240779193015860048
+    second: cannon_btn_31
+  - first:
+      213: -6692461370446576506
+    second: cannon_btn_32
+  - first:
+      213: -1353213335524452022
+    second: cannon_btn_33
+  - first:
+      213: 7249715861745398883
+    second: cannon_btn_34
+  - first:
+      213: -5152409563361710860
+    second: cannon_btn_35
+  - first:
+      213: 1712357408831785134
+    second: cannon_btn_36
+  - first:
+      213: -2623688158066875191
+    second: cannon_btn_37
+  - first:
+      213: 3109408178027781261
+    second: cannon_btn_38
+  - first:
+      213: 877383420947018041
+    second: cannon_btn_39
+  - first:
+      213: 8209970752756516605
+    second: cannon_btn_40
+  - first:
+      213: 8122763646142168556
+    second: cannon_btn_41
+  - first:
+      213: -4812172787427298520
+    second: cannon_btn_42
+  - first:
+      213: -7827045031894779382
+    second: cannon_btn_43
+  - first:
+      213: -8146825214165838252
+    second: cannon_btn_44
+  - first:
+      213: 7228103108762455495
+    second: cannon_btn_45
+  - first:
+      213: 5722175044611376604
+    second: cannon_btn_46
+  - first:
+      213: -3266846140342941378
+    second: cannon_btn_47
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: -1
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 1
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: cannon_btn_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 150
+        width: 150
+        height: 150
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 31cdf42acf0715000800000000000000
+      internalID: 22923703470775315
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cannon_btn_1
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 150
+        width: 150
+        height: 150
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d1294e34412f6c620800000000000000
+      internalID: 2794186787682292253
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cannon_btn_2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 150
+        height: 150
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b88652637e3ddd010800000000000000
+      internalID: 1215360464459229323
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: cannon_btn_3
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 0
+        width: 150
+        height: 150
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 402858aff47f963d0800000000000000
+      internalID: -3212764936274607612
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
