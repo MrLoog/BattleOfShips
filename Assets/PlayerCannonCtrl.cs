@@ -14,15 +14,17 @@ public class PlayerCannonCtrl : MonoBehaviour
     }
 
     public CannonDirection Direction = CannonDirection.None;
-    public static PlayerCannonCtrl _instance = new PlayerCannonCtrl();
-    private PlayerCannonCtrl()
-    {
+    public static PlayerCannonCtrl Instance { get; private set; }
 
-    }
 
-    public static PlayerCannonCtrl Instance()
+    void Awake()
     {
-        return _instance;
+        if (Instance != null && Instance != this)
+            Destroy(gameObject);
+        else
+            Instance = this;
+
+        DontDestroyOnLoad(gameObject);
     }
 
     public Sprite CannonDirectionImg;
@@ -54,7 +56,6 @@ public class PlayerCannonCtrl : MonoBehaviour
     private void ToggleDirection(CannonDirection direction)
     {
         Direction ^= direction;
-        Debug.Log(Direction);
         Button b = GetButtonByDirection(direction);
         if (b == null) return;
         b.GetComponent<Image>().sprite = ((Direction & direction) != 0) ? CannonDirectionSelectedImg : CannonDirectionImg;
@@ -74,6 +75,9 @@ public class PlayerCannonCtrl : MonoBehaviour
 
     public void PressFire()
     {
-
+        if (Direction != CannonDirection.None)
+        {
+            GameManager.instance.PlayerFireCannon(Direction);
+        }
     }
 }

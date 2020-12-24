@@ -39,6 +39,17 @@
      <Compile Include="Assets\Scripts\PlayerCtrl.cs" />
      <Compile Include="Assets\Scripts\TimeTrail.cs" />
      <Compile Include="Assets\PlayerCannonCtrl.cs" />
+     <Compile Include="Assets\GameManager.cs" />
+     <Compile Include="Assets\Scripts\PoolManager.cs" />
+     <Compile Include="Assets\Scripts\Common\Extensions.cs" />
+     <Compile Include="Assets\Scripts\Common\MScriptableObject.cs" />
+     <Compile Include="Assets\Scripts\Common\EventDict.cs" />
+     <Compile Include="Assets\Scripts\Common\Cloneable.cs" />
+     <Compile Include="Assets\Scripts\Common\GameObjectFactory.cs" />
+     <Compile Include="Assets\Scripts\Common\ScriptableObjectPrefab.cs" />
+     <Compile Include="Assets\Scripts\Common\ScriptableCannonBall.cs" />
+     <Compile Include="Assets\CannonShot.cs" />
+     <Compile Include="Assets\GameSettings.cs" />
      <None Include="Assets\3rd-Party\kenney_piratepack\License.txt" />
      <None Include="Assets\3rd-Party\kenney_piratepack\Spritesheet\shipsMiscellaneous_sheet@2.xml" />
      <None Include="Assets\3rd-Party\kenney_piratepack\Spritesheet\shipsMiscellaneous_sheet.xml" />

@@ -258,9 +258,11 @@ GameObject:
   m_Component:
   - component: {fileID: 180033758}
   - component: {fileID: 180033759}
+  - component: {fileID: 180033761}
+  - component: {fileID: 180033760}
   m_Layer: 0
   m_Name: EnemyShip
-  m_TagString: Untagged
+  m_TagString: Ship
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -330,6 +332,43 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!70 &180033760
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 180033757}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 0.66, y: 1.13}
+  m_Direction: 0
+--- !u!50 &180033761
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 180033757}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &197844216
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,14 +395,14 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 197844216}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 82711137}
   m_Father: {fileID: 1676816055}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -37.5, y: -37.5}
@@ -411,7 +450,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 197844219}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1676816058}
+        m_TargetAssemblyTypeName: PlayerCannonCtrl, Assembly-CSharp
+        m_MethodName: ToggleRight
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &197844219
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -432,7 +483,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 2794186787682292253, guid: 7ffaa9cd3efe0af42beb259772c8e34a, type: 3}
+  m_Sprite: {fileID: 22923703470775315, guid: 7ffaa9cd3efe0af42beb259772c8e34a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -531,7 +582,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 221859810}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1676816058}
+        m_TargetAssemblyTypeName: PlayerCannonCtrl, Assembly-CSharp
+        m_MethodName: PressFire
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &221859810
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -732,7 +795,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 296067297}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1676816058}
+        m_TargetAssemblyTypeName: PlayerCannonCtrl, Assembly-CSharp
+        m_MethodName: ToggleFront
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &296067297
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1130,6 +1205,52 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &843383367
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 843383369}
+  - component: {fileID: 843383368}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &843383368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 843383367}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8b8155c2a1973a4c8b5a3845e122e24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefabCannon: {fileID: 1062158067001741303, guid: ae3552ee23f48e14a87e396f1110eaeb, type: 3}
+  playerShip: {fileID: 1548541193}
+  enemyShip: {fileID: 180033757}
+--- !u!4 &843383369
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 843383367}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1056429260
 GameObject:
   m_ObjectHideFlags: 0
@@ -1156,14 +1277,14 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1056429260}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1789507102}
   m_Father: {fileID: 1676816055}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 37.5, y: 37.5}
@@ -1211,7 +1332,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1056429263}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1676816058}
+        m_TargetAssemblyTypeName: PlayerCannonCtrl, Assembly-CSharp
+        m_MethodName: ToggleLeft
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1056429263
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1232,7 +1365,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1215360464459229323, guid: 7ffaa9cd3efe0af42beb259772c8e34a, type: 3}
+  m_Sprite: {fileID: 22923703470775315, guid: 7ffaa9cd3efe0af42beb259772c8e34a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1493,14 +1626,14 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1359575791}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 1, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 288577516}
   m_Father: {fileID: 1676816055}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: -37.5, y: 37.5}
@@ -1548,7 +1681,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1359575794}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1676816058}
+        m_TargetAssemblyTypeName: PlayerCannonCtrl, Assembly-CSharp
+        m_MethodName: ToggleBack
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1359575794
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1569,7 +1714,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -3212764936274607612, guid: 7ffaa9cd3efe0af42beb259772c8e34a, type: 3}
+  m_Sprite: {fileID: 22923703470775315, guid: 7ffaa9cd3efe0af42beb259772c8e34a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1599,9 +1744,10 @@ GameObject:
   - component: {fileID: 1548541195}
   - component: {fileID: 1548541196}
   - component: {fileID: 1548541197}
+  - component: {fileID: 1548541198}
   m_Layer: 0
   m_Name: PlayerShip
-  m_TagString: Untagged
+  m_TagString: Ship
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1708,6 +1854,22 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!70 &1548541198
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1548541193}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 0.66, y: 1.13}
+  m_Direction: 0
 --- !u!1 &1676816054
 GameObject:
   m_ObjectHideFlags: 0
@@ -1801,8 +1963,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91f0e66b04d866d4cb60c14f9d74a7c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Direction: 0
   CannonDirectionImg: {fileID: 22923703470775315, guid: 7ffaa9cd3efe0af42beb259772c8e34a, type: 3}
   CannonDirectionSelectedImg: {fileID: -8962416954636009539, guid: bbcc75eab72f54842823d79499586a6b, type: 3}
+  Front: {fileID: 296067296}
+  Right: {fileID: 197844218}
+  Left: {fileID: 1056429262}
+  Back: {fileID: 1359575793}
 --- !u!1 &1789507101
 GameObject:
   m_ObjectHideFlags: 0
