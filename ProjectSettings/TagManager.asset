@@ -55,3 +55,6 @@ TagManager:
   - name: Moveable
     uniqueID: 2495088467
     locked: 0
+  - name: FlyObj
+    uniqueID: 217322901
+    locked: 0

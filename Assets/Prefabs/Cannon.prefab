@@ -67,8 +67,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f445df0cd3577e94e8fa71eb23cb02d5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  id: 0
   model: {fileID: 3496980111627325270}
+  Explosion: {fileID: 1797423066388549488, guid: 56a65aed7b22e394dbe00adba9a4fa83, type: 3}
 --- !u!58 &-31705286471544387
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -84,7 +84,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.1
+  m_Radius: 0.01
 --- !u!1 &8999376917654885948
 GameObject:
   m_ObjectHideFlags: 0

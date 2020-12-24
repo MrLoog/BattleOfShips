@@ -6,6 +6,7 @@ using UnityEngine;
 public class CannonShot : MonoBehaviour
 {
     public Transform model;
+    public GameObject Explosion;
     internal float speed;
     internal bool enableTravel = false;
 
@@ -66,6 +67,9 @@ public class CannonShot : MonoBehaviour
     {
         if (owner != null && col.tag == GameSettings.TAG_SHIP && !owner.Equals(col.gameObject))
         {
+            Instantiate(Explosion, transform.position, Quaternion.Euler(0, 0, 0));
+            Ship ship = col.gameObject.GetComponent<Ship>();
+            ship.ApplyDamage(5f);
             StartCoroutine(ShotDone(trailTime));
             Debug.Log("OnTriggerEnter2D" + col.gameObject.name + " : " + gameObject.name + " : " + Time.time);
         }

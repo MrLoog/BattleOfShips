@@ -70,6 +70,6 @@ public class GameManager : MonoBehaviour
 
     internal void PlayerFireCannon(PlayerCannonCtrl.CannonDirection direction)
     {
-        FireCannon(playerShip.transform.position, enemyShip.transform.position, 1f);
+        FireCannon(playerShip.transform.position, enemyShip.transform.position, 5f);
     }
 }

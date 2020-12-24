@@ -50,6 +50,9 @@
      <Compile Include="Assets\Scripts\Common\ScriptableCannonBall.cs" />
      <Compile Include="Assets\CannonShot.cs" />
      <Compile Include="Assets\GameSettings.cs" />
+     <Compile Include="Assets\Scripts\Common\AutoDestroy.cs" />
+     <Compile Include="Assets\Ship.cs" />
+     <Compile Include="Assets\HumanFly.cs" />
      <None Include="Assets\3rd-Party\kenney_piratepack\License.txt" />
      <None Include="Assets\3rd-Party\kenney_piratepack\Spritesheet\shipsMiscellaneous_sheet@2.xml" />
      <None Include="Assets\3rd-Party\kenney_piratepack\Spritesheet\shipsMiscellaneous_sheet.xml" />
