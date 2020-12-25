@@ -8,5 +8,7 @@ public class ScriptableCannonBall : ScriptableObjectPrefab
     public string cannonName;
     public float shipDamage;
     public float humanDamage;
+    public float speed;
+    public float range;
     public Sprite sprite;
 }

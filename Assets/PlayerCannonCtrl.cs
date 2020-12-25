@@ -3,15 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using static GameManager;
 
 public class PlayerCannonCtrl : MonoBehaviour
 {
 
-    [System.Flags]
-    public enum CannonDirection
-    {
-        None = 0, Front = 1, Right = 2, Left = 4, Back = 8
-    }
 
     public CannonDirection Direction = CannonDirection.None;
     public static PlayerCannonCtrl Instance { get; private set; }

@@ -91,6 +91,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3781914892331336576}
+  - component: {fileID: 1794939553938318108}
   m_Layer: 0
   m_Name: RoundShot
   m_TagString: Cannon
@@ -114,6 +115,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1794939553938318108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3307599177762406278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7fd00b945693db643a5181fff373af3c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShotImg: {fileID: 1898095580342765254}
 --- !u!1 &7848816643889102764
 GameObject:
   m_ObjectHideFlags: 0

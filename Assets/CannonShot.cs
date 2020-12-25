@@ -8,6 +8,8 @@ public class CannonShot : MonoBehaviour
     public Transform model;
     public GameObject Explosion;
     internal float speed;
+    private float maxTime;
+    private float travelTime;
     internal bool enableTravel = false;
 
     private float trailTime;
@@ -37,6 +39,7 @@ public class CannonShot : MonoBehaviour
     }
 
     public Vector2 Target { get; internal set; }
+    public Vector2 LastPos;
     public Action OnImpactTarget { get; internal set; }
 
     private Rigidbody2D rigidbody2D;
@@ -46,21 +49,26 @@ public class CannonShot : MonoBehaviour
     void Start()
     {
         rigidbody2D = GetComponent<Rigidbody2D>();
+        LastPos = (Vector2)transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (enableTravel)
+        {
+            if (Vector2.Distance(Target, (Vector2)transform.position) > 0)
+            {
+                rigidbody2D.velocity = (Target - (Vector2)transform.position).normalized * speed;
+                travelTime += Time.deltaTime;
+                if (travelTime >= maxTime)
+                {
+                    EndTravel();
+                }
+            }
+        }
         // if (Vector2.SqrMagnitude((Vector2)transform.position - Target) > 0.1f)
-        if (Vector2.Distance(Target, (Vector2)transform.position) > 0)
-        {
-            rigidbody2D.velocity = (Target - (Vector2)transform.position).normalized * speed;
-        }
-        else
-        {
-            rigidbody2D.velocity = Vector2.zero;
 
-        }
     }
 
     void OnTriggerEnter2D(Collider2D col)
@@ -69,10 +77,27 @@ public class CannonShot : MonoBehaviour
         {
             Instantiate(Explosion, transform.position, Quaternion.Euler(0, 0, 0));
             Ship ship = col.gameObject.GetComponent<Ship>();
-            ship.ApplyDamage(5f);
-            StartCoroutine(ShotDone(trailTime));
-            Debug.Log("OnTriggerEnter2D" + col.gameObject.name + " : " + gameObject.name + " : " + Time.time);
+            ship.ApplyDamage(5f, gameObject);
+            EndTravel();
+            // Debug.Log("OnTriggerEnter2D" + col.gameObject.name + " : " + gameObject.name + " : " + Time.time);
         }
+    }
+
+    void EndTravel()
+    {
+        Debug.Log("EndTravel");
+        enableTravel = false;
+        GetComponentInChildren<BaseShot>().ShotImg.SetActive(false);
+        StartCoroutine(ShotDone(trailTime));
+    }
+
+    public void StartTravel()
+    {
+        LastPos = (Vector2)transform.position;
+        maxTime = Vector2.Distance(Target, transform.position) / speed;
+        travelTime = 0;
+        enableTravel = true;
+        GetComponentInChildren<BaseShot>().ShotImg.SetActive(true);
     }
 
     IEnumerator ShotDone(float delay)

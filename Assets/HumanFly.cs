@@ -21,18 +21,28 @@ public class HumanFly : MonoBehaviour
         if (isAnimate)
         {
             process += Time.deltaTime;
-            transform.position = Vector2.Lerp(Vector2.zero, Target, process / time);
+            transform.localPosition = Vector2.Lerp(Vector2.zero, Target, process / time);
             if (process >= time)
             {
                 isAnimate = false;
                 gameObject.SetActive(false);
+                Destroy(gameObject.transform.parent.gameObject);
             }
         }
     }
 
     public void StartAnimate(Vector2 to)
     {
+        Target = to;
+        RandomSprite();
         isAnimate = true;
         gameObject.SetActive(true);
+    }
+
+    public void RandomSprite()
+    {
+        int pick = Random.Range(0, sprites.Length - 1);
+        Debug.Log("pick " + pick);
+        GetComponent<SpriteRenderer>().sprite = sprites[pick];
     }
 }

@@ -10,12 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4db686edf1d96c549a6bcc37856c8cd3, type: 3}
-  m_Name: RoundShot
+  m_Name: GrapeShot
   m_EditorClassIdentifier: 
   prefab: {fileID: 3307599177762406278, guid: ac5e03f0ebad94e4392d1b767ee140e1, type: 3}
-  cannonName: Round Shot
-  shipDamage: 100
-  humanDamage: 100
-  speed: 3
-  range: 30
-  sprite: {fileID: 21300000, guid: 0f15a42c16d62f541b774105e3b27059, type: 3}
+  cannonName: Grape Shot
+  shipDamage: 70
+  humanDamage: 300
+  speed: 2
+  range: 10
+  sprite: {fileID: 0}

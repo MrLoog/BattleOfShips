@@ -6,6 +6,11 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    [System.Flags]
+    public enum CannonDirection
+    {
+        None = 0, Front = 1, Right = 2, Left = 4, Back = 8
+    }
     public static GameManager instance;
     public PoolManager<WrapPool> poolCannon;
     public GameObject prefabCannon;
@@ -59,17 +64,17 @@ public class GameManager : MonoBehaviour
             shot.owner = playerShip;
             shot.Target = to;
             shot.speed = speed;
-            shot.enableTravel = true;
             shot.OnImpactTarget = delegate ()
             {
                 poolCannon.RePooledObject(wrapPool);
             };
             shot.gameObject.SetActive(true);
+            shot.StartTravel();
         }
     }
 
-    internal void PlayerFireCannon(PlayerCannonCtrl.CannonDirection direction)
+    internal void PlayerFireCannon(CannonDirection direction)
     {
-        FireCannon(playerShip.transform.position, enemyShip.transform.position, 5f);
+        playerShip.GetComponent<Ship>().FireCannon(direction);
     }
 }
