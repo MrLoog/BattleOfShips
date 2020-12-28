@@ -16,6 +16,6 @@ MonoBehaviour:
   cannonName: Round Shot
   shipDamage: 100
   humanDamage: 100
-  speed: 3
-  range: 30
+  speed: 5
+  range: 5
   sprite: {fileID: 21300000, guid: 0f15a42c16d62f541b774105e3b27059, type: 3}

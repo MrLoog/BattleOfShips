@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
+using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
 {
@@ -16,7 +18,16 @@ public class GameManager : MonoBehaviour
     public GameObject prefabCannon;
     public GameObject playerShip;
     public GameObject enemyShip;
+
+    public Vector2 windForce;
+    public float intervalWindChange = 30f;
+    public float accumWindChangeInterval = 0f;
+
+    public UnityEvent OnWindChange;
+
     List<ScriptableCannonBall> ScriptableCannonBalls;
+
+    private List<Ship> ships;
 
     void Awake()
     {
@@ -24,13 +35,16 @@ public class GameManager : MonoBehaviour
         Resources.LoadAll<ScriptableCannonBall>("ScriptableObjects");
         ScriptableCannonBalls = Resources.FindObjectsOfTypeAll<ScriptableCannonBall>().Cast<ScriptableCannonBall>().ToList();
 
+        ships = new List<Ship>();
+        ships.Add(playerShip.GetComponent<Ship>());
+        RandomWindForce();
     }
     // Start is called before the first frame update
     void Start()
     {
         GameObject newCannon = Instantiate(prefabCannon);
         newCannon.SetActive(false);
-        newCannon.GetComponent<CannonShot>().Data = ScriptableCannonBalls.First();
+        newCannon.GetComponent<CannonShot>().Data = ScriptableCannonBalls.Where(x => x.name == "RoundShot").First();
         // CannonPool cannon = prefabCannon.Find
         WrapPool cannon = ScriptableObject.CreateInstance<WrapPool>();
         cannon.cannonBall = newCannon;
@@ -43,12 +57,18 @@ public class GameManager : MonoBehaviour
             newInstance.cannonBall.GetComponent<CannonShot>().Data = cs.Data.Clone<ScriptableCannonBall>();
             // newInstance.SetActive(false);
         };
+
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        accumWindChangeInterval += Time.deltaTime;
+        if (accumWindChangeInterval >= intervalWindChange)
+        {
+            RandomWindForce();
+            accumWindChangeInterval = 0f;
+        }
     }
 
     public void FireCannon(Vector2 from, Vector2 to, float speed)
@@ -76,5 +96,23 @@ public class GameManager : MonoBehaviour
     internal void PlayerFireCannon(CannonDirection direction)
     {
         playerShip.GetComponent<Ship>().FireCannon(direction);
+    }
+
+    public Vector2 GetPlayerShipFrontDirection()
+    {
+        return playerShip.GetComponent<Ship>().GetFrontDirection();
+    }
+
+    public void RandomWindForce()
+    {
+        float force = (float)Math.Round(Random.Range(0.1f, 1f), 1);
+        float direction = Random.Range(-180, 180);
+
+        windForce = VectorUtils.Rotate(Vector2.up, direction, true).normalized * force;
+        OnWindChange.Invoke();
+        foreach (Ship s in ships)
+        {
+            s.ApplyWindForce(windForce);
+        }
     }
 }

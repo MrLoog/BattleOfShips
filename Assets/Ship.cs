@@ -10,6 +10,12 @@ public class Ship : MonoBehaviour
     public float curHealth;
     public float speed;
 
+    public Vector2 windForce;
+    public Vector2 shipVelocity;
+
+    public float rotateSpeed;
+    public Vector2 rotateDirection;
+
     public int[] numberCannon; //front,right,left,back
     public CannonDirection FireDirections; //front,right,left,back
     public Sprite normalState;
@@ -21,17 +27,23 @@ public class Ship : MonoBehaviour
     public GameObject Fire;
     public GameObject HumanFly;
     public SpriteRenderer spriteRenderer;
-    // Start is called before the first frame update
-    void Start()
+    private Rigidbody2D rigidBody2d;
+
+    private void Awake()
     {
         curHealth = maxHealth;
         spriteRenderer = GetComponent<SpriteRenderer>();
+        rigidBody2d = GetComponent<Rigidbody2D>();
+    }
+    // Start is called before the first frame update
+    void Start()
+    {
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        MakeShipRotate();
     }
 
     public void ApplyDamage(float damage, GameObject source)
@@ -96,6 +108,11 @@ public class Ship : MonoBehaviour
         humanfly.GetComponentInChildren<HumanFly>().StartAnimate(direction);
     }
 
+    internal Vector2 GetFrontDirection()
+    {
+        return Rotate(Vector2.down, gameObject.transform.rotation.eulerAngles.z, true);
+    }
+
     public static Vector2 Rotate(Vector2 v, float degrees, bool isNew = false)
     {
         float sin = Mathf.Sin(degrees * Mathf.Deg2Rad);
@@ -143,6 +160,57 @@ public class Ship : MonoBehaviour
             results.Add(Rotate(sampleV, 180));
         }
         return results;
+    }
+
+    internal void ApplyWindForce(Vector2 windForce)
+    {
+        // this.windForce = windForce;
+        this.windForce = GetFrontDirection().normalized * 0.5f;
+        CalculateMove();
+    }
+
+    public Vector2 CalculateRotateVector(float degreeRotate)
+    {
+        float absDegree = Mathf.Abs(degreeRotate);
+        Vector2 vShip = shipVelocity;
+        float forceRotate = Mathf.Sin(absDegree) * Mathf.Cos(absDegree) * vShip.magnitude;
+        forceRotate = Mathf.Abs(forceRotate);
+        // Debug.Log(string.Format("calculate1 {0}/{1}/{2}/{3}", Mathf.Sin(absDegree), Mathf.Cos(absDegree), vShip.magnitude, forceRotate));
+        // Debug.Log(string.Format("calculate {0}/{1}/{2}/{3}", degreeRotate, absDegree, shipVelocity, forceRotate));
+        Vector2 vRotate = forceRotate * VectorUtils.Rotate(shipVelocity, (degreeRotate > 0 ? 1 : -1) * 90f, true).normalized;
+        rotateDirection = vRotate;
+        CapsuleCollider2D col = GetComponent<CapsuleCollider2D>();
+        float c = Mathf.PI * col.size.y / 2; // 1/2 perimeter
+        if (forceRotate > 0)
+        {
+            rotateSpeed = c / vRotate.magnitude;
+        }
+        else
+        {
+            rotateSpeed = 0;
+        }
+        // Debug.Log("force" + forceRotate);
+        return vRotate;
+    }
+
+    public void MakeShipRotate()
+    {
+        if (rotateSpeed > 0)
+        {
+            float deltaAngel = 180 * Time.deltaTime / rotateSpeed;
+            deltaAngel = deltaAngel * (VectorUtils.IsRightSide(shipVelocity, rotateDirection) ? -1 : 1);
+            transform.localRotation *= Quaternion.Euler(0, 0, deltaAngel);
+            shipVelocity = VectorUtils.Rotate(shipVelocity, deltaAngel);
+            rigidBody2d.velocity = shipVelocity;
+            // Debug.Log(deltaAngel);
+            // Debug.DrawLine(transform.position, transform.position + (Vector3)rigidBody2d.velocity, Color.blue, 1f);
+        }
+    }
+
+    private void CalculateMove()
+    {
+        rigidBody2d.velocity = windForce;
+        shipVelocity = windForce;
     }
 
     public void ClearFire()
@@ -199,39 +267,33 @@ public class Ship : MonoBehaviour
             int numberFires = NumberCannonDirection(direction);
             CapsuleCollider2D col = GetComponent<CapsuleCollider2D>();
             List<Vector2> fromList = new List<Vector2>();
-            Debug.Log(string.Format("{0}/{1}/{2}/{3}", transform.position, fire.normalized, col.size, direction));
+
+            float areaFireFace = 0;
+            float areaOtherFace = 0;
+            // Debug.Log(string.Format("{0}/{1}/{2}/{3}", transform.position, fire.normalized, col.size, direction));
             switch (direction)
             {
                 case CannonDirection.Front:
-                    // Debug.Log(string.Format("{0}/{1}/{2}", transform.position.x, to.normalized.x, col.size.x));
-                    // Debug.Log(string.Format("{0}/{1}/{2}", transform.position.y, to.normalized.y, col.size.y));
-
-                    fromList.Add(new Vector2(
-                        transform.position.x + fire.normalized.x * col.size.x
-                    , transform.position.y + fire.normalized.y * col.size.y / 2
-                    ));
-                    // Debug.Log(string.Format("{0}/{1},{2}", transform.position, to.normalized, col.size));
-                    break;
                 case CannonDirection.Back:
-                    for (int i = 0; i < numberFires; i++)
-                    {
-                        float area2 = col.size.x / (2 * numberFires);
-                        var pos = -((col.size.x / 2) - area2) + i * area2 * 2;
-                        float angel = 90 - Vector2.Angle(new Vector2(pos, 0), new Vector2(pos, -col.size.y / 2));
-                        angel = ((i + 1) > (0.5 + (numberFires / 2)) ? 1 : -1) * angel;
-                        Debug.Log(angel);
-                        Debug.Log(string.Format("{0}/{1}/{2}", fire.normalized, pos, transform.position.x + fire.normalized.x * pos));
-                        // fromList.Add(new Vector2(
-                        // transform.position.x + fire.normalized.x * pos
-                        // , transform.position.y + fire.normalized.y * col.size.y / 2
-                        // ));
-                        Debug.DrawLine(transform.position, (Vector2)transform.position + Rotate(fire, angel, true), Color.blue, 3f);
-                        fromList.Add((Vector2)transform.position + Rotate(fire, angel, true).normalized * col.size.y / 2);
-                        // fromList.Add((Vector2)transform.position + fire.normalized + new Vector2(pos, col.size.y / 2));
-                    }
+                    areaFireFace = col.size.x;
+                    areaOtherFace = col.size.y;
                     break;
-                default: break;
-
+                case CannonDirection.Left:
+                case CannonDirection.Right:
+                    areaFireFace = col.size.y;
+                    areaOtherFace = col.size.x;
+                    break;
+                default:
+                    break;
+            }
+            for (int i = 0; i < numberFires; i++)
+            {
+                float area2 = areaFireFace / (2 * numberFires);
+                var pos = -((areaFireFace / 2) - area2) + i * area2 * 2;
+                float angel = Vector2.Angle(new Vector2(-areaOtherFace / 2, 0), new Vector2(-areaOtherFace / 2, -pos));
+                angel = ((i + 1) > (0.5 + (numberFires / 2)) ? 1 : -1) * angel;
+                // Debug.DrawLine(transform.position, (Vector2)transform.position + Rotate(fire, angel, true), Color.blue, 3f);
+                fromList.Add((Vector2)transform.position + Rotate(fire, angel, true).normalized * areaOtherFace / 2);
             }
             foreach (Vector2 from in fromList)
             {
@@ -243,9 +305,9 @@ public class Ship : MonoBehaviour
                     shot.ResetTravel();
                     actualCannon.transform.position = from;
                     shot.owner = gameObject;
-
-                    shot.Target = from + fire.normalized * 3f;
-                    shot.speed = speed;
+                    shot.fireDirection = fire.normalized;
+                    // shot.Target = from + fire.normalized * 3f;
+                    // shot.speed = speed;
                     shot.OnImpactTarget = delegate ()
                     {
                         GameManager.instance.poolCannon.RePooledObject(wrapPool);
@@ -253,7 +315,7 @@ public class Ship : MonoBehaviour
                     shot.gameObject.SetActive(true);
                     shot.StartTravel();
 
-                    Debug.DrawLine(from, shot.Target, Color.red, 3f);
+                    // Debug.DrawLine(from, shot.Target, Color.red, 3f);
                 }
             }
 

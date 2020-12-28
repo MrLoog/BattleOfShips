@@ -55,6 +55,10 @@
      <Compile Include="Assets\Scripts\Common\ScriptableCannonBall.cs" />
      <Compile Include="Assets\RoundShot.cs" />
      <Compile Include="Assets\Scripts\BaseShot.cs" />
+     <Compile Include="Assets\Scripts\Common\VectorUtils.cs" />
+     <Compile Include="Assets\WindInfoCtrl.cs" />
+     <Compile Include="Assets\PlayerSailCtrl.cs" />
+     <Compile Include="Assets\PlayerWheelCtrl.cs" />
      <None Include="Assets\3rd-Party\kenney_piratepack\License.txt" />
      <None Include="Assets\3rd-Party\kenney_piratepack\Spritesheet\shipsMiscellaneous_sheet@2.xml" />
      <None Include="Assets\3rd-Party\kenney_piratepack\Spritesheet\shipsMiscellaneous_sheet.xml" />

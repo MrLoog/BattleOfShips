@@ -12,6 +12,9 @@ public class PlayerCannonCtrl : MonoBehaviour
     public CannonDirection Direction = CannonDirection.None;
     public static PlayerCannonCtrl Instance { get; private set; }
 
+    private Quaternion StartRotation;
+    private Vector2 PlayerShipDirection;
+
 
     void Awake()
     {
@@ -21,6 +24,31 @@ public class PlayerCannonCtrl : MonoBehaviour
             Instance = this;
 
         DontDestroyOnLoad(gameObject);
+    }
+
+    void Start()
+    {
+        StartRotation = gameObject.transform.localRotation;
+        PlayerShipDirection = GameManager.instance.GetPlayerShipFrontDirection();
+        UpdateByPlayer();
+    }
+
+    void Update()
+    {
+        if (GameManager.instance.GetPlayerShipFrontDirection() != PlayerShipDirection)
+        {
+            PlayerShipDirection = GameManager.instance.GetPlayerShipFrontDirection();
+            UpdateByPlayer();
+        }
+    }
+
+    public void UpdateByPlayer()
+    {
+        Vector2 realCtrlDirection = VectorUtils.Rotate(Vector2.up, -StartRotation.eulerAngles.z, true);
+        float angel = Vector2.Angle(realCtrlDirection, PlayerShipDirection);
+        Vector3 cross = Vector3.Cross(realCtrlDirection, PlayerShipDirection);
+        int sign = cross.z > 0 ? 1 : -1;
+        gameObject.transform.rotation = Quaternion.Euler(0, 0, sign * angel);
     }
 
     public Sprite CannonDirectionImg;
