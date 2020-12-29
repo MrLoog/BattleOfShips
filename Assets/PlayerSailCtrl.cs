@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,6 +19,19 @@ public class PlayerSailCtrl : MonoBehaviour
     void Start()
     {
         ship = GameManager.instance.playerShip.GetComponent<Ship>();
+        ship.OnChangeSailDirection.AddListener(UpdateSailInfo);
+        UpdateSailInfo();
+    }
+
+    private void UpdateSailInfo()
+    {
+        if (!isRotate)
+        {
+            // Debug.Log("update sail " + (VectorUtils.IsRightSide(ship.ShipDirection, ship.SailDirecion) ? 1 : -1) * Vector2.Angle(ship.ShipDirection, ship.SailDirecion));
+            float angel = 90 + (VectorUtils.IsRightSide(ship.ShipDirection, ship.SailDirecion) ? -1 : 1) * Vector2.Angle(ship.ShipDirection, ship.SailDirecion);
+            
+            sail.transform.localRotation = Quaternion.Euler(0, 0, angel);
+        }
     }
 
     // Update is called once per frame

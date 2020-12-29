@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using static GameManager;
 
 public class Ship : MonoBehaviour
@@ -10,6 +11,9 @@ public class Ship : MonoBehaviour
     public float curHealth;
     public float speed = 0.2f;
     public float windForceValue = 0f;
+    public float actualSpeed = 0f;
+
+    public UnityEvent OnChangeSailDirection = new UnityEvent();
 
     public Vector2 wind;
     public Vector2 Wind
@@ -34,7 +38,10 @@ public class Ship : MonoBehaviour
         set
         {
             sailDirection = value;
-            Debug.DrawLine(transform.position, transform.position + (Vector3)value.normalized * 3f, Color.yellow, 3f);
+            if (OnChangeSailDirection != null)
+            {
+                OnChangeSailDirection.Invoke();
+            }
             CalculateMove();
         }
     }
@@ -53,6 +60,7 @@ public class Ship : MonoBehaviour
         set
         {
             shipVelocity = value;
+            actualSpeed = shipVelocity.magnitude;
         }
         get
         {
@@ -92,6 +100,13 @@ public class Ship : MonoBehaviour
     void Update()
     {
         MakeShipRotate();
+        Debug.DrawLine(transform.position, transform.position + (Vector3)(VectorUtils.Rotate(Wind, 180, true)) * 3f, Color.red, 3f);
+        Debug.DrawLine(transform.position, transform.position + (Vector3)(ShipDirection) * 3f, Color.green, 3f);
+        Debug.DrawLine(transform.position, transform.position + (Vector3)SailDirecion.normalized * 1.5f, Color.yellow, 3f);
+        // Debug.DrawLine(transform.position, transform.position + (Vector3)(VectorUtils.Rotate(SailDirecion, 180, true)).normalized * 1.5f, Color.yellow, 3f);
+
+        Debug.DrawLine(transform.position, transform.position + (Vector3)(ShipVelocity - ShipDirection.normalized * speed) * 3f, Color.blue, 3f);
+
     }
 
     public void ApplyDamage(float damage, GameObject source)
@@ -215,6 +230,7 @@ public class Ship : MonoBehaviour
         Wind = windForce;
         // this.windForce = Vector2.zero;
         // this.windForce = ShipDirection.normalized * 2f;
+        CalculateSailPos();
         CalculateMove();
     }
 
@@ -242,6 +258,26 @@ public class Ship : MonoBehaviour
         return vRotate;
     }
 
+    public void CalculateSailPos()
+    {
+        float angelShipWind = Vector2.Angle(Wind, ShipDirection);
+        angelShipWind = 180 - Mathf.Abs(angelShipWind); //small degree
+        float angelSail = angelShipWind / 2;
+
+        if (VectorUtils.IsRightSide(ShipDirection, VectorUtils.Rotate(Wind, 180, true)))
+        {
+            angelSail = -angelSail;
+        }
+        else
+        {
+            angelSail = -(180 - angelSail);
+
+        }
+        Debug.Log("angelSail " + angelSail);
+        // angelSail *= VectorUtils.IsRightSide(ShipDirection, VectorUtils.Rotate(Wind, 180, true)) ? 1 : -1;
+        SailDirecion = VectorUtils.Rotate(ShipDirection, angelSail, true).normalized;
+    }
+
     public void MakeShipRotate()
     {
         if (rotateSpeed > 0)
@@ -251,6 +287,7 @@ public class Ship : MonoBehaviour
             transform.localRotation *= Quaternion.Euler(0, 0, deltaAngel);
             ShipVelocity = VectorUtils.Rotate(ShipVelocity, deltaAngel);
             rigidBody2d.velocity = ShipVelocity;
+            CalculateSailPos();
             // Debug.Log(deltaAngel);
             // Debug.DrawLine(transform.position, transform.position + (Vector3)rigidBody2d.velocity, Color.blue, 1f);
         }
@@ -264,10 +301,7 @@ public class Ship : MonoBehaviour
     private void CalculateMove()
     {
         Vector2 vSail = VectorUtils.GetForceOnLine(SailDirecion, Wind);
-        Debug.DrawLine(transform.position, transform.position + (Vector3)Wind * 3f, Color.red, 3f);
-        Debug.DrawLine(transform.position, transform.position + (Vector3)vSail * 3f, Color.green, 3f);
         Vector2 vShip = VectorUtils.GetForceOnLine(ShipDirection, vSail, true);
-        Debug.DrawLine(transform.position, transform.position + (Vector3)vShip * 3f, Color.blue, 3f);
         Debug.Log(string.Format("calculate move {0}/{1}/{2}", Wind, vSail, vShip));
         vShip = vShip + ShipDirection.normalized * speed;
         if (!VectorUtils.IsSameDirection(ShipDirection, vShip))
