@@ -100,12 +100,13 @@ public class GameManager : MonoBehaviour
 
     public Vector2 GetPlayerShipFrontDirection()
     {
-        return playerShip.GetComponent<Ship>().GetFrontDirection();
+        return playerShip.GetComponent<Ship>().ShipDirection;
     }
 
     public void RandomWindForce()
     {
         float force = (float)Math.Round(Random.Range(0.1f, 1f), 1);
+        Debug.Log("force " + force);
         float direction = Random.Range(-180, 180);
 
         windForce = VectorUtils.Rotate(Vector2.up, direction, true).normalized * force;

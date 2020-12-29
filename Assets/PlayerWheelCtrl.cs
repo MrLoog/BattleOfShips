@@ -26,6 +26,7 @@ public class PlayerWheelCtrl : MonoBehaviour
     {
         if (isRotate)
         {
+            /*
             Vector2 startV = StartPos - (Vector2)wheel.transform.position;
             Vector2 curV = (Vector2)Input.mousePosition - (Vector2)wheel.transform.position;
             float angel = Vector2.Angle(startV
@@ -41,6 +42,23 @@ public class PlayerWheelCtrl : MonoBehaviour
             }
             wheel.transform.localRotation = Quaternion.Euler(0, 0, angel);
             ship.CalculateRotateVector(ConvertAngel(angel));
+            */
+            Vector2 startV = StartPos - (Vector2)wheel.transform.position;
+            Vector2 curV = (Vector2)Input.mousePosition - (Vector2)wheel.transform.position;
+            float angel = Vector2.Angle(startV
+                , curV
+
+            );
+            StartPos = (Vector2)Input.mousePosition;
+            Vector3 cross = Vector3.Cross(startV, curV);
+            int sign = cross.z > 0 ? 1 : -1;
+            angel = sign * angel + VectorUtils.ConvertAngel(wheel.transform.localRotation.eulerAngles.z);
+            if (Mathf.Abs(angel) > maxDegreeWheel)
+            {
+                angel = maxDegreeWheel * (angel > 0 ? 1 : -1);
+            }
+            wheel.transform.localRotation = Quaternion.Euler(0, 0, angel);
+            ship.CalculateRotateVector(angel);
         }
         else
         {
@@ -62,7 +80,7 @@ public class PlayerWheelCtrl : MonoBehaviour
 
     public void StartRotate()
     {
-        startAngel = wheel.transform.localRotation.z;
+        startAngel = wheel.transform.localRotation.eulerAngles.z;
         StartPos = Input.mousePosition;
         isRotate = true;
     }

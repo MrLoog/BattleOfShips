@@ -32,4 +32,38 @@ public class VectorUtils
         // int sign = cross.z > 0 ? 1 : -1;
         return cross.z < 0;
     }
+
+    public static float ConvertAngel(float angel)
+    {
+        if (angel > 180)
+        {
+            return -(360 - angel);
+        }
+        else
+        {
+            return angel;
+        }
+    }
+
+    public static Vector2 GetForceOnLine(Vector2 line, Vector2 force, bool onLine = false)
+    {
+        Vector2 vProj = Vector2.Dot(line, force) * line / Mathf.Pow(line.magnitude, 2);
+        if (onLine)
+        {
+            return vProj;
+        }
+        else
+        {
+            return force - vProj;
+        }
+    }
+
+    public static bool IsSameDirection(Vector2 v1, Vector2 v2)
+    {
+        // Debug.Log(string.Format("same direction {0}/{1}/{2}", v1, v2, Vector2.Dot(v1, v2)));
+        //-1 opposite
+        //0 perpendicular
+        //1 same direction
+        return Vector2.Dot(v1, v2) > 0;
+    }
 }

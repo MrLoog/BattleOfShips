@@ -8,13 +8,61 @@ public class Ship : MonoBehaviour
 
     public float maxHealth;
     public float curHealth;
-    public float speed;
+    public float speed = 0.2f;
+    public float windForceValue = 0f;
 
-    public Vector2 windForce;
+    public Vector2 wind;
+    public Vector2 Wind
+    {
+        set
+        {
+            wind = value;
+            windForceValue = value.magnitude;
+        }
+        get
+        {
+            return wind;
+        }
+    }
+    public Vector2 sailDirection = Vector2.left;
+    public Vector2 SailDirecion
+    {
+        get
+        {
+            return sailDirection;
+        }
+        set
+        {
+            sailDirection = value;
+            Debug.DrawLine(transform.position, transform.position + (Vector3)value.normalized * 3f, Color.yellow, 3f);
+            CalculateMove();
+        }
+    }
+
+    private Vector2 shipDirection = Vector2.down;
+    public Vector2 ShipDirection
+    {
+        get
+        {
+            return VectorUtils.Rotate(Vector2.down, transform.localRotation.eulerAngles.z, true);
+        }
+    }
     public Vector2 shipVelocity;
+    public Vector2 ShipVelocity
+    {
+        set
+        {
+            shipVelocity = value;
+        }
+        get
+        {
+            return shipVelocity;
+        }
+    }
 
     public float rotateSpeed;
     public Vector2 rotateDirection;
+
 
     public int[] numberCannon; //front,right,left,back
     public CannonDirection FireDirections; //front,right,left,back
@@ -164,20 +212,21 @@ public class Ship : MonoBehaviour
 
     internal void ApplyWindForce(Vector2 windForce)
     {
-        // this.windForce = windForce;
-        this.windForce = GetFrontDirection().normalized * 0.5f;
+        Wind = windForce;
+        // this.windForce = Vector2.zero;
+        // this.windForce = ShipDirection.normalized * 2f;
         CalculateMove();
     }
 
     public Vector2 CalculateRotateVector(float degreeRotate)
     {
         float absDegree = Mathf.Abs(degreeRotate);
-        Vector2 vShip = shipVelocity;
+        Vector2 vShip = ShipVelocity;
         float forceRotate = Mathf.Sin(absDegree) * Mathf.Cos(absDegree) * vShip.magnitude;
         forceRotate = Mathf.Abs(forceRotate);
         // Debug.Log(string.Format("calculate1 {0}/{1}/{2}/{3}", Mathf.Sin(absDegree), Mathf.Cos(absDegree), vShip.magnitude, forceRotate));
         // Debug.Log(string.Format("calculate {0}/{1}/{2}/{3}", degreeRotate, absDegree, shipVelocity, forceRotate));
-        Vector2 vRotate = forceRotate * VectorUtils.Rotate(shipVelocity, (degreeRotate > 0 ? 1 : -1) * 90f, true).normalized;
+        Vector2 vRotate = forceRotate * VectorUtils.Rotate(ShipVelocity, (degreeRotate > 0 ? 1 : -1) * 90f, true).normalized;
         rotateDirection = vRotate;
         CapsuleCollider2D col = GetComponent<CapsuleCollider2D>();
         float c = Mathf.PI * col.size.y / 2; // 1/2 perimeter
@@ -198,19 +247,35 @@ public class Ship : MonoBehaviour
         if (rotateSpeed > 0)
         {
             float deltaAngel = 180 * Time.deltaTime / rotateSpeed;
-            deltaAngel = deltaAngel * (VectorUtils.IsRightSide(shipVelocity, rotateDirection) ? -1 : 1);
+            deltaAngel = deltaAngel * (VectorUtils.IsRightSide(ShipVelocity, rotateDirection) ? -1 : 1);
             transform.localRotation *= Quaternion.Euler(0, 0, deltaAngel);
-            shipVelocity = VectorUtils.Rotate(shipVelocity, deltaAngel);
-            rigidBody2d.velocity = shipVelocity;
+            ShipVelocity = VectorUtils.Rotate(ShipVelocity, deltaAngel);
+            rigidBody2d.velocity = ShipVelocity;
             // Debug.Log(deltaAngel);
             // Debug.DrawLine(transform.position, transform.position + (Vector3)rigidBody2d.velocity, Color.blue, 1f);
         }
     }
 
+    public void RotateSail(float degreeRotate)
+    {
+        SailDirecion = VectorUtils.Rotate(Vector2.left, degreeRotate);
+    }
+
     private void CalculateMove()
     {
-        rigidBody2d.velocity = windForce;
-        shipVelocity = windForce;
+        Vector2 vSail = VectorUtils.GetForceOnLine(SailDirecion, Wind);
+        Debug.DrawLine(transform.position, transform.position + (Vector3)Wind * 3f, Color.red, 3f);
+        Debug.DrawLine(transform.position, transform.position + (Vector3)vSail * 3f, Color.green, 3f);
+        Vector2 vShip = VectorUtils.GetForceOnLine(ShipDirection, vSail, true);
+        Debug.DrawLine(transform.position, transform.position + (Vector3)vShip * 3f, Color.blue, 3f);
+        Debug.Log(string.Format("calculate move {0}/{1}/{2}", Wind, vSail, vShip));
+        vShip = vShip + ShipDirection.normalized * speed;
+        if (!VectorUtils.IsSameDirection(ShipDirection, vShip))
+        {
+            vShip = Vector2.zero;
+        }
+        rigidBody2d.velocity = vShip;
+        ShipVelocity = vShip;
     }
 
     public void ClearFire()
