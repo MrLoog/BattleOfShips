@@ -11,10 +11,14 @@ public class PlayerWheelCtrl : MonoBehaviour
     private float startAngel;
 
     public Ship ship;
+    [Tooltip("Control Time wheel return to normal position after, -1 indicate auto calculate from ship rotate speed")]
+    public float timeReturnPos = -1f;
     private float spdReturn = 3f;
     private float accReturn = 0f;
     private bool isReturn = false;
     private Quaternion beginReturn;
+
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -76,6 +80,7 @@ public class PlayerWheelCtrl : MonoBehaviour
                 ship.CalculateRotateVector(ConvertAngel(wheel.transform.localRotation.eulerAngles.z));
             }
         }
+
     }
 
     public void StartRotate()
@@ -90,8 +95,15 @@ public class PlayerWheelCtrl : MonoBehaviour
         isRotate = false;
 
         beginReturn = wheel.transform.localRotation;
-        spdReturn = Mathf.Abs(ConvertAngel(wheel.transform.localRotation.eulerAngles.z)) / (180 / ship.rotateSpeed);
-        Debug.Log(string.Format("return {0}/{1}/{2}", wheel.transform.localRotation.eulerAngles.z, ship.rotateSpeed, spdReturn));
+        if (timeReturnPos < 0)
+        {
+            spdReturn = Mathf.Abs(ConvertAngel(wheel.transform.localRotation.eulerAngles.z)) / (180 / ship.rotateSpeed);
+        }
+        else
+        {
+            spdReturn = timeReturnPos;
+        }
+        // Debug.Log(string.Format("return {0}/{1}/{2}", wheel.transform.localRotation.eulerAngles.z, ship.rotateSpeed, spdReturn));
         accReturn = 0;
         isReturn = true;
     }
@@ -108,17 +120,4 @@ public class PlayerWheelCtrl : MonoBehaviour
         }
     }
 
-    public void TestRotate()
-    {
-        Ship s = GameManager.instance.playerShip.GetComponent<Ship>();
-        float angel = wheel.transform.localRotation.eulerAngles.z;
-        if (angel > 180)
-        {
-            angel = -(360 - angel);
-        }
-        Vector2 rs = s.CalculateRotateVector(angel);
-        // Debug.Log("rotate " + rs + "/" + angel);
-        rs = rs.normalized * 3f;
-        Debug.DrawLine(s.transform.position, s.transform.position + (Vector3)rs, Color.red, 3f);
-    }
 }

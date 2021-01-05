@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
 public class GameManager : MonoBehaviour
@@ -28,6 +29,9 @@ public class GameManager : MonoBehaviour
     List<ScriptableCannonBall> ScriptableCannonBalls;
 
     private List<Ship> ships;
+    public GameObject ShipManager;
+
+    public Tilemap battleFields;
 
     void Awake()
     {
@@ -36,12 +40,18 @@ public class GameManager : MonoBehaviour
         ScriptableCannonBalls = Resources.FindObjectsOfTypeAll<ScriptableCannonBall>().Cast<ScriptableCannonBall>().ToList();
 
         ships = new List<Ship>();
-        ships.Add(playerShip.GetComponent<Ship>());
-        RandomWindForce();
+        for (int i = 0; i < ShipManager.transform.childCount; i++)
+        {
+            ships.Add(ShipManager.transform.GetChild(i).GetComponent<Ship>());
+        }
+        // ships.Add(playerShip.GetComponent<Ship>());
+        // ships.Add(enemyShip.GetComponent<Ship>());
+        // ships.Add(enemyShip.GetComponent<Ship>());
     }
     // Start is called before the first frame update
     void Start()
     {
+        RandomWindForce();
         GameObject newCannon = Instantiate(prefabCannon);
         newCannon.SetActive(false);
         newCannon.GetComponent<CannonShot>().Data = ScriptableCannonBalls.Where(x => x.name == "RoundShot").First();
@@ -105,7 +115,7 @@ public class GameManager : MonoBehaviour
 
     public void RandomWindForce()
     {
-        float force = (float)Math.Round(Random.Range(0.1f, 1f), 1);
+        float force = (float)Math.Round(Random.Range(0.1f,3f), 1);
         Debug.Log("force " + force);
         float direction = Random.Range(-180, 180);
 
@@ -114,6 +124,25 @@ public class GameManager : MonoBehaviour
         foreach (Ship s in ships)
         {
             s.ApplyWindForce(windForce);
+        }
+    }
+
+    public void RandomTeleport(GameObject gameObject)
+    {
+        int randX = Random.Range(battleFields.cellBounds.xMin, battleFields.cellBounds.xMax);
+        int randY = Random.Range(battleFields.cellBounds.yMin, battleFields.cellBounds.yMax);
+        Vector3 newPos = battleFields.GetCellCenterWorld(new Vector3Int(randX, randY, 0));
+        gameObject.transform.position = (Vector2)newPos;
+    }
+
+    public void RestartGame()
+    {
+        foreach (Ship s in ships)
+        {
+            s.curHealth = s.maxHealth;
+            s.RestoreState();
+            RandomTeleport(s.gameObject);
+            s.RevalidMovement();
         }
     }
 }

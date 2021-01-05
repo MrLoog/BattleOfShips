@@ -26,6 +26,11 @@ public class VectorUtils
 
     }
 
+    public static Vector2 Reverse(Vector2 v)
+    {
+        return new Vector2(-v.x, -v.y);
+    }
+
     public static bool IsRightSide(Vector2 mainV, Vector2 checkV)
     {
         Vector3 cross = Vector3.Cross(mainV, checkV);
@@ -45,7 +50,7 @@ public class VectorUtils
         }
     }
 
-    public static Vector2 GetForceOnLine(Vector2 line, Vector2 force, bool onLine = false)
+    public static Vector2 GetForceOnLine(Vector2 line, Vector2 force, bool onLine = true)
     {
         Vector2 vProj = Vector2.Dot(line, force) * line / Mathf.Pow(line.magnitude, 2);
         if (onLine)
@@ -65,5 +70,30 @@ public class VectorUtils
         //0 perpendicular
         //1 same direction
         return Vector2.Dot(v1, v2) > 0;
+    }
+
+    public static float AreaTriangle(Vector2 a, Vector2 b, Vector2 c)
+    {
+        return GetForceOnLine(a - c, b - c, false).magnitude * (b - c).magnitude / 2;
+    }
+    public static bool IsPointInRectangle(Vector2 p, Vector2 a, Vector2 b, Vector2 c, Vector2 d)
+    {
+        float areaRect = ((b - a).magnitude + 0.1f) * ((c - b).magnitude + 0.1f);
+        float areaFromPoint = AreaTriangle(a, b, p);
+        areaFromPoint += AreaTriangle(b, c, p);
+        areaFromPoint += AreaTriangle(c, d, p);
+        areaFromPoint += AreaTriangle(d, a, p);
+        if (areaFromPoint > areaRect)
+        {
+            Debug.Log("Area " + areaFromPoint + " / " + areaRect);
+            Debug.DrawLine(a, b, Color.red, 1f);
+            Debug.DrawLine(b, c, Color.green, 1f);
+            Debug.DrawLine(c, d, Color.blue, 1f);
+            Debug.DrawLine(d, a, Color.yellow, 1f);
+            Debug.DrawLine(a, p, Color.gray, 1f);
+            return false;
+        }
+        Debug.Log("Area " + areaFromPoint + " / " + areaRect);
+        return true;
     }
 }

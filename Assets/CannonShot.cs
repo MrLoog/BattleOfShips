@@ -42,14 +42,14 @@ public class CannonShot : MonoBehaviour
     public Vector2 LastPos;
     public Action OnImpactTarget { get; internal set; }
 
-    private Rigidbody2D rigidbody2D;
+    private Rigidbody2D _rigidbody2D;
     internal GameObject owner;
     internal Vector2 fireDirection;
 
     // Start is called before the first frame update
     void Start()
     {
-        rigidbody2D = GetComponent<Rigidbody2D>();
+        _rigidbody2D = GetComponent<Rigidbody2D>();
         LastPos = (Vector2)transform.position;
     }
 
@@ -60,7 +60,7 @@ public class CannonShot : MonoBehaviour
         {
             if (Vector2.Distance(Target, (Vector2)transform.position) > 0)
             {
-                rigidbody2D.velocity = fireDirection.normalized * speed;
+                _rigidbody2D.velocity = fireDirection.normalized * speed;
                 travelTime += Time.deltaTime;
                 if (travelTime >= maxTime)
                 {
@@ -86,7 +86,7 @@ public class CannonShot : MonoBehaviour
 
     void EndTravel()
     {
-        rigidbody2D.velocity = Vector2.zero;
+        _rigidbody2D.velocity = Vector2.zero;
         enableTravel = false;
         GetComponentInChildren<BaseShot>().ShotImg.SetActive(false);
         StartCoroutine(ShotDone(trailTime));
@@ -100,7 +100,7 @@ public class CannonShot : MonoBehaviour
         maxTime = data.range / speed;
         travelTime = 0;
         enableTravel = true;
-        Debug.Log("Fire " + speed + "/" + maxTime);
+        // Debug.Log("Fire " + speed + "/" + maxTime);
         GetComponentInChildren<BaseShot>().ShotImg.SetActive(true);
     }
 

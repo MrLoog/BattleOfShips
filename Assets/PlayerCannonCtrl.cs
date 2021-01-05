@@ -15,6 +15,8 @@ public class PlayerCannonCtrl : MonoBehaviour
     private Quaternion StartRotation;
     private Vector2 PlayerShipDirection;
 
+    public Ship playerShip;
+
 
     void Awake()
     {
@@ -31,6 +33,39 @@ public class PlayerCannonCtrl : MonoBehaviour
         StartRotation = gameObject.transform.localRotation;
         PlayerShipDirection = GameManager.instance.GetPlayerShipFrontDirection();
         UpdateByPlayer();
+        playerShip = GameManager.instance.playerShip.GetComponent<Ship>();
+        playerShip.Events.RegisterListener(Ship.EVENT_CANNON_FRONT_FIRE).AddListener(delegate ()
+        {
+            ShowCooldownDirection(CannonDirection.Front);
+        });
+        playerShip.Events.RegisterListener(Ship.EVENT_CANNON_FRONT_READY).AddListener(delegate ()
+        {
+            ShowReadyDirection(CannonDirection.Front);
+        });
+        playerShip.Events.RegisterListener(Ship.EVENT_CANNON_RIGHT_FIRE).AddListener(delegate ()
+        {
+            ShowCooldownDirection(CannonDirection.Right);
+        });
+        playerShip.Events.RegisterListener(Ship.EVENT_CANNON_RIGHT_READY).AddListener(delegate ()
+        {
+            ShowReadyDirection(CannonDirection.Right);
+        });
+        playerShip.Events.RegisterListener(Ship.EVENT_CANNON_LEFT_FIRE).AddListener(delegate ()
+        {
+            ShowCooldownDirection(CannonDirection.Left);
+        });
+        playerShip.Events.RegisterListener(Ship.EVENT_CANNON_LEFT_READY).AddListener(delegate ()
+        {
+            ShowReadyDirection(CannonDirection.Left);
+        });
+        playerShip.Events.RegisterListener(Ship.EVENT_CANNON_BACK_FIRE).AddListener(delegate ()
+        {
+            ShowCooldownDirection(CannonDirection.Back);
+        });
+        playerShip.Events.RegisterListener(Ship.EVENT_CANNON_BACK_READY).AddListener(delegate ()
+        {
+            ShowReadyDirection(CannonDirection.Back);
+        });
     }
 
     void Update()
@@ -40,6 +75,11 @@ public class PlayerCannonCtrl : MonoBehaviour
             PlayerShipDirection = GameManager.instance.GetPlayerShipFrontDirection();
             UpdateByPlayer();
         }
+
+        if (Input.GetKeyDown(KeyCode.A)) ToggleLeft();
+        if (Input.GetKeyDown(KeyCode.W)) ToggleFront();
+        if (Input.GetKeyDown(KeyCode.S)) ToggleBack();
+        if (Input.GetKeyDown(KeyCode.D)) ToggleRight();
     }
 
     public void UpdateByPlayer()
@@ -60,21 +100,29 @@ public class PlayerCannonCtrl : MonoBehaviour
 
     public void ToggleFront()
     {
-        ToggleDirection(CannonDirection.Front);
+        Debug.Log("ToggleFront");
+        playerShip.FireCannon(CannonDirection.Front);
+        // ToggleDirection(CannonDirection.Front);
     }
     public void ToggleRight()
     {
-        ToggleDirection(CannonDirection.Right);
+        Debug.Log("ToggleRight");
+        playerShip.FireCannon(CannonDirection.Right);
+        // ToggleDirection(CannonDirection.Right);
     }
 
     public void ToggleLeft()
     {
-        ToggleDirection(CannonDirection.Left);
+        Debug.Log("ToggleLeft");
+        playerShip.FireCannon(CannonDirection.Left);
+        // ToggleDirection(CannonDirection.Left);
     }
 
     public void ToggleBack()
     {
-        ToggleDirection(CannonDirection.Back);
+        Debug.Log("ToggleBack");
+        playerShip.FireCannon(CannonDirection.Back);
+        // ToggleDirection(CannonDirection.Back);
     }
 
     private void ToggleDirection(CannonDirection direction)
@@ -83,6 +131,20 @@ public class PlayerCannonCtrl : MonoBehaviour
         Button b = GetButtonByDirection(direction);
         if (b == null) return;
         b.GetComponent<Image>().sprite = ((Direction & direction) != 0) ? CannonDirectionSelectedImg : CannonDirectionImg;
+    }
+
+    private void ShowReadyDirection(CannonDirection direction)
+    {
+        Button b = GetButtonByDirection(direction);
+        if (b == null) return;
+        b.GetComponent<Image>().sprite = CannonDirectionSelectedImg;
+    }
+
+    private void ShowCooldownDirection(CannonDirection direction)
+    {
+        Button b = GetButtonByDirection(direction);
+        if (b == null) return;
+        b.GetComponent<Image>().sprite = CannonDirectionImg;
     }
 
     private Button GetButtonByDirection(CannonDirection direction)
@@ -99,9 +161,8 @@ public class PlayerCannonCtrl : MonoBehaviour
 
     public void PressFire()
     {
-        if (Direction != CannonDirection.None)
-        {
-            GameManager.instance.PlayerFireCannon(Direction);
-        }
+        CannonDirection direction = CannonDirection.Front | CannonDirection.Right | CannonDirection.Left | CannonDirection.Back;
+
+        playerShip.FireCannon(direction);
     }
 }
