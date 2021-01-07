@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 462f49c6bff21c245ad5b420d2271bc2, type: 3}
+  m_Name: Galleon
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 0}
+  typeName: Galleon
+  type: 6
+  maxCrew: 200
+  hullHealth: 450
+  sailHealth: 200
+  oarsSpeed: 0.1
+  MaxDegreeRotate: 45
+  windConversionRate: 0.5
+  capacity: 500
+  capacityWeightRate: 0.6
+  sizeRateWidth: 2
+  sizeRateLength: 2.3
+  numberDeck: 2
+  numberCannons:
+  - 1
+  - 0
+  - 6
+  - 6
+  - 6
+  - 6
+  - 2
+  - 2

@@ -57,12 +57,14 @@
      <Compile Include="Assets\GameManager.cs" />
      <Compile Include="Assets\Scripts\Common\GameObjectFactory.cs" />
      <Compile Include="Assets\GameSettings.cs" />
-     <Compile Include="Assets\Scripts\Common\ScriptableCannonBall.cs" />
+     <Compile Include="Assets\Scripts\Scriptable\ScriptableCannonBall.cs" />
      <Compile Include="Assets\Scripts\Common\VectorUtils.cs" />
      <Compile Include="Assets\ShipAI.cs" />
      <Compile Include="Assets\CameraCtrl.cs" />
      <Compile Include="Assets\MapBouns.cs" />
      <Compile Include="Assets\MapBounds.cs" />
+     <Compile Include="Assets\Scripts\MyLocalization.cs" />
+     <Compile Include="Assets\Scripts\Scriptable\ScriptableShip.cs" />
      <None Include="Assets\3rd-Party\kenney_piratepack\License.txt" />
      <None Include="Assets\3rd-Party\kenney_piratepack\Spritesheet\shipsMiscellaneous_sheet@2.xml" />
      <None Include="Assets\3rd-Party\kenney_piratepack\Spritesheet\shipsMiscellaneous_sheet.xml" />

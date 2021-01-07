@@ -32,6 +32,20 @@ public class Ship : MonoBehaviour
     public float actualSpeed = 0f;
 
     public float maxRotateDegree = 45f;
+
+    private ScriptableShip shipData;
+
+    public ScriptableShip ShipData
+    {
+        get
+        {
+            return shipData;
+        }
+        set
+        {
+            shipData = value.Clone<ScriptableShip>();
+        }
+    }
     public UnityEvent OnChangeSailDirection = new UnityEvent();
 
     public Vector2 wind;
