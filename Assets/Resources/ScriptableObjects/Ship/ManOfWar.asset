@@ -23,15 +23,10 @@ MonoBehaviour:
   windConversionRate: 0.5
   capacity: 250
   capacityWeightRate: 0.4
-  sizeRateWidth: 2
-  sizeRateLength: 2.3
+  sizeRateWidth: 1.4
+  sizeRateLength: 1.4
   numberDeck: 2
-  numberCannons:
-  - 1
-  - 0
-  - 6
-  - 6
-  - 6
-  - 6
-  - 2
-  - 2
+  numberCannons: 0100000000000000050000000500000005000000050000000200000002000000
+  MaxHitToStun: 10
+  TimeHitToStun: 1
+  TimeRegainStun: 5

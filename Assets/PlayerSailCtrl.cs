@@ -6,6 +6,15 @@ using UnityEngine;
 public class PlayerSailCtrl : MonoBehaviour
 {
 
+    public static PlayerSailCtrl Instance { get; private set; }
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+            Destroy(gameObject);
+        else
+            Instance = this;
+
+    }
     public GameObject sail;
     public float maxDegreeWheel;
     private bool isRotate = false;
@@ -13,14 +22,25 @@ public class PlayerSailCtrl : MonoBehaviour
     private float startAngel;
 
     public Ship ship;
+    public bool isSync = false;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        ship = GameManager.instance.playerShip.GetComponent<Ship>();
-        ship.OnChangeSailDirection.AddListener(UpdateSailInfo);
-        UpdateSailInfo();
+        StartSync();
+    }
+
+    public void StartSync()
+    {
+        isSync = false;
+        if (GameManager.instance.playerShip != null)
+        {
+            ship = GameManager.instance.playerShip.GetComponent<Ship>();
+            ship.OnChangeSailDirection.AddListener(UpdateSailInfo);
+            UpdateSailInfo();
+            isSync = true;
+        }
     }
 
     private void UpdateSailInfo()
@@ -29,7 +49,7 @@ public class PlayerSailCtrl : MonoBehaviour
         {
             // Debug.Log("update sail " + (VectorUtils.IsRightSide(ship.ShipDirection, ship.SailDirecion) ? 1 : -1) * Vector2.Angle(ship.ShipDirection, ship.SailDirecion));
             float angel = 90 + (VectorUtils.IsRightSide(ship.ShipDirection, ship.SailDirecion) ? -1 : 1) * Vector2.Angle(ship.ShipDirection, ship.SailDirecion);
-            
+
             sail.transform.localRotation = Quaternion.Euler(0, 0, angel);
         }
     }
@@ -37,7 +57,8 @@ public class PlayerSailCtrl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isRotate)
+        if (GameManager.instance.playerShip == null) isSync = false;
+        if (isRotate && isSync)
         {
             Vector2 startV = StartPos - (Vector2)sail.transform.position;
             Vector2 curV = (Vector2)Input.mousePosition - (Vector2)sail.transform.position;

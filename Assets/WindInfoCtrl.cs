@@ -50,7 +50,7 @@ public class WindInfoCtrl : MonoBehaviour
         Vector3 cross = Vector3.Cross(realCtrlDirection, windForce);
         int sign = cross.z > 0 ? 1 : -1;
         
-        Debug.Log("wind force " + windForce + "/" + realCtrlDirection + "/" + sign * angel + "/" + DefaultRotate);
+        // Debug.Log("wind force " + windForce + "/" + realCtrlDirection + "/" + sign * angel + "/" + DefaultRotate);
         StartAnimate(Quaternion.Euler(0, 0, sign * angel));
     }
 }

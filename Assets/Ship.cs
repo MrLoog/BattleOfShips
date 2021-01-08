@@ -25,15 +25,13 @@ public class Ship : MonoBehaviour
     public const string EVENT_CANNON_BACK_FIRE = "CANNON_BACK_FIRE";
     public const string EVENT_CANNON_BACK_READY = "CANNON_BACK_READY";
     public bool ForceStop = false;
-    public float maxHealth;
-    public float curHealth;
-    public float speed = 0.2f;
     public float windForceValue = 0f;
     public float actualSpeed = 0f;
 
-    public float maxRotateDegree = 45f;
 
-    private ScriptableShip shipData;
+    public ScriptableShip shipData; //origin data
+    public ScriptableShip startShipData; //buff data
+    public ScriptableShip curShipData; //data change on battle
 
     public ScriptableShip ShipData
     {
@@ -44,6 +42,18 @@ public class Ship : MonoBehaviour
         set
         {
             shipData = value.Clone<ScriptableShip>();
+            startShipData = value.Clone<ScriptableShip>();
+            curShipData = value.Clone<ScriptableShip>();
+            transform.localScale = new Vector3(curShipData.sizeRateWidth, curShipData.sizeRateLength, 0);
+
+            numberCannon = curShipData.numberCannons;
+            cooldownCannons = new float[numberCannon.Length];
+            timeReloadCannons = new float[numberCannon.Length];
+            for (int i = 0; i < timeReloadCannons.Length; i++)
+            {
+                cooldownCannons[i] = 0f;
+                timeReloadCannons[i] = 3f;
+            }
         }
     }
     public UnityEvent OnChangeSailDirection = new UnityEvent();
@@ -111,26 +121,60 @@ public class Ship : MonoBehaviour
     public float[] cooldownCannons;
     public float[] timeReloadCannons;
 
-    public Sprite normalState;
-    public Sprite damagedState;
-    public Sprite dangerState;
-    public Sprite deathState;
+    public bool isStuned = false;
+    public float accumStunTime = 0f;
+
+    public float lastTimeHit = 0f;
+    public int totalHitConsecutive = 0;
+
+
+    public ScriptableStateShip imgStateShip;
+
+    public ScriptableStateShip ImgStateShip
+    {
+        get
+        {
+            return imgStateShip;
+        }
+        set
+        {
+            imgStateShip = value;
+            switch (stateShip)
+            {
+                case StateShip.Normal: spriteRenderer.sprite = imgStateShip.normalState; break;
+                case StateShip.Damaged: spriteRenderer.sprite = imgStateShip.damagedState; break;
+                case StateShip.Danger: spriteRenderer.sprite = imgStateShip.dangerState; break;
+                case StateShip.Death: spriteRenderer.sprite = imgStateShip.deathState; break;
+                default: spriteRenderer.sprite = imgStateShip.normalState; break;
+            }
+        }
+    }
+
+    public enum StateShip
+    {
+        Normal, Damaged, Danger, Death
+    }
+
+    public StateShip stateShip = StateShip.Normal;
     public List<GameObject> Fires = new List<GameObject>();
 
     public GameObject Fire;
     public GameObject HumanFly;
     public SpriteRenderer spriteRenderer;
 
-    public bool IsDeath => curHealth <= 0;
+    public bool IsDeath => curShipData.hullHealth <= 0;
+
+    public int Group { get; set; }
+
     private Rigidbody2D rigidBody2d;
 
     private void Awake()
     {
-        curHealth = maxHealth;
         spriteRenderer = GetComponent<SpriteRenderer>();
         rigidBody2d = GetComponent<Rigidbody2D>();
-        cooldownCannons = new float[4] { 0f, 0f, 0f, 0f };
-        timeReloadCannons = new float[4] { 3f, 3f, 3f, 3f };
+        ShipData = ShipData; //clone start data
+        // cooldownCannons = new float[4] { 0f, 0f, 0f, 0f };
+        // timeReloadCannons = new float[4] { 3f, 3f, 3f, 3f };
     }
     // Start is called before the first frame update
     void Start()
@@ -140,6 +184,17 @@ public class Ship : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        lastTimeHit += Time.deltaTime;
+        if (isStuned)
+        {
+            accumStunTime += Time.deltaTime;
+            if (accumStunTime >= curShipData.TimeRegainStun)
+            {
+                Debug.Log("stun exit stun");
+                isStuned = false;
+                accumStunTime = 0;
+            }
+        }
         MakeShipRotate();
         ReloadCannons();
         // Debug.DrawLine(transform.position, transform.position + (Vector3)(VectorUtils.Rotate(Wind, 180, true)) * 3f, Color.red, 3f);
@@ -153,12 +208,16 @@ public class Ship : MonoBehaviour
 
     private void ReloadCannons()
     {
-        for (int i = 0; i < timeReloadCannons.Length; i++)
+        for (int i = 0; i < 4; i++)
         {
-            if (cooldownCannons[i] < timeReloadCannons[i])
+            for (int c = 0; c < curShipData.numberDeck; c++)
             {
-                cooldownCannons[i] += Time.deltaTime;
-                if (cooldownCannons[i] >= timeReloadCannons[i])
+                if (cooldownCannons[i * curShipData.numberDeck + c] < timeReloadCannons[i * curShipData.numberDeck + c])
+                {
+                    cooldownCannons[i * curShipData.numberDeck + c] += Time.deltaTime;
+                }
+                if (c < (curShipData.numberDeck - 1)) continue;
+                if (cooldownCannons[i * curShipData.numberDeck + c] >= timeReloadCannons[i * curShipData.numberDeck + c])
                 {
                     switch (i)
                     {
@@ -175,6 +234,11 @@ public class Ship : MonoBehaviour
 
     private bool CheckCannonReady(CannonDirection direction, bool IsFire = false)
     {
+        if (isStuned)
+        {
+            Debug.Log("stun cant fire");
+            return false;
+        }
         int i = -1;
         switch (direction)
         {
@@ -192,7 +256,7 @@ public class Ship : MonoBehaviour
                 break;
             default: return false;
         }
-        if (cooldownCannons[i] >= timeReloadCannons[i])
+        if (cooldownCannons[i * curShipData.numberDeck] >= timeReloadCannons[i * curShipData.numberDeck])
         {
             if (IsFire)
             {
@@ -204,7 +268,10 @@ public class Ship : MonoBehaviour
                     case 3: Events.InvokeOnAction(EVENT_CANNON_BACK_FIRE); break;
                     default: break;
                 }
-                cooldownCannons[i] = 0f;
+                for (int c = 0; c < curShipData.numberDeck; c++)
+                {
+                    cooldownCannons[i * curShipData.numberDeck + c] = 0f;
+                }
             }
             return true;
         }
@@ -218,17 +285,19 @@ public class Ship : MonoBehaviour
     {
 
         SpawnHumanFly(source);
+        float curHealth = curShipData.hullHealth;
+        float maxHealth = startShipData.hullHealth;
         float healthRateB = curHealth / maxHealth;
         float healthRateA = (curHealth - damage) / maxHealth;
 
         if (healthRateA <= 0f)
         {
-            spriteRenderer.sprite = deathState;
+            spriteRenderer.sprite = imgStateShip.deathState;
             MakeDeathShip();
         }
         else if ((healthRateB > 0.2f) && (healthRateA <= 0.2f))
         {
-            spriteRenderer.sprite = dangerState;
+            spriteRenderer.sprite = imgStateShip.dangerState;
             SpawnRandomFire();
         }
         else if ((healthRateB > 0.5f) && (healthRateA <= 0.5f))
@@ -237,7 +306,7 @@ public class Ship : MonoBehaviour
         }
         else if ((healthRateB > 0.7f) && (healthRateA <= 0.7f))
         {
-            spriteRenderer.sprite = damagedState;
+            spriteRenderer.sprite = imgStateShip.damagedState;
             SpawnRandomFire();
         }
         else if (healthRateA > 0.7f)
@@ -245,12 +314,31 @@ public class Ship : MonoBehaviour
             RestoreState();
         }
 
-        curHealth -= damage;
+        curShipData.hullHealth -= damage;
+        if (lastTimeHit >= curShipData.TimeHitToStun)
+        {
+            lastTimeHit = 0;
+            totalHitConsecutive = 1;
+            Debug.Log("Stun first hit");
+        }
+        else
+        {
+            totalHitConsecutive++;
+            Debug.Log("Stun accum hit " + totalHitConsecutive);
+            if (totalHitConsecutive >= curShipData.MaxHitToStun)
+            {
+                Debug.Log("Stun get stunned ");
+                isStuned = true;
+                lastTimeHit = 0;
+                totalHitConsecutive = 0;
+                accumStunTime = 0;
+            }
+        }
     }
 
     public void RestoreState()
     {
-        spriteRenderer.sprite = normalState;
+        spriteRenderer.sprite = imgStateShip.normalState;
         ClearFire();
         ShipAI AI = GetComponent<ShipAI>();
         if (AI != null)
@@ -290,9 +378,7 @@ public class Ship : MonoBehaviour
         if (source == null) return;
         GameObject humanfly = Instantiate(HumanFly, null, true);
         Vector2 direction = transform.position - source.transform.position;
-        Debug.Log("before direction " + direction);
         direction = Rotate(direction, Random.Range(-45f, 45f));
-        Debug.Log("after direction " + direction);
         humanfly.transform.position = new Vector2(
             transform.position.x + direction.x,
             transform.position.y + direction.y
@@ -331,34 +417,41 @@ public class Ship : MonoBehaviour
     public static List<Vector2> RotateByDirection(Vector2 frontV, CannonDirection direction)
     {
         List<Vector2> results = new List<Vector2>();
-        Vector2 sampleV = new Vector2(frontV.x, frontV.y);
         if (((direction & CannonDirection.Front) != 0))
         {
-            sampleV = new Vector2(frontV.x, frontV.y);
-            results.Add(Rotate(sampleV, 0));
+            results.Add(RotateByOneDirection(frontV, CannonDirection.Front));
         }
         if (((direction & CannonDirection.Left) != 0))
         {
-            sampleV = new Vector2(frontV.x, frontV.y);
-            results.Add(Rotate(sampleV, 90));
+            results.Add(RotateByOneDirection(frontV, CannonDirection.Left));
         }
         if (((direction & CannonDirection.Right) != 0))
         {
-            sampleV = new Vector2(frontV.x, frontV.y);
-            results.Add(Rotate(sampleV, -90));
+            results.Add(RotateByOneDirection(frontV, CannonDirection.Right));
         }
         if (((direction & CannonDirection.Back) != 0))
         {
-            sampleV = new Vector2(frontV.x, frontV.y);
-            results.Add(Rotate(sampleV, 180));
+            results.Add(RotateByOneDirection(frontV, CannonDirection.Back));
         }
         return results;
+    }
+
+    public static Vector2 RotateByOneDirection(Vector2 frontV, CannonDirection direction)
+    {
+        switch (direction)
+        {
+            case CannonDirection.Front: return Rotate(frontV, 0, true);
+            case CannonDirection.Left: return Rotate(frontV, 90, true);
+            case CannonDirection.Right: return Rotate(frontV, -90, true);
+            case CannonDirection.Back: return Rotate(frontV, 180, true);
+            default: return Rotate(frontV, 0, true);
+        }
     }
 
     internal void ApplyWindForce(Vector2 windForce)
     {
         if (IsDeath) return;
-        Wind = windForce;
+        Wind = windForce * curShipData.windConversionRate;
         // this.windForce = Vector2.zero;
         // this.windForce = ShipDirection.normalized * 2f;
         CalculateSailPos();
@@ -384,7 +477,7 @@ public class Ship : MonoBehaviour
             Vector2 vRotate = forceRotate * VectorUtils.Rotate(ShipVelocity, (degreeRotate > 0 ? 1 : -1) * 90f, true).normalized;
             rotateDirection = vRotate;
             CapsuleCollider2D col = GetComponent<CapsuleCollider2D>();
-            float c = Mathf.PI * col.size.y / 2; // 1/2 perimeter
+            float c = Mathf.PI * col.size.y * curShipData.sizeRateLength / 2; // 1/2 perimeter
             if (forceRotate > 0)
             {
                 rotateSpeed = c / vRotate.magnitude;
@@ -446,7 +539,7 @@ public class Ship : MonoBehaviour
         Vector2 vSail = VectorUtils.GetForceOnLine(SailDirecion, Wind, false);
         Vector2 vShip = VectorUtils.GetForceOnLine(ShipDirection, vSail);
         // Debug.Log(string.Format("calculate move {0}/{1}/{2}", Wind, vSail, vShip));
-        vShip = vShip + ShipDirection.normalized * speed;
+        vShip = vShip + ShipDirection.normalized * curShipData.oarsSpeed;
         if (!VectorUtils.IsSameDirection(ShipDirection, vShip))
         {
             vShip = Vector2.zero;
@@ -552,12 +645,10 @@ public class Ship : MonoBehaviour
         }
         */
 
-        Debug.Log(angel);
         if (VectorUtils.IsRightSide(flag, toTarget))
         {
             if (angel >= 40 && angel <= 50)
             {
-                Debug.Log("fire1 " + angel);
                 FireCannonOneDirection(CannonDirection.Front);
             }
             else if (angel >= 130 && angel <= 140)
@@ -567,7 +658,6 @@ public class Ship : MonoBehaviour
         }
         else
         {
-            Debug.Log("fire2 " + angel);
             if (angel >= 40 && angel <= 50)
             {
                 FireCannonOneDirection(CannonDirection.Left);
@@ -603,82 +693,121 @@ public class Ship : MonoBehaviour
 
     }
 
-    public int NumberCannonDirection(CannonDirection direction)
+    public int NumberCannonDirection(CannonDirection direction, int deck = 0)
     {
+        int indexCheck = -1;
         switch (direction)
         {
-            case CannonDirection.Front: return numberCannon.Length > 0 ? numberCannon[0] : 0;
-            case CannonDirection.Right: return numberCannon.Length > 1 ? numberCannon[1] : 0;
-            case CannonDirection.Left: return numberCannon.Length > 2 ? numberCannon[2] : 0;
-            case CannonDirection.Back: return numberCannon.Length > 3 ? numberCannon[3] : 0;
+            case CannonDirection.Front:
+                indexCheck = 0 * curShipData.numberDeck + deck; break;
+            // return numberCannon.Length > 0 ? numberCannon[0 * curShipData.numberDeck + deck] : 0;
+            case CannonDirection.Right:
+                indexCheck = 1 * curShipData.numberDeck + deck; break;
+            // return numberCannon.Length > 1 ? numberCannon[1 * curShipData.numberDeck + deck] : 0;
+            case CannonDirection.Left:
+                indexCheck = 2 * curShipData.numberDeck + deck; break;
+            // return numberCannon.Length > 2 ? numberCannon[2 * curShipData.numberDeck + deck] : 0;
+            case CannonDirection.Back:
+                indexCheck = 3 * curShipData.numberDeck + deck; break;
+            // return numberCannon.Length > 3 ? numberCannon[3 * curShipData.numberDeck + deck] : 0;
             default: return 0;
         }
+        Debug.Log("check " + indexCheck + " " + direction + " " + deck + " " + curShipData.numberDeck);
+        return numberCannon.Length > indexCheck ? numberCannon[indexCheck] : 0;
     }
     private void FireCannonOneDirection(CannonDirection direction)
     {
         if (!CheckCannonReady(direction, true)) return;
-        Vector2 to = Rotate(Vector2.down, transform.rotation.eulerAngles.z); //current front
-        List<Vector2> fireDirections = RotateByDirection(to, direction);
-        foreach (Vector2 fire in fireDirections)
+        // Vector2 to = Rotate(Vector2.down, transform.rotation.eulerAngles.z); //current front
+        StartCoroutine(DelayFire(direction, 0.1f));
+    }
+
+    public IEnumerator DelayFire(CannonDirection direction, float delay)
+    {
+        for (int i = 0; i < curShipData.numberDeck; i++)
         {
-            int numberFires = NumberCannonDirection(direction);
-            CapsuleCollider2D col = GetComponent<CapsuleCollider2D>();
-            List<Vector2> fromList = new List<Vector2>();
-
-            float areaFireFace = 0;
-            float areaOtherFace = 0;
-            // Debug.Log(string.Format("{0}/{1}/{2}/{3}", transform.position, fire.normalized, col.size, direction));
-            switch (direction)
-            {
-                case CannonDirection.Front:
-                case CannonDirection.Back:
-                    areaFireFace = col.size.x;
-                    areaOtherFace = col.size.y;
-                    break;
-                case CannonDirection.Left:
-                case CannonDirection.Right:
-                    areaFireFace = col.size.y;
-                    areaOtherFace = col.size.x;
-                    break;
-                default:
-                    break;
-            }
-            for (int i = 0; i < numberFires; i++)
-            {
-                float area2 = areaFireFace / (2 * numberFires);
-                var pos = -((areaFireFace / 2) - area2) + i * area2 * 2;
-                float angel = Vector2.Angle(new Vector2(-areaOtherFace / 2, 0), new Vector2(-areaOtherFace / 2, -pos));
-                angel = ((i + 1) > (0.5 + (numberFires / 2)) ? 1 : -1) * angel;
-                // Debug.DrawLine(transform.position, (Vector2)transform.position + Rotate(fire, angel, true), Color.blue, 3f);
-                fromList.Add((Vector2)transform.position + Rotate(fire, angel, true).normalized * areaOtherFace / 2);
-            }
-            foreach (Vector2 from in fromList)
-            {
-                WrapPool wrapPool = GameManager.instance.poolCannon.GetPooledObject();
-                if (wrapPool != null)
-                {
-                    GameObject actualCannon = wrapPool.cannonBall;
-                    CannonShot shot = actualCannon.GetComponent<CannonShot>();
-                    shot.ResetTravel();
-                    actualCannon.transform.position = from;
-                    shot.owner = gameObject;
-                    shot.fireDirection = fire.normalized;
-                    // shot.Target = from + fire.normalized * 3f;
-                    // shot.speed = speed;
-                    shot.OnImpactTarget = delegate ()
-                    {
-                        GameManager.instance.poolCannon.RePooledObject(wrapPool);
-                    };
-                    shot.gameObject.SetActive(true);
-                    shot.StartTravel();
-
-                    // Debug.DrawLine(from, shot.Target, Color.red, 3f);
-                }
-            }
-
-
+            FireCannonOneDirectionOnDeck(direction, i);
+            yield return new WaitForSeconds(delay);
         }
     }
 
+    private void FireCannonOneDirectionOnDeck(CannonDirection direction, int deck)
+    {
+        Vector2 fire = RotateByOneDirection(GetFrontDirection(), direction);
+        int numberFires = NumberCannonDirection(direction, deck);
+        CapsuleCollider2D col = GetComponent<CapsuleCollider2D>();
+        List<Vector2> fromList = new List<Vector2>();
 
+        float areaFireFace = 0;
+        float areaOtherFace = 0;
+        Vector2 vPillar = ShipDirection;
+        // Debug.Log(string.Format("{0}/{1}/{2}/{3}", transform.position, fire.normalized, col.size, direction));
+        if (direction == CannonDirection.Front || direction == CannonDirection.Back)
+        {
+            areaFireFace = col.size.x * curShipData.sizeRateWidth;
+            areaOtherFace = col.size.y * curShipData.sizeRateLength;
+        }
+        else
+        {
+            areaFireFace = col.size.y * curShipData.sizeRateLength;
+            areaOtherFace = col.size.x * curShipData.sizeRateWidth;
+        }
+        switch (direction)
+        {
+            case CannonDirection.Back:
+                vPillar = new Vector2(-vPillar.x, -vPillar.y);
+                break;
+            case CannonDirection.Front:
+                break;
+            case CannonDirection.Left:
+                vPillar = VectorUtils.GetPerpendicular(vPillar, false);
+                break;
+            case CannonDirection.Right:
+                vPillar = VectorUtils.GetPerpendicular(vPillar);
+                break;
+            default:
+                break;
+        }
+        for (int i = 0; i < numberFires; i++)
+        {
+            float area2 = areaFireFace / (2 * numberFires);
+            var pos = -((areaFireFace / 2) - area2) + i * area2 * 2;
+
+            Vector2 shotFrom = (Vector2)transform.position +
+            vPillar.normalized * areaOtherFace / 2
+            + VectorUtils.GetPerpendicular(vPillar, false).normalized * pos;
+            // + (((i + 1) > (0.5 + (numberFires / 2)) ? VectorUtils.GetPerpendicular(vPillar, false) : VectorUtils.GetPerpendicular(vPillar)).normalized * pos);
+            fromList.Add(shotFrom);
+            if (deck == 0) Debug.DrawLine(transform.position, shotFrom, Color.blue, 3f);
+            // float angel = Vector2.Angle(new Vector2(-areaOtherFace / 2, 0), new Vector2(-areaOtherFace / 2, -pos));
+            // Debug.Log("pos fire " + i + " " + pos + " " + area2 + " " + areaOtherFace + " " + angel);
+            // angel = ((i + 1) > (0.5 + (numberFires / 2)) ? 1 : -1) * angel;
+            // if (deck == 0) Debug.DrawLine(transform.position, (Vector2)transform.position + Rotate(fire, angel, true), Color.blue, 3f);
+            // fromList.Add((Vector2)transform.position + Rotate(fire, angel, true).normalized * areaOtherFace / 2);
+
+        }
+        foreach (Vector2 from in fromList)
+        {
+            WrapPool wrapPool = GameManager.instance.poolCannon.GetPooledObject();
+            if (wrapPool != null)
+            {
+                GameObject actualCannon = wrapPool.cannonBall;
+                CannonShot shot = actualCannon.GetComponent<CannonShot>();
+                shot.ResetTravel();
+                actualCannon.transform.position = from;
+                shot.owner = gameObject;
+                shot.fireDirection = fire.normalized;
+                // shot.Target = from + fire.normalized * 3f;
+                // shot.speed = speed;
+                shot.OnImpactTarget = delegate ()
+                {
+                    GameManager.instance.poolCannon.RePooledObject(wrapPool);
+                };
+                shot.gameObject.SetActive(true);
+                shot.StartTravel();
+
+                if (deck == 0) Debug.DrawLine(from, shot.Target, Color.red, 3f);
+            }
+        }
+    }
 }

@@ -125,22 +125,22 @@ public class ShipAI : MonoBehaviour
             float angel = Vector2.Angle(line, shipDirection);
             if (angel == 0 || angel == 180)
             {
-                Debug.Log("random point");
+                // Debug.Log("random point");
                 Debug.DrawLine(center2, p1, Color.cyan, 3f);
                 return p1;
             }
             else
             {
-                Debug.Log(VectorUtils.IsRightSide(line, shipDirection) + " == " + VectorUtils.IsRightSide(line, p1 - center1));
+                // Debug.Log(VectorUtils.IsRightSide(line, shipDirection) + " == " + VectorUtils.IsRightSide(line, p1 - center1));
                 if (VectorUtils.IsRightSide(line, shipDirection) == VectorUtils.IsRightSide(line, p1 - center1))
                 {
-                    Debug.Log("point 1");
+                    // Debug.Log("point 1");
                     Debug.DrawLine(center2, p1, Color.cyan, 3f);
                     return p1;
                 }
                 else
                 {
-                    Debug.Log("point 2");
+                    // Debug.Log("point 2");
                     Debug.DrawLine(center2, p2, Color.cyan, 3f);
                     return p2;
                 }
@@ -179,7 +179,7 @@ public class ShipAI : MonoBehaviour
         // Debug.DrawLine(ship.transform.position, ship.transform.position + (Vector3)ship.ShipDirection, Color.blue, 3f);
         if (angel > 1f || angel < -1f)
         {
-            ship.CalculateRotateVector((VectorUtils.IsRightSide(ship.ShipDirection, move) ? -1 : 1) * ship.maxRotateDegree);
+            ship.CalculateRotateVector((VectorUtils.IsRightSide(ship.ShipDirection, move) ? -1 : 1) * ship.curShipData.MaxDegreeRotate);
         }
         else
         {

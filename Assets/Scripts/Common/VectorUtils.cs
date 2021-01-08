@@ -26,6 +26,21 @@ public class VectorUtils
 
     }
 
+    public static Vector2 GetPerpendicular(Vector2 v, bool rightSide = true)
+    {
+        if (rightSide)
+        {
+            return new Vector2(v.y
+            , -v.x);
+        }
+        else
+        {
+            return new Vector2(-v.y
+            , v.x);
+        }
+
+    }
+
     public static Vector2 Reverse(Vector2 v)
     {
         return new Vector2(-v.x, -v.y);

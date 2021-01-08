@@ -1,7 +1,9 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 [CreateAssetMenu(fileName = "ScriptableShip", menuName = "BoS/Ship", order = 2)]
 public class ScriptableShip : ScriptableObjectPrefab
 {
@@ -24,5 +26,9 @@ public class ScriptableShip : ScriptableObjectPrefab
     public float sizeRateWidth;
     public float sizeRateLength;
     public int numberDeck;
-    public float[] numberCannons;
+    public int[] numberCannons;
+
+    public float MaxHitToStun = 5f;
+    public float TimeHitToStun = 1f;
+    public float TimeRegainStun = 5f;
 }

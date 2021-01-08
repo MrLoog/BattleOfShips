@@ -24,10 +24,9 @@ MonoBehaviour:
   capacity: 40
   capacityWeightRate: 0.5
   sizeRateWidth: 0.6
-  sizeRateLength: 0.8
+  sizeRateLength: 0.6
   numberDeck: 1
-  numberCannons:
-  - 1
-  - 2
-  - 2
-  - 0
+  numberCannons: 01000000020000000200000000000000
+  MaxHitToStun: 2
+  TimeHitToStun: 1
+  TimeRegainStun: 5

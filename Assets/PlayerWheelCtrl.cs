@@ -4,6 +4,15 @@ using UnityEngine;
 
 public class PlayerWheelCtrl : MonoBehaviour
 {
+    public static PlayerWheelCtrl Instance { get; private set; }
+    void Awake()
+    {
+        if (Instance != null && Instance != this)
+            Destroy(gameObject);
+        else
+            Instance = this;
+
+    }
     public GameObject wheel;
     public float maxDegreeWheel;
     private bool isRotate = false;
@@ -16,19 +25,33 @@ public class PlayerWheelCtrl : MonoBehaviour
     private float spdReturn = 3f;
     private float accReturn = 0f;
     private bool isReturn = false;
+
+    public bool isSync = false;
     private Quaternion beginReturn;
 
-    
+
     // Start is called before the first frame update
     void Start()
     {
-        ship = GameManager.instance.playerShip.GetComponent<Ship>();
+        StartSync();
+    }
+
+    public void StartSync()
+    {
+        isSync = false;
+        if (GameManager.instance.playerShip != null)
+        {
+            ship = GameManager.instance.playerShip.GetComponent<Ship>();
+            maxDegreeWheel = ship.curShipData.MaxDegreeRotate;
+            isSync = true;
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (isRotate)
+        if (GameManager.instance.playerShip == null) isSync = false;
+        if (isRotate && isSync)
         {
             /*
             Vector2 startV = StartPos - (Vector2)wheel.transform.position;

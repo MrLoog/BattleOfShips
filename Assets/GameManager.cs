@@ -15,29 +15,49 @@ public class GameManager : MonoBehaviour
         None = 0, Front = 1, Right = 2, Left = 4, Back = 8
     }
     public static GameManager instance;
+
     public PoolManager<WrapPool> poolCannon;
     public GameObject prefabCannon;
+    public GameObject prefabShip;
     public GameObject playerShip;
     public GameObject enemyShip;
 
+
+
     public Vector2 windForce;
     public float intervalWindChange = 30f;
+
+
     public float accumWindChangeInterval = 0f;
 
     public UnityEvent OnWindChange;
 
     List<ScriptableCannonBall> ScriptableCannonBalls;
+    public ScriptableShip[] scriptableShips;
+    public ScriptableShip playerStartShip;
 
     private List<Ship> ships;
     public GameObject ShipManager;
 
     public Tilemap battleFields;
+    public GameObject cameraFollow;
+
+    public WeatherWindRate[] weatherWindRates;
+
+    public Canvas Modal;
+    public GameObject DialogInputSpawnShip;
+
+    public ScriptableStateShip[] ImgShipGroups;
+
+    public Sprite MinimapAllySprite;
 
     void Awake()
     {
         instance = this;
         Resources.LoadAll<ScriptableCannonBall>("ScriptableObjects");
+        scriptableShips = Resources.LoadAll<ScriptableShip>("ScriptableObjects");
         ScriptableCannonBalls = Resources.FindObjectsOfTypeAll<ScriptableCannonBall>().Cast<ScriptableCannonBall>().ToList();
+
 
         ships = new List<Ship>();
         for (int i = 0; i < ShipManager.transform.childCount; i++)
@@ -51,6 +71,7 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        SpawnPlayerShip();
         RandomWindForce();
         GameObject newCannon = Instantiate(prefabCannon);
         newCannon.SetActive(false);
@@ -61,7 +82,8 @@ public class GameManager : MonoBehaviour
         poolCannon = new PoolManager<WrapPool>(cannon);
         poolCannon.OnCreateNew = delegate ()
         {
-            WrapPool newInstance = poolCannon.pooledObjects.Last();
+            // WrapPool newInstance = poolCannon.pooledObjects.Last();
+            WrapPool newInstance = poolCannon.newInstance;
             CannonShot cs = newInstance.cannonBall.GetComponent<CannonShot>();
             newInstance.cannonBall = Instantiate(prefabCannon);
             newInstance.cannonBall.GetComponent<CannonShot>().Data = cs.Data.Clone<ScriptableCannonBall>();
@@ -115,7 +137,8 @@ public class GameManager : MonoBehaviour
 
     public void RandomWindForce()
     {
-        float force = (float)Math.Round(Random.Range(0.1f,3f), 1);
+        // float force = (float)Math.Round(Random.Range(0.1f, 3f), 1);
+        float force = RandomWindByConfig();
         Debug.Log("force " + force);
         float direction = Random.Range(-180, 180);
 
@@ -124,6 +147,40 @@ public class GameManager : MonoBehaviour
         foreach (Ship s in ships)
         {
             s.ApplyWindForce(windForce);
+        }
+    }
+
+    public float RandomWindByConfig()
+    {
+        Debug.Log("random wind");
+        if (weatherWindRates == null || weatherWindRates.Length == 0)
+        {
+            Debug.Log("random wind random");
+            return (float)Math.Round(Random.Range(0.1f, 3f), 1);
+        }
+        else
+        {
+            float maxRange = 0f;
+            float[,] level = new float[weatherWindRates.Length, 2];
+            for (int i = 0; i < weatherWindRates.Length; i++)
+            {
+                level[i, 0] = maxRange;
+                maxRange += weatherWindRates[i].percent;
+                level[i, 1] = maxRange - 1;
+            }
+            float selected = Random.Range(0f, maxRange - 1);
+            Debug.Log("random wind selected " + selected);
+
+            for (int i = 0; i < weatherWindRates.Length; i++)
+            {
+                Debug.Log("random wind check " + level[i, 0] + " - " + level[i, 1]);
+                if (level[i, 0] <= selected && level[i, 1] >= selected)
+                {
+                    Debug.Log("random wind level " + i + " " + weatherWindRates[i].min + "-" + weatherWindRates[i].max);
+                    return (float)Math.Round(Random.Range(weatherWindRates[i].min, weatherWindRates[i].max), 1);
+                }
+            }
+            return 0f;
         }
     }
 
@@ -137,12 +194,102 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
+        Modal.gameObject.SetActive(true);
+        DialogInputSpawnShip.SetActive(true);
+        Time.timeScale = 0f;
+
+        // foreach (Ship s in ships)
+        // {
+        //     s.curShipData.hullHealth = s.startShipData.hullHealth;
+        //     s.RestoreState();
+        //     RandomTeleport(s.gameObject);
+        //     s.RevalidMovement();
+        // }
+    }
+
+    internal void SpawnNewShips(int[] enemys)
+    {
         foreach (Ship s in ships)
         {
-            s.curHealth = s.maxHealth;
-            s.RestoreState();
-            RandomTeleport(s.gameObject);
-            s.RevalidMovement();
+            Destroy(s.gameObject);
         }
+        ships.Clear();
+        for (int i = 0; i < enemys.Length; i++)
+        {
+            if (enemys[i] > 0)
+            {
+                for (int j = 0; j < enemys[i]; j++)
+                {
+                    SpawnShip(i);
+                }
+            }
+        }
+        SpawnPlayerShip();
+        foreach (Ship s in ships)
+        {
+            RandomTeleport(s.gameObject);
+            if (s.Group != 0)
+            {
+                s.RestoreState();
+            }
+            else
+            {
+                s.ApplyWindForce(windForce);
+            }
+            // s.ApplyWindForce(windForce);
+            // s.RevalidMovement();
+        }
+        CloseDialogSpawnShipMenu();
     }
+
+    private void SpawnPlayerShip()
+    {
+        GameObject newShip = Instantiate(prefabShip, ShipManager.transform, false);
+        foreach (Transform eachChild in newShip.transform)
+        {
+            if (eachChild.name == "MinimapInfo")
+            {
+                Debug.Log("Child found. Mame: " + eachChild.name);
+                eachChild.GetComponent<SpriteRenderer>().sprite = MinimapAllySprite;
+            }
+        }
+        Ship scriptShip = newShip.GetComponent<Ship>();
+        scriptShip.ShipData = playerStartShip.Clone<ScriptableShip>();
+        playerShip = newShip;
+        scriptShip.Group = 0;
+        scriptShip.ImgStateShip = ImgShipGroups[0];
+        ships.Add(scriptShip);
+        cameraFollow.GetComponent<Cinemachine.CinemachineVirtualCamera>().Follow = playerShip.transform;
+
+        PlayerSailCtrl.Instance.StartSync();
+        PlayerCannonCtrl.Instance.StartSync();
+        PlayerWheelCtrl.Instance.StartSync();
+    }
+
+    private GameObject SpawnShip(int group)
+    {
+        GameObject newShip = Instantiate(prefabShip, ShipManager.transform, false);
+        Ship scriptShip = newShip.GetComponent<Ship>();
+        if (scriptableShips.Length > 0)
+        {
+            int choose = Random.Range(0, scriptableShips.Length - 1);
+            scriptShip.ShipData = scriptableShips[choose].Clone<ScriptableShip>();
+        }
+        else
+        {
+            scriptShip.ShipData = playerStartShip.Clone<ScriptableShip>();
+        }
+        scriptShip.Group = group + 1;
+        scriptShip.ImgStateShip = ImgShipGroups[scriptShip.Group];
+        ships.Add(scriptShip);
+        return newShip;
+    }
+
+    internal void CloseDialogSpawnShipMenu()
+    {
+        DialogInputSpawnShip.SetActive(false);
+        Modal.gameObject.SetActive(false);
+        Time.timeScale = 1f;
+    }
+
 }

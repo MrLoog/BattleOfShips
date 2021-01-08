@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad9b554ede10a7c488febbcace225acb, type: 3}
+  m_Name: BlackShip
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 0}
+  normalState: {fileID: 21300000, guid: 4927ab5f3692fcb48a1b4270898a1880, type: 3}
+  damagedState: {fileID: 21300000, guid: e1efdc2cb9885ab44b40b39be999989f, type: 3}
+  dangerState: {fileID: 21300000, guid: 30e010640a9df8445a7adebea2777ee5, type: 3}
+  deathState: {fileID: 21300000, guid: 3c5746c0dc94149458eb7f519a1fffb4, type: 3}
