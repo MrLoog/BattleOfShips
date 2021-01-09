@@ -17,7 +17,9 @@ public class GameManager : MonoBehaviour
     public static GameManager instance;
 
     public PoolManager<WrapPool> poolCannon;
+    public PoolManager<WrapPool> poolHumanFly;
     public GameObject prefabCannon;
+    public GameObject prefabHumanFly;
     public GameObject prefabShip;
     public GameObject playerShip;
     public GameObject enemyShip;
@@ -90,6 +92,19 @@ public class GameManager : MonoBehaviour
             // newInstance.SetActive(false);
         };
 
+        GameObject seedHUmanFly = Instantiate(prefabHumanFly);
+        seedHUmanFly.SetActive(false);
+        // CannonPool cannon = prefabCannon.Find
+        WrapPool wrapHuman = ScriptableObject.CreateInstance<WrapPool>();
+        wrapHuman.cannonBall = seedHUmanFly;
+        poolHumanFly = new PoolManager<WrapPool>(wrapHuman);
+        poolHumanFly.OnCreateNew = delegate ()
+        {
+            // WrapPool newInstance = poolCannon.pooledObjects.Last();
+            WrapPool newInstance = poolHumanFly.newInstance;
+            newInstance.cannonBall = Instantiate(prefabHumanFly);
+            // newInstance.SetActive(false);
+        };
     }
 
     // Update is called once per frame

@@ -376,14 +376,35 @@ public class Ship : MonoBehaviour
     public void SpawnHumanFly(GameObject source)
     {
         if (source == null) return;
-        GameObject humanfly = Instantiate(HumanFly, null, true);
-        Vector2 direction = transform.position - source.transform.position;
-        direction = Rotate(direction, Random.Range(-45f, 45f));
-        humanfly.transform.position = new Vector2(
-            transform.position.x + direction.x,
-            transform.position.y + direction.y
-        );
-        humanfly.GetComponentInChildren<HumanFly>().StartAnimate(direction);
+
+        WrapPool wrapPool = GameManager.instance.poolHumanFly.GetPooledObject();
+        if (wrapPool != null)
+        {
+            GameObject humanfly = wrapPool.cannonBall;
+
+            Vector2 direction = transform.position - source.transform.position;
+            direction = Rotate(direction, Random.Range(-45f, 45f));
+            humanfly.transform.position = new Vector2(
+                transform.position.x + direction.x,
+                transform.position.y + direction.y
+            );
+            humanfly.SetActive(true);
+            humanfly.GetComponentInChildren<HumanFly>().OnAnimateDone = delegate ()
+            {
+                GameManager.instance.poolHumanFly.RePooledObject(wrapPool);
+            };
+
+            humanfly.GetComponentInChildren<HumanFly>().StartAnimate(direction);
+        }
+
+        // GameObject humanfly = Instantiate(HumanFly, null, true);
+        // Vector2 direction = transform.position - source.transform.position;
+        // direction = Rotate(direction, Random.Range(-45f, 45f));
+        // humanfly.transform.position = new Vector2(
+        //     transform.position.x + direction.x,
+        //     transform.position.y + direction.y
+        // );
+        // humanfly.GetComponentInChildren<HumanFly>().StartAnimate(direction);
     }
 
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class HumanFly : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class HumanFly : MonoBehaviour
     public bool isAnimate = false;
     public Vector2 Target;
     public Sprite[] sprites;
+    public UnityAction OnAnimateDone;
     // Start is called before the first frame update
     void Start()
     {
@@ -25,8 +27,16 @@ public class HumanFly : MonoBehaviour
             if (process >= time)
             {
                 isAnimate = false;
-                gameObject.SetActive(false);
-                Destroy(gameObject.transform.parent.gameObject);
+                // gameObject.SetActive(false);
+                if (OnAnimateDone != null)
+                {
+                    OnAnimateDone.Invoke();
+                }
+                else
+                {
+                    Destroy(gameObject.transform.parent.gameObject);
+                }
+
             }
         }
     }
@@ -35,8 +45,9 @@ public class HumanFly : MonoBehaviour
     {
         Target = to;
         RandomSprite();
+        process = 0;
         isAnimate = true;
-        gameObject.SetActive(true);
+        // gameObject.SetActive(true);
     }
 
     public void RandomSprite()
