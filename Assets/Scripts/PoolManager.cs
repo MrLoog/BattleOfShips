@@ -23,16 +23,16 @@ public class WrapPool : ScriptableObject, IPoolAble
 {
     private IPoolAble prev;
     private IPoolAble nextAvaiable;
-    public GameObject cannonBall;
+    public GameObject poolObj;
 
     public void Destroy()
     {
-        Destroy(cannonBall);
+        Destroy(poolObj);
     }
 
-    public WrapPool(GameObject cannonBall)
+    public WrapPool(GameObject poolObj)
     {
-        this.cannonBall = cannonBall;
+        this.poolObj = poolObj;
     }
 
     public WrapPool()
@@ -67,7 +67,7 @@ public class WrapPool : ScriptableObject, IPoolAble
 
     public void SetActive(bool active)
     {
-        cannonBall.SetActive(active);
+        poolObj.SetActive(active);
     }
 
     public void SetNextAvaiable(IPoolAble newObj)
@@ -96,7 +96,6 @@ public class Factory<T> : ScriptableObject where T : ScriptableObject
 
     public void Reclaim(T item)
     {
-        Debug.Log("reduce size destroy" + item.GetType());
         Destroy(item);
     }
 }

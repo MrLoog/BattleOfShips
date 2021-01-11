@@ -91,6 +91,30 @@ public class VectorUtils
     {
         return GetForceOnLine(a - c, b - c, false).magnitude * (b - c).magnitude / 2;
     }
+
+    public static bool IsPointInRectangle(Vector2 p, Vector2 a, Vector2 b, Vector2 c, Vector2 d, float percentScale = 1f)
+    {
+        float had = GetForceOnLine(d - a, p - a, false).magnitude;
+        float hbc = GetForceOnLine(c - b, p - b, false).magnitude;
+        float hab = GetForceOnLine(b - a, p - a, false).magnitude;
+        float hcd = GetForceOnLine(d - c, p - c, false).magnitude;
+        float ab = (b - a).magnitude;
+        float bc = (c - b).magnitude;
+
+        if (
+        ((had + hbc) <= (ab + percentScale * ab / 100))
+        &&
+        ((hab + hcd) <= (bc + percentScale * bc / 100))
+        )
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    /*
     public static bool IsPointInRectangle(Vector2 p, Vector2 a, Vector2 b, Vector2 c, Vector2 d)
     {
         float areaRect = ((b - a).magnitude + 0.1f) * ((c - b).magnitude + 0.1f);
@@ -111,4 +135,5 @@ public class VectorUtils
         Debug.Log("Area " + areaFromPoint + " / " + areaRect);
         return true;
     }
+    */
 }

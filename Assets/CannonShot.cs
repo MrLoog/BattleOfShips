@@ -7,6 +7,7 @@ public class CannonShot : MonoBehaviour
 {
     public Transform model;
     public GameObject Explosion;
+    public GameObject DripWater;
     internal float speed;
     private float maxTime;
     private float travelTime;
@@ -79,16 +80,22 @@ public class CannonShot : MonoBehaviour
             Instantiate(Explosion, transform.position, Quaternion.Euler(0, 0, 0));
             Ship ship = col.gameObject.GetComponent<Ship>();
             ship.ApplyDamage(5f, gameObject);
-            EndTravel();
+            EndTravel(false);
             // Debug.Log("OnTriggerEnter2D" + col.gameObject.name + " : " + gameObject.name + " : " + Time.time);
         }
     }
 
-    void EndTravel()
+    void EndTravel(bool onSea = true)
     {
+
         _rigidbody2D.velocity = Vector2.zero;
         enableTravel = false;
-        GetComponentInChildren<BaseShot>().ShotImg.SetActive(false);
+        if (onSea)
+        {
+            GetComponentInChildren<BaseShot>().ShotImg.SetActive(false);
+            GameObject dripwater = Instantiate(DripWater, transform.position, Quaternion.Euler(0, 0, 0));
+        }
+
         StartCoroutine(ShotDone(trailTime));
     }
 

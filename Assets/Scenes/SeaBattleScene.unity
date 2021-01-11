@@ -3519,8 +3519,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 403991905}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.60576, y: 2.5707204, z: -13.605596}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: -20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1924149680}
@@ -4077,7 +4077,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.60576, y: 2.5707204, z: -13.605596}
+  m_LocalPosition: {x: 0, y: 0, z: -20}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1123996826}
@@ -53328,7 +53328,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b8b8155c2a1973a4c8b5a3845e122e24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  poolCannon:
+    pooledObjects: []
+    limit: 0
+    buffer: 0
+    numActive: 0
+    numInActive: 0
+    total: 0
+    seedItem: {fileID: 0}
+    newInstance: {fileID: 0}
+  poolHumanFly:
+    pooledObjects: []
+    limit: 0
+    buffer: 0
+    numActive: 0
+    numInActive: 0
+    total: 0
+    seedItem: {fileID: 0}
+    newInstance: {fileID: 0}
   prefabCannon: {fileID: 1062158067001741303, guid: ae3552ee23f48e14a87e396f1110eaeb, type: 3}
+  prefabHumanFly: {fileID: 6792330842804313755, guid: 96a1c3f70e56e5c4495bb8ac147d661f, type: 3}
   prefabShip: {fileID: 1587990720905309378, guid: 9c804be996838fa45b78f4aca58615c8, type: 3}
   playerShip: {fileID: 0}
   enemyShip: {fileID: 0}
@@ -53358,19 +53377,19 @@ MonoBehaviour:
   weatherWindRates:
   - min: 0
     max: 0.8
-    percent: 5
+    percent: 0
   - min: 0.9
     max: 1.4
-    percent: 30
+    percent: 35
   - min: 1.5
     max: 2.2
-    percent: 50
+    percent: 55
   - min: 2.3
     max: 2.6
     percent: 10
   - min: 2.7
     max: 3
-    percent: 5
+    percent: 0
   Modal: {fileID: 400132595}
   DialogInputSpawnShip: {fileID: 1796691290}
   ImgShipGroups:

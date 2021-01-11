@@ -87,6 +87,7 @@
      <Compile Include="Assets\Scripts\Scriptable\ScriptableStateShip.cs" />
      <Compile Include="Assets\Scripts\Common\VectorUtils.cs" />
      <Compile Include="Assets\SpawnShipMenu.cs" />
+     <Compile Include="Assets\Rotate.cs" />
      <None Include="Assets\3rd-Party\kenney_piratepack\License.txt" />
      <None Include="Assets\3rd-Party\kenney_piratepack\Spritesheet\shipsMiscellaneous_sheet@2.xml" />
      <None Include="Assets\3rd-Party\kenney_piratepack\Spritesheet\shipsMiscellaneous_sheet.xml" />

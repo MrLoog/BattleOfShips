@@ -168,6 +168,8 @@ public class Ship : MonoBehaviour
 
     private Rigidbody2D rigidBody2d;
 
+    public GameObject stunEffect;
+
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -191,6 +193,7 @@ public class Ship : MonoBehaviour
             if (accumStunTime >= curShipData.TimeRegainStun)
             {
                 Debug.Log("stun exit stun");
+                stunEffect?.SetActive(false);
                 isStuned = false;
                 accumStunTime = 0;
             }
@@ -328,6 +331,7 @@ public class Ship : MonoBehaviour
             if (totalHitConsecutive >= curShipData.MaxHitToStun)
             {
                 Debug.Log("Stun get stunned ");
+                stunEffect?.SetActive(true);
                 isStuned = true;
                 lastTimeHit = 0;
                 totalHitConsecutive = 0;
@@ -380,7 +384,7 @@ public class Ship : MonoBehaviour
         WrapPool wrapPool = GameManager.instance.poolHumanFly.GetPooledObject();
         if (wrapPool != null)
         {
-            GameObject humanfly = wrapPool.cannonBall;
+            GameObject humanfly = wrapPool.poolObj;
 
             Vector2 direction = transform.position - source.transform.position;
             direction = Rotate(direction, Random.Range(-45f, 45f));
@@ -581,11 +585,9 @@ public class Ship : MonoBehaviour
     public void FireTarget(Vector2 target)
     {
         Vector2 toTarget = target - (Vector2)transform.position;
-        float range = 7f;
         Vector2 flag = VectorUtils.Rotate(ShipDirection, 45, true);
         float angel = Vector2.Angle(toTarget, flag);
 
-        /*
         Vector2 crossDir = VectorUtils.Rotate(ShipDirection, -90, true).normalized;
         CapsuleCollider2D col = GetComponent<CapsuleCollider2D>();
         Vector2 pA = (Vector2)transform.position + ShipDirection.normalized * col.size.y / 2
@@ -597,75 +599,47 @@ public class Ship : MonoBehaviour
         Vector2 pD = (Vector2)transform.position + new Vector2(-ShipDirection.x, -ShipDirection.y).normalized * col.size.y / 2
          + crossDir * col.size.x / 2;
 
-        if (!CheckCannonReady(CannonDirection.Front))
+        float range = 5f;
+        if (CheckCannonReady(CannonDirection.Front))
         {
-            Debug.DrawLine(pA, pA + ShipDirection.normalized * range, Color.green, 1f);
-            Debug.DrawLine(pB, pB + ShipDirection.normalized * range, Color.green, 1f);
             if (VectorUtils.IsPointInRectangle(target,
             pA, pB, pB + ShipDirection.normalized * range, pA + ShipDirection.normalized * range
             ))
             {
-                Debug.Log("fire 1");
                 FireCannonOneDirection(CannonDirection.Front);
             }
         }
         if (CheckCannonReady(CannonDirection.Left))
         {
-            Debug.DrawLine(transform.position, transform.position + (Vector3)VectorUtils.Reverse(crossDir).normalized, Color.red, 1f);
-            Debug.DrawLine(transform.position, target, Color.red, 1f);
-            float area = VectorUtils.AreaTriangle(transform.position, transform.position + (Vector3)VectorUtils.Reverse(crossDir).normalized, target);
-            Debug.Log("test area " + area);
-
-            if (area == 0)
+            if (VectorUtils.IsPointInRectangle(target,
+            pB, pC, pC + VectorUtils.Reverse(crossDir).normalized * range, pB + VectorUtils.Reverse(crossDir).normalized * range
+            ))
             {
-                FireCannonOneDirection(CannonDirection.Right);
+                FireCannonOneDirection(CannonDirection.Left);
             }
-            // Debug.DrawLine(pB, pB + VectorUtils.Reverse(crossDir).normalized * range, Color.green, 1f);
-            // Debug.DrawLine(pC, pC + VectorUtils.Reverse(crossDir).normalized * range, Color.green, 1f);
-            // if (VectorUtils.IsPointInRectangle(target,
-            // pB, pC, pC + VectorUtils.Reverse(crossDir).normalized * range, pB + VectorUtils.Reverse(crossDir).normalized * range
-            // ))
-            // {
-            //     Debug.Log("fire 2");
-            //     FireCannonOneDirection(CannonDirection.Left);
-            // }
         }
-        RaycastHit hit;
         if (CheckCannonReady(CannonDirection.Right))
         {
-            Debug.DrawRay(transform.position, (Vector3)crossDir.normalized * range, Color.green);
-            if (Physics.Raycast(transform.position, (Vector3)crossDir.normalized * range, out hit))
+            if (VectorUtils.IsPointInRectangle(target,
+            pA, pD, pD + crossDir.normalized * range, pA + crossDir.normalized * range
+            ))
             {
-                Debug.Log("hit " + hit);
                 FireCannonOneDirection(CannonDirection.Right);
             }
-
-            // Debug.DrawLine(pA, pA + crossDir.normalized * range, Color.green, 1f);
-            // Debug.DrawLine(pD, pD + crossDir.normalized * range, Color.green, 1f);
-
-            // if (VectorUtils.IsPointInRectangle(target,
-            // pA, pD, pD + crossDir.normalized * range, pA + crossDir.normalized * range
-            // ))
-            // {
-            //     Debug.Log("fire 3");
-            //     FireCannonOneDirection(CannonDirection.Right);
-            // }
         }
 
-        if (!CheckCannonReady(CannonDirection.Back))
+        if (CheckCannonReady(CannonDirection.Back))
         {
-            Debug.DrawLine(pC, pC + VectorUtils.Reverse(ShipDirection).normalized * range, Color.green, 1f);
-            Debug.DrawLine(pD, pD + VectorUtils.Reverse(ShipDirection).normalized * range, Color.green, 1f);
             if (VectorUtils.IsPointInRectangle(target,
             pC, pD, pD + VectorUtils.Reverse(ShipDirection).normalized * range, pC + VectorUtils.Reverse(ShipDirection).normalized * range
             ))
             {
-                Debug.Log("fire 4");
                 FireCannonOneDirection(CannonDirection.Back);
             }
         }
-        */
 
+        /*
+        //check by angel
         if (VectorUtils.IsRightSide(flag, toTarget))
         {
             if (angel >= 40 && angel <= 50)
@@ -688,6 +662,7 @@ public class Ship : MonoBehaviour
                 FireCannonOneDirection(CannonDirection.Back);
             }
         }
+                */
     }
 
     public void FireCannon(CannonDirection direction)
@@ -736,10 +711,13 @@ public class Ship : MonoBehaviour
         Debug.Log("check " + indexCheck + " " + direction + " " + deck + " " + curShipData.numberDeck);
         return numberCannon.Length > indexCheck ? numberCannon[indexCheck] : 0;
     }
+
+    public int countShot = 0;
     private void FireCannonOneDirection(CannonDirection direction)
     {
         if (!CheckCannonReady(direction, true)) return;
         // Vector2 to = Rotate(Vector2.down, transform.rotation.eulerAngles.z); //current front
+        countShot++;
         StartCoroutine(DelayFire(direction, 0.1f));
     }
 
@@ -810,9 +788,10 @@ public class Ship : MonoBehaviour
         foreach (Vector2 from in fromList)
         {
             WrapPool wrapPool = GameManager.instance.poolCannon.GetPooledObject();
+            Debug.Assert(wrapPool != null, "cannon should avaiable");
             if (wrapPool != null)
             {
-                GameObject actualCannon = wrapPool.cannonBall;
+                GameObject actualCannon = wrapPool.poolObj;
                 CannonShot shot = actualCannon.GetComponent<CannonShot>();
                 shot.ResetTravel();
                 actualCannon.transform.position = from;

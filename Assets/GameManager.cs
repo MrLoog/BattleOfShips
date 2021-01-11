@@ -80,15 +80,15 @@ public class GameManager : MonoBehaviour
         newCannon.GetComponent<CannonShot>().Data = ScriptableCannonBalls.Where(x => x.name == "RoundShot").First();
         // CannonPool cannon = prefabCannon.Find
         WrapPool cannon = ScriptableObject.CreateInstance<WrapPool>();
-        cannon.cannonBall = newCannon;
+        cannon.poolObj = newCannon;
         poolCannon = new PoolManager<WrapPool>(cannon);
         poolCannon.OnCreateNew = delegate ()
         {
             // WrapPool newInstance = poolCannon.pooledObjects.Last();
             WrapPool newInstance = poolCannon.newInstance;
-            CannonShot cs = newInstance.cannonBall.GetComponent<CannonShot>();
-            newInstance.cannonBall = Instantiate(prefabCannon);
-            newInstance.cannonBall.GetComponent<CannonShot>().Data = cs.Data.Clone<ScriptableCannonBall>();
+            CannonShot cs = newInstance.poolObj.GetComponent<CannonShot>();
+            newInstance.poolObj = Instantiate(prefabCannon);
+            newInstance.poolObj.GetComponent<CannonShot>().Data = cs.Data.Clone<ScriptableCannonBall>();
             // newInstance.SetActive(false);
         };
 
@@ -96,13 +96,13 @@ public class GameManager : MonoBehaviour
         seedHUmanFly.SetActive(false);
         // CannonPool cannon = prefabCannon.Find
         WrapPool wrapHuman = ScriptableObject.CreateInstance<WrapPool>();
-        wrapHuman.cannonBall = seedHUmanFly;
+        wrapHuman.poolObj = seedHUmanFly;
         poolHumanFly = new PoolManager<WrapPool>(wrapHuman);
         poolHumanFly.OnCreateNew = delegate ()
         {
             // WrapPool newInstance = poolCannon.pooledObjects.Last();
             WrapPool newInstance = poolHumanFly.newInstance;
-            newInstance.cannonBall = Instantiate(prefabHumanFly);
+            newInstance.poolObj = Instantiate(prefabHumanFly);
             // newInstance.SetActive(false);
         };
     }
@@ -124,7 +124,7 @@ public class GameManager : MonoBehaviour
         if (wrapPool != null)
         {
             Debug.Log("fire");
-            GameObject actualCannon = wrapPool.cannonBall;
+            GameObject actualCannon = wrapPool.poolObj;
             CannonShot shot = actualCannon.GetComponent<CannonShot>();
             shot.ResetTravel();
             actualCannon.transform.position = from;

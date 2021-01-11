@@ -1,0 +1,562 @@
+fileFormatVersion: 2
+guid: 38f1728d908887c4791668c4d2b25a1d
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 290274594013678982
+    second: dripping_water_0
+  - first:
+      213: 2879649603096279039
+    second: dripping_water_1
+  - first:
+      213: -6747206865893574052
+    second: dripping_water_2
+  - first:
+      213: -7240059901024365223
+    second: dripping_water_3
+  - first:
+      213: -4973511835494443840
+    second: dripping_water_4
+  - first:
+      213: 2750777411279451704
+    second: dripping_water_5
+  - first:
+      213: 5206283630486298500
+    second: dripping_water_6
+  - first:
+      213: -9089006075499076381
+    second: dripping_water_7
+  - first:
+      213: -47823551349940043
+    second: dripping_water_8
+  - first:
+      213: 5914091678446369508
+    second: dripping_water_9
+  - first:
+      213: 5117470257465652605
+    second: dripping_water_10
+  - first:
+      213: 4435529370067609925
+    second: dripping_water_11
+  - first:
+      213: -8197997206953307412
+    second: dripping_water_12
+  - first:
+      213: 7561349972848814128
+    second: dripping_water_13
+  - first:
+      213: 1863388518993947127
+    second: dripping_water_14
+  - first:
+      213: -1308656622443574070
+    second: dripping_water_15
+  - first:
+      213: -4486677452688244292
+    second: dripping_water_16
+  - first:
+      213: 1939976505005729579
+    second: dripping_water_17
+  - first:
+      213: 3798448548456777134
+    second: dripping_water_18
+  - first:
+      213: -282708775626549255
+    second: dripping_water_19
+  - first:
+      213: 7554485367855431390
+    second: dripping_water_20
+  - first:
+      213: 4362363144614523795
+    second: dripping_water_21
+  - first:
+      213: 7132438228068262842
+    second: dripping_water_22
+  - first:
+      213: 1932876893125380646
+    second: dripping_water_23
+  - first:
+      213: -2353916658890752058
+    second: dripping_water_24
+  - first:
+      213: 36420718333274405
+    second: dripping_water_25
+  - first:
+      213: 2972057560497257863
+    second: dripping_water_26
+  - first:
+      213: -7556426444238167547
+    second: dripping_water_27
+  - first:
+      213: 6956733879078240736
+    second: dripping_water_28
+  - first:
+      213: -2960882091836409522
+    second: dripping_water_29
+  - first:
+      213: -4695719296277640634
+    second: dripping_water_30
+  - first:
+      213: 6982142005937842353
+    second: dripping_water_31
+  - first:
+      213: 7251930011942345240
+    second: dripping_water_32
+  - first:
+      213: 8136233715310639707
+    second: dripping_water_33
+  - first:
+      213: -8386892335776515470
+    second: dripping_water_34
+  - first:
+      213: -4074833649198003190
+    second: dripping_water_35
+  - first:
+      213: 6922631827450552250
+    second: dripping_water_36
+  - first:
+      213: -4440301212633385951
+    second: dripping_water_37
+  - first:
+      213: 1669618612180116498
+    second: dripping_water_38
+  - first:
+      213: -1840688128733874237
+    second: dripping_water_39
+  - first:
+      213: 6682547068106192365
+    second: dripping_water_40
+  - first:
+      213: 1649204248758555767
+    second: dripping_water_41
+  - first:
+      213: -987800218912796602
+    second: dripping_water_42
+  - first:
+      213: -8634256913375827733
+    second: dripping_water_43
+  - first:
+      213: 1156462928543269312
+    second: dripping_water_44
+  - first:
+      213: 4607404872384083324
+    second: dripping_water_45
+  - first:
+      213: -3603816112662053069
+    second: dripping_water_46
+  - first:
+      213: -3716562215420130424
+    second: dripping_water_47
+  - first:
+      213: -1082881551883037092
+    second: dripping_water_48
+  - first:
+      213: 8403977319010946073
+    second: dripping_water_49
+  - first:
+      213: 2212532124726119448
+    second: dripping_water_50
+  - first:
+      213: 7979760026954018417
+    second: dripping_water_51
+  - first:
+      213: 3094134749779930083
+    second: dripping_water_52
+  - first:
+      213: 476822333102211195
+    second: dripping_water_53
+  - first:
+      213: 473095759392285749
+    second: dripping_water_54
+  - first:
+      213: -4055149355057569969
+    second: dripping_water_55
+  - first:
+      213: -6399666890124300300
+    second: dripping_water_56
+  - first:
+      213: 9190411082931946103
+    second: dripping_water_57
+  - first:
+      213: 4346157938559836835
+    second: dripping_water_58
+  - first:
+      213: -2395990176445978631
+    second: dripping_water_59
+  externalObjects: {}
+  serializedVersion: 11
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: -1
+    aniso: -1
+    mipBias: -100
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: dripping_water_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 276
+        width: 208
+        height: 91
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 68d818f8433470400800000000000000
+      internalID: 290274594013678982
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dripping_water_1
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 276
+        width: 208
+        height: 91
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ff7f5269e0296f720800000000000000
+      internalID: 2879649603096279039
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dripping_water_2
+      rect:
+        serializedVersion: 2
+        x: 416
+        y: 276
+        width: 208
+        height: 91
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c5a365c8a1b1d52a0800000000000000
+      internalID: -6747206865893574052
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dripping_water_3
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 185
+        width: 208
+        height: 91
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 95594e621e3268b90800000000000000
+      internalID: -7240059901024365223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dripping_water_4
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 185
+        width: 208
+        height: 91
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0c4172f16598afab0800000000000000
+      internalID: -4973511835494443840
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dripping_water_5
+      rect:
+        serializedVersion: 2
+        x: 416
+        y: 185
+        width: 208
+        height: 91
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 836fa773b79bc2620800000000000000
+      internalID: 2750777411279451704
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dripping_water_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 94
+        width: 208
+        height: 91
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 48f111bb06f604840800000000000000
+      internalID: 5206283630486298500
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dripping_water_7
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 94
+        width: 208
+        height: 91
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3e4a284412d5dd180800000000000000
+      internalID: -9089006075499076381
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dripping_water_8
+      rect:
+        serializedVersion: 2
+        x: 416
+        y: 94
+        width: 208
+        height: 91
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 5b0a3e1cbb8165ff0800000000000000
+      internalID: -47823551349940043
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dripping_water_9
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 3
+        width: 208
+        height: 91
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4eab3ee1c03131250800000000000000
+      internalID: 5914091678446369508
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dripping_water_10
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 3
+        width: 208
+        height: 91
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d75fddce518e40740800000000000000
+      internalID: 5117470257465652605
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: dripping_water_11
+      rect:
+        serializedVersion: 2
+        x: 416
+        y: 3
+        width: 208
+        height: 91
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 54921bd267a2e8d30800000000000000
+      internalID: 4435529370067609925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+  spritePackingTag: 
+  pSDRemoveMatte: 0
+  pSDShowRemoveMatteOption: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

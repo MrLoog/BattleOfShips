@@ -27,6 +27,7 @@ public class PlayerCannonCtrl : MonoBehaviour
             Instance = this;
 
         DontDestroyOnLoad(gameObject);
+        StartRotation = gameObject.transform.localRotation;
     }
 
     void Start()
@@ -38,10 +39,9 @@ public class PlayerCannonCtrl : MonoBehaviour
         isSync = false;
         if (GameManager.instance.playerShip != null)
         {
-            StartRotation = gameObject.transform.localRotation;
+            playerShip = GameManager.instance.playerShip.GetComponent<Ship>();
             PlayerShipDirection = GameManager.instance.GetPlayerShipFrontDirection();
             UpdateByPlayer();
-            playerShip = GameManager.instance.playerShip.GetComponent<Ship>();
             playerShip.Events.RegisterListener(Ship.EVENT_CANNON_FRONT_FIRE).AddListener(delegate ()
             {
                 ShowCooldownDirection(CannonDirection.Front);
@@ -96,11 +96,12 @@ public class PlayerCannonCtrl : MonoBehaviour
 
     public void UpdateByPlayer()
     {
-        Vector2 realCtrlDirection = VectorUtils.Rotate(Vector2.up, -StartRotation.eulerAngles.z, true);
+        // Vector2 realCtrlDirection = VectorUtils.Rotate(Vector2.up, -StartRotation.eulerAngles.z, true);
+        Vector2 realCtrlDirection = Vector2.up;
         float angel = Vector2.Angle(realCtrlDirection, PlayerShipDirection);
         Vector3 cross = Vector3.Cross(realCtrlDirection, PlayerShipDirection);
         int sign = cross.z > 0 ? 1 : -1;
-        gameObject.transform.rotation = Quaternion.Euler(0, 0, sign * angel);
+        gameObject.transform.localRotation = Quaternion.Euler(0, 0, sign * angel + StartRotation.eulerAngles.z);
     }
 
     public Sprite CannonDirectionImg;
@@ -112,27 +113,23 @@ public class PlayerCannonCtrl : MonoBehaviour
 
     public void ToggleFront()
     {
-        Debug.Log("ToggleFront");
         playerShip.FireCannon(CannonDirection.Front);
         // ToggleDirection(CannonDirection.Front);
     }
     public void ToggleRight()
     {
-        Debug.Log("ToggleRight");
         playerShip.FireCannon(CannonDirection.Right);
         // ToggleDirection(CannonDirection.Right);
     }
 
     public void ToggleLeft()
     {
-        Debug.Log("ToggleLeft");
         playerShip.FireCannon(CannonDirection.Left);
         // ToggleDirection(CannonDirection.Left);
     }
 
     public void ToggleBack()
     {
-        Debug.Log("ToggleBack");
         playerShip.FireCannon(CannonDirection.Back);
         // ToggleDirection(CannonDirection.Back);
     }

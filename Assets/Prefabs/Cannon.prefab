@@ -69,6 +69,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   model: {fileID: 3496980111627325270}
   Explosion: {fileID: 1797423066388549488, guid: 56a65aed7b22e394dbe00adba9a4fa83, type: 3}
+  DripWater: {fileID: 6284896357939489337, guid: 009f1ea2a46c3ed4388b90d6c9041e44, type: 3}
+  LastPos: {x: 0, y: 0}
 --- !u!58 &-31705286471544387
 CircleCollider2D:
   m_ObjectHideFlags: 0
