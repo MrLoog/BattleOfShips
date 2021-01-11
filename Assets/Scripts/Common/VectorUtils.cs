@@ -65,7 +65,7 @@ public class VectorUtils
         }
     }
 
-    public static Vector2 GetForceOnLine(Vector2 line, Vector2 force, bool onLine = true)
+    public static Vector2 GetForceOnLine(Vector2 force, Vector2 line, bool onLine = true)
     {
         Vector2 vProj = Vector2.Dot(line, force) * line / Mathf.Pow(line.magnitude, 2);
         if (onLine)
@@ -89,15 +89,15 @@ public class VectorUtils
 
     public static float AreaTriangle(Vector2 a, Vector2 b, Vector2 c)
     {
-        return GetForceOnLine(a - c, b - c, false).magnitude * (b - c).magnitude / 2;
+        return GetForceOnLine(b - c, a - c, false).magnitude * (b - c).magnitude / 2;
     }
 
-    public static bool IsPointInRectangle(Vector2 p, Vector2 a, Vector2 b, Vector2 c, Vector2 d, float percentScale = 1f)
+    public static bool IsPointInRectangle(Vector2 p, Vector2 a, Vector2 b, Vector2 c, Vector2 d, float percentScale = 0f)
     {
-        float had = GetForceOnLine(d - a, p - a, false).magnitude;
-        float hbc = GetForceOnLine(c - b, p - b, false).magnitude;
-        float hab = GetForceOnLine(b - a, p - a, false).magnitude;
-        float hcd = GetForceOnLine(d - c, p - c, false).magnitude;
+        float had = GetForceOnLine(p - a, d - a, false).magnitude;
+        float hbc = GetForceOnLine(p - b, c - b, false).magnitude;
+        float hab = GetForceOnLine(p - a, b - a, false).magnitude;
+        float hcd = GetForceOnLine(p - c, d - c, false).magnitude;
         float ab = (b - a).magnitude;
         float bc = (c - b).magnitude;
 

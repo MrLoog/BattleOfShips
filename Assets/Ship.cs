@@ -561,8 +561,8 @@ public class Ship : MonoBehaviour
     private void CalculateMove()
     {
         if (ForceStop) return;
-        Vector2 vSail = VectorUtils.GetForceOnLine(SailDirecion, Wind, false);
-        Vector2 vShip = VectorUtils.GetForceOnLine(ShipDirection, vSail);
+        Vector2 vSail = VectorUtils.GetForceOnLine(Wind, SailDirecion, false);
+        Vector2 vShip = VectorUtils.GetForceOnLine(vSail, ShipDirection);
         // Debug.Log(string.Format("calculate move {0}/{1}/{2}", Wind, vSail, vShip));
         vShip = vShip + ShipDirection.normalized * curShipData.oarsSpeed;
         if (!VectorUtils.IsSameDirection(ShipDirection, vShip))
