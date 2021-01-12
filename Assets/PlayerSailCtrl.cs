@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerSailCtrl : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class PlayerSailCtrl : MonoBehaviour
     public Ship ship;
     public bool isSync = false;
 
+    public Slider sailSet;
 
     // Start is called before the first frame update
     void Start()
@@ -38,6 +40,7 @@ public class PlayerSailCtrl : MonoBehaviour
         {
             ship = GameManager.instance.playerShip.GetComponent<Ship>();
             ship.OnChangeSailDirection.AddListener(UpdateSailInfo);
+            sailSet.value = ship.sailSet;
             UpdateSailInfo();
             isSync = true;
         }
@@ -91,4 +94,8 @@ public class PlayerSailCtrl : MonoBehaviour
         isRotate = false;
     }
 
+    public void ChangeSailSet()
+    {
+        ship?.SetSail(sailSet.value);
+    }
 }

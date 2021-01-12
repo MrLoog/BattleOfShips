@@ -44,7 +44,7 @@ public class CannonShot : MonoBehaviour
     public Action OnImpactTarget { get; internal set; }
 
     private Rigidbody2D _rigidbody2D;
-    internal GameObject owner;
+    internal Ship owner;
     internal Vector2 fireDirection;
 
     // Start is called before the first frame update
@@ -75,17 +75,29 @@ public class CannonShot : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        if (owner != null && col.tag == GameSettings.TAG_SHIP && !owner.Equals(col.gameObject))
+        if (owner != null && col.tag == GameSettings.TAG_SHIP)
         {
-            Instantiate(Explosion, transform.position, Quaternion.Euler(0, 0, 0));
             Ship ship = col.gameObject.GetComponent<Ship>();
-            ship.ApplyDamage(5f, gameObject);
-            EndTravel(false);
+            if (owner.shipId != ship.shipId)
+            {
+                PerformExplosion();
+                ship.ApplyDamage(GetDamage(), gameObject);
+                EndTravel(false);
+            }
             // Debug.Log("OnTriggerEnter2D" + col.gameObject.name + " : " + gameObject.name + " : " + Time.time);
         }
     }
 
-    void EndTravel(bool onSea = true)
+    public void PerformExplosion()
+    {
+        Instantiate(Explosion, transform.position, Quaternion.Euler(0, 0, 0));
+    }
+    public float GetDamage()
+    {
+        return 5f;
+    }
+
+    public void EndTravel(bool onSea = true)
     {
 
         _rigidbody2D.velocity = Vector2.zero;

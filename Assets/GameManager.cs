@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour
 
     List<ScriptableCannonBall> ScriptableCannonBalls;
     public ScriptableShip[] scriptableShips;
+    public ScriptableShipSkill[] scriptableShipSkills;
     public ScriptableShip playerStartShip;
 
     private List<Ship> ships;
@@ -58,6 +59,7 @@ public class GameManager : MonoBehaviour
         instance = this;
         Resources.LoadAll<ScriptableCannonBall>("ScriptableObjects");
         scriptableShips = Resources.LoadAll<ScriptableShip>("ScriptableObjects");
+        scriptableShipSkills = Resources.LoadAll<ScriptableShipSkill>("ScriptableObjects");
         ScriptableCannonBalls = Resources.FindObjectsOfTypeAll<ScriptableCannonBall>().Cast<ScriptableCannonBall>().ToList();
 
 
@@ -128,7 +130,7 @@ public class GameManager : MonoBehaviour
             CannonShot shot = actualCannon.GetComponent<CannonShot>();
             shot.ResetTravel();
             actualCannon.transform.position = from;
-            shot.owner = playerShip;
+            shot.owner = playerShip.GetComponent<Ship>();
             shot.Target = to;
             shot.speed = speed;
             shot.OnImpactTarget = delegate ()
@@ -272,13 +274,23 @@ public class GameManager : MonoBehaviour
         scriptShip.ShipData = playerStartShip.Clone<ScriptableShip>();
         playerShip = newShip;
         scriptShip.Group = 0;
+        scriptShip.shipId = 0;
         scriptShip.ImgStateShip = ImgShipGroups[0];
         ships.Add(scriptShip);
         cameraFollow.GetComponent<Cinemachine.CinemachineVirtualCamera>().Follow = playerShip.transform;
 
+        if (scriptableShipSkills.Length > 0)
+        {
+            scriptableShipSkills.Where(x => x.name == "ShieldProtect" || x.name == "WingOfWind").ToList().ForEach(x =>
+            {
+                scriptShip.RegisterShipSkill(x.Clone<ScriptableShipSkill>());
+            });
+        }
+
         PlayerSailCtrl.Instance.StartSync();
         PlayerCannonCtrl.Instance.StartSync();
         PlayerWheelCtrl.Instance.StartSync();
+        ShipSkillCtrl.Instance.StartSync();
     }
 
     private GameObject SpawnShip(int group)
@@ -295,6 +307,7 @@ public class GameManager : MonoBehaviour
             scriptShip.ShipData = playerStartShip.Clone<ScriptableShip>();
         }
         scriptShip.Group = group + 1;
+        scriptShip.shipId = ships.Count + 1;
         scriptShip.ImgStateShip = ImgShipGroups[scriptShip.Group];
         ships.Add(scriptShip);
         return newShip;

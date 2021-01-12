@@ -6,6 +6,7 @@ using static GameManager;
 
 public class Ship : MonoBehaviour
 {
+    public int shipId;
     private EventDict _events;
     public EventDict Events
     {
@@ -15,6 +16,7 @@ public class Ship : MonoBehaviour
             return _events;
         }
     }
+    
 
     public const string EVENT_CANNON_FRONT_FIRE = "CANNON_FRONT_FIRE";
     public const string EVENT_CANNON_FRONT_READY = "CANNON_FRONT_READY";
@@ -26,8 +28,13 @@ public class Ship : MonoBehaviour
     public const string EVENT_CANNON_BACK_READY = "CANNON_BACK_READY";
     public bool ForceStop = false;
     public float windForceValue = 0f;
+    public float fixedSpeed = 0f;  // 0 mean not apply
     public float actualSpeed = 0f;
 
+    public float ActualSizeX => GetComponent<CapsuleCollider2D>().size.x * curShipData.sizeRateWidth;
+    public float ActualSizeY => GetComponent<CapsuleCollider2D>().size.y * curShipData.sizeRateLength;
+
+    public List<ShipSkill> shipSkills;
 
     public ScriptableShip shipData; //origin data
     public ScriptableShip startShipData; //buff data
@@ -89,6 +96,14 @@ public class Ship : MonoBehaviour
         }
     }
 
+    public float sailSet = 1f;
+
+    internal void SetSail(float value)
+    {
+        sailSet = value;
+        RevalidMovement();
+    }
+
     private Vector2 shipDirection = Vector2.down;
     public Vector2 ShipDirection
     {
@@ -97,6 +112,7 @@ public class Ship : MonoBehaviour
             return VectorUtils.Rotate(Vector2.down, transform.localRotation.eulerAngles.z, true);
         }
     }
+
     public Vector2 shipVelocity;
     public Vector2 ShipVelocity
     {
@@ -502,7 +518,7 @@ public class Ship : MonoBehaviour
             Vector2 vRotate = forceRotate * VectorUtils.Rotate(ShipVelocity, (degreeRotate > 0 ? 1 : -1) * 90f, true).normalized;
             rotateDirection = vRotate;
             CapsuleCollider2D col = GetComponent<CapsuleCollider2D>();
-            float c = Mathf.PI * col.size.y * curShipData.sizeRateLength / 2; // 1/2 perimeter
+            float c = Mathf.PI * ActualSizeY / 2; // 1/2 perimeter
             if (forceRotate > 0)
             {
                 rotateSpeed = c / vRotate.magnitude;
@@ -561,13 +577,22 @@ public class Ship : MonoBehaviour
     private void CalculateMove()
     {
         if (ForceStop) return;
-        Vector2 vSail = VectorUtils.GetForceOnLine(Wind, SailDirecion, false);
-        Vector2 vShip = VectorUtils.GetForceOnLine(vSail, ShipDirection);
-        // Debug.Log(string.Format("calculate move {0}/{1}/{2}", Wind, vSail, vShip));
-        vShip = vShip + ShipDirection.normalized * curShipData.oarsSpeed;
-        if (!VectorUtils.IsSameDirection(ShipDirection, vShip))
+        Vector2 vShip = Vector2.zero;
+        if (fixedSpeed == 0)
         {
-            vShip = Vector2.zero;
+            Vector2 actualWindForce = Wind * sailSet;
+            Vector2 vSail = VectorUtils.GetForceOnLine(actualWindForce, SailDirecion, false);
+            vShip = VectorUtils.GetForceOnLine(vSail, ShipDirection);
+            // Debug.Log(string.Format("calculate move {0}/{1}/{2}", Wind, vSail, vShip));
+            vShip = vShip + ShipDirection.normalized * curShipData.oarsSpeed;
+            if (!VectorUtils.IsSameDirection(ShipDirection, vShip))
+            {
+                vShip = Vector2.zero;
+            }
+        }
+        else
+        {
+            vShip = ShipDirection.normalized * fixedSpeed;
         }
         rigidBody2d.velocity = vShip;
         ShipVelocity = vShip;
@@ -590,14 +615,14 @@ public class Ship : MonoBehaviour
 
         Vector2 crossDir = VectorUtils.Rotate(ShipDirection, -90, true).normalized;
         CapsuleCollider2D col = GetComponent<CapsuleCollider2D>();
-        Vector2 pA = (Vector2)transform.position + ShipDirection.normalized * col.size.y / 2
-        + crossDir * col.size.x / 2;
-        Vector2 pB = (Vector2)transform.position + ShipDirection.normalized * col.size.y / 2
-        + new Vector2(-crossDir.x, -crossDir.y) * col.size.x / 2;
-        Vector2 pC = (Vector2)transform.position + new Vector2(-ShipDirection.x, -ShipDirection.y).normalized * col.size.y / 2
-        + new Vector2(-crossDir.x, -crossDir.y) * col.size.x / 2;
-        Vector2 pD = (Vector2)transform.position + new Vector2(-ShipDirection.x, -ShipDirection.y).normalized * col.size.y / 2
-         + crossDir * col.size.x / 2;
+        Vector2 pA = (Vector2)transform.position + ShipDirection.normalized * ActualSizeY / 2
+        + crossDir * ActualSizeX / 2;
+        Vector2 pB = (Vector2)transform.position + ShipDirection.normalized * ActualSizeY / 2
+        + new Vector2(-crossDir.x, -crossDir.y) * ActualSizeX / 2;
+        Vector2 pC = (Vector2)transform.position + new Vector2(-ShipDirection.x, -ShipDirection.y).normalized * ActualSizeY / 2
+        + new Vector2(-crossDir.x, -crossDir.y) * ActualSizeX / 2;
+        Vector2 pD = (Vector2)transform.position + new Vector2(-ShipDirection.x, -ShipDirection.y).normalized * ActualSizeY / 2
+         + crossDir * ActualSizeX / 2;
 
         float range = 5f;
         if (CheckCannonReady(CannonDirection.Front))
@@ -743,13 +768,13 @@ public class Ship : MonoBehaviour
         // Debug.Log(string.Format("{0}/{1}/{2}/{3}", transform.position, fire.normalized, col.size, direction));
         if (direction == CannonDirection.Front || direction == CannonDirection.Back)
         {
-            areaFireFace = col.size.x * curShipData.sizeRateWidth;
-            areaOtherFace = col.size.y * curShipData.sizeRateLength;
+            areaFireFace = ActualSizeX;
+            areaOtherFace = ActualSizeY;
         }
         else
         {
-            areaFireFace = col.size.y * curShipData.sizeRateLength;
-            areaOtherFace = col.size.x * curShipData.sizeRateWidth;
+            areaFireFace = ActualSizeY;
+            areaOtherFace = ActualSizeX;
         }
         switch (direction)
         {
@@ -795,7 +820,7 @@ public class Ship : MonoBehaviour
                 CannonShot shot = actualCannon.GetComponent<CannonShot>();
                 shot.ResetTravel();
                 actualCannon.transform.position = from;
-                shot.owner = gameObject;
+                shot.owner = this;
                 shot.fireDirection = fire.normalized;
                 // shot.Target = from + fire.normalized * 3f;
                 // shot.speed = speed;
@@ -809,5 +834,15 @@ public class Ship : MonoBehaviour
                 if (deck == 0) Debug.DrawLine(from, shot.Target, Color.red, 3f);
             }
         }
+    }
+
+    public void RegisterShipSkill(ScriptableShipSkill skillData)
+    {
+        if (shipSkills == null) shipSkills = new List<ShipSkill>();
+        Object instanceSkill = Instantiate(skillData.prefab, gameObject.transform, false);
+        ShipSkill shipSkill = ((GameObject)instanceSkill).GetComponent<ShipSkill>();
+        shipSkill.RegisterShip(this);
+        shipSkills.Add(shipSkill);
+        // shipSkill.ActiveSkill();
     }
 }
