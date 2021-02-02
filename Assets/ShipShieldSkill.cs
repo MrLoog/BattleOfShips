@@ -46,6 +46,7 @@ public class ShipShieldSkill : ShipSkill
         }
     }
 
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == GameSettings.TAG_CANNON)
@@ -54,7 +55,6 @@ public class ShipShieldSkill : ShipSkill
             if (cannon.owner.shipId != ship.shipId)
             {
                 cannon.PerformExplosion();
-                Debug.Log("collider on shield block damage " + cannon.GetDamage());
                 damageBlocked += cannon.GetDamage();
                 cannon.EndTravel(false);
 
@@ -65,4 +65,5 @@ public class ShipShieldSkill : ShipSkill
             }
         }
     }
+
 }

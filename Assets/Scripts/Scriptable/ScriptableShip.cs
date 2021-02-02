@@ -31,4 +31,5 @@ public class ScriptableShip : ScriptableObjectPrefab
     public float MaxHitToStun = 5f;
     public float TimeHitToStun = 1f;
     public float TimeRegainStun = 5f;
+
 }

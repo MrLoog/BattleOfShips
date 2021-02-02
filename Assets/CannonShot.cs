@@ -81,7 +81,7 @@ public class CannonShot : MonoBehaviour
             if (owner.shipId != ship.shipId)
             {
                 PerformExplosion();
-                ship.ApplyDamage(GetDamage(), gameObject);
+                ship.TakeDamage(GetDamage(), gameObject);
                 EndTravel(false);
             }
             // Debug.Log("OnTriggerEnter2D" + col.gameObject.name + " : " + gameObject.name + " : " + Time.time);

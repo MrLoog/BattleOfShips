@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviour
     public GameObject playerShip;
     public GameObject enemyShip;
 
+    public GameObject prefabCannonSight;
+
 
 
     public Vector2 windForce;
@@ -37,7 +39,10 @@ public class GameManager : MonoBehaviour
     List<ScriptableCannonBall> ScriptableCannonBalls;
     public ScriptableShip[] scriptableShips;
     public ScriptableShipSkill[] scriptableShipSkills;
+
+    public ScriptableShipGoods[] goods;
     public ScriptableShip playerStartShip;
+    public ScriptableShipCustom playerStartShipCustom;
 
     private List<Ship> ships;
     public GameObject ShipManager;
@@ -54,11 +59,14 @@ public class GameManager : MonoBehaviour
 
     public Sprite MinimapAllySprite;
 
+    public string GoodsCannonBallCode = "CannonBall";
+
     void Awake()
     {
         instance = this;
         Resources.LoadAll<ScriptableCannonBall>("ScriptableObjects");
         scriptableShips = Resources.LoadAll<ScriptableShip>("ScriptableObjects");
+        goods = Resources.LoadAll<ScriptableShipGoods>("ScriptableObjects");
         scriptableShipSkills = Resources.LoadAll<ScriptableShipSkill>("ScriptableObjects");
         ScriptableCannonBalls = Resources.FindObjectsOfTypeAll<ScriptableCannonBall>().Cast<ScriptableCannonBall>().ToList();
 
@@ -271,7 +279,8 @@ public class GameManager : MonoBehaviour
             }
         }
         Ship scriptShip = newShip.GetComponent<Ship>();
-        scriptShip.ShipData = playerStartShip.Clone<ScriptableShip>();
+        // scriptShip.ShipData = playerStartShip.Clone<ScriptableShip>();
+        scriptShip.InitData(playerStartShipCustom);
         playerShip = newShip;
         scriptShip.Group = 0;
         scriptShip.shipId = 0;
@@ -279,9 +288,20 @@ public class GameManager : MonoBehaviour
         ships.Add(scriptShip);
         cameraFollow.GetComponent<Cinemachine.CinemachineVirtualCamera>().Follow = playerShip.transform;
 
+        GameObject cannonSight = Instantiate(prefabCannonSight, newShip.transform, false);
+        CannonSight[] sights = cannonSight.GetComponentsInChildren<CannonSight>();
+        foreach (CannonSight s in sights)
+        {
+            s.shipOwner = scriptShip;
+        }
+
         if (scriptableShipSkills.Length > 0)
         {
-            scriptableShipSkills.Where(x => x.name == "ShieldProtect" || x.name == "WingOfWind").ToList().ForEach(x =>
+            scriptableShipSkills.Where(x =>
+            // x.name == "ShieldProtect" ||
+            x.name == "WindChangeSkill" ||
+            x.name == "WingOfWind" ||
+            x.name == "BurstShot").ToList().ForEach(x =>
             {
                 scriptShip.RegisterShipSkill(x.Clone<ScriptableShipSkill>());
             });

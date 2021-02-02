@@ -114,6 +114,7 @@ MonoBehaviour:
   type: 0
   ship: {fileID: 0}
   avatar: {fileID: 21300000, guid: 8750a6b349097df41a0ee700952fec3e, type: 3}
+  maxDamage: 100
 --- !u!58 &-731256372357939479
 CircleCollider2D:
   m_ObjectHideFlags: 0

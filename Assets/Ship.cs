@@ -6,6 +6,7 @@ using static GameManager;
 
 public class Ship : MonoBehaviour
 {
+
     public int shipId;
     private EventDict _events;
     public EventDict Events
@@ -16,7 +17,8 @@ public class Ship : MonoBehaviour
             return _events;
         }
     }
-    
+
+    public ShipInventory inventory;
 
     public const string EVENT_CANNON_FRONT_FIRE = "CANNON_FRONT_FIRE";
     public const string EVENT_CANNON_FRONT_READY = "CANNON_FRONT_READY";
@@ -31,8 +33,13 @@ public class Ship : MonoBehaviour
     public float fixedSpeed = 0f;  // 0 mean not apply
     public float actualSpeed = 0f;
 
-    public float ActualSizeX => GetComponent<CapsuleCollider2D>().size.x * curShipData.sizeRateWidth;
-    public float ActualSizeY => GetComponent<CapsuleCollider2D>().size.y * curShipData.sizeRateLength;
+    public CapsuleCollider2D ShipCollider => GetComponent<CapsuleCollider2D>();
+    // public float ActualSizeX => ShipCollider.size.x * curShipData.sizeRateWidth;
+    // public float ActualSizeY => ShipCollider.size.y * curShipData.sizeRateLength;
+
+    public float ActualSizeX => ShipCollider.size.x;
+    public float ActualSizeY => ShipCollider.size.y;
+
 
     public List<ShipSkill> shipSkills;
 
@@ -51,7 +58,11 @@ public class Ship : MonoBehaviour
             shipData = value.Clone<ScriptableShip>();
             startShipData = value.Clone<ScriptableShip>();
             curShipData = value.Clone<ScriptableShip>();
-            transform.localScale = new Vector3(curShipData.sizeRateWidth, curShipData.sizeRateLength, 0);
+            ShipCollider.size = new Vector2(curShipData.sizeRateWidth * ShipCollider.size.x / model.transform.localScale.x
+            , curShipData.sizeRateLength * ShipCollider.size.y / model.transform.localScale.y);
+
+            model.transform.localScale = new Vector3(curShipData.sizeRateWidth, curShipData.sizeRateLength, 0);
+            Debug.Log("change size " + ShipCollider.size + " + " + new Vector3(curShipData.sizeRateWidth, curShipData.sizeRateLength, 0));
 
             numberCannon = curShipData.numberCannons;
             cooldownCannons = new float[numberCannon.Length];
@@ -63,6 +74,17 @@ public class Ship : MonoBehaviour
             }
         }
     }
+
+    public bool IsSameShip(Ship ship)
+    {
+        return shipId == ship.shipId;
+    }
+
+    public bool IsSameGroup(Ship ship)
+    {
+        return Group == ship.Group;
+    }
+
     public UnityEvent OnChangeSailDirection = new UnityEvent();
 
     public Vector2 wind;
@@ -176,6 +198,8 @@ public class Ship : MonoBehaviour
 
     public GameObject Fire;
     public GameObject HumanFly;
+
+    public GameObject model;
     public SpriteRenderer spriteRenderer;
 
     public bool IsDeath => curShipData.hullHealth <= 0;
@@ -188,7 +212,7 @@ public class Ship : MonoBehaviour
 
     private void Awake()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer = model.GetComponent<SpriteRenderer>();
         rigidBody2d = GetComponent<Rigidbody2D>();
         ShipData = ShipData; //clone start data
         // cooldownCannons = new float[4] { 0f, 0f, 0f, 0f };
@@ -225,19 +249,88 @@ public class Ship : MonoBehaviour
 
     }
 
+    void FixedUpdate()
+    {
+    }
+
+    public int GetCannonBallInShip()
+    {
+        for (int i = 0; i < inventory.goodsCode.Length; i++)
+        {
+            if (inventory.goodsCode[i] == GameManager.instance.GoodsCannonBallCode)
+            {
+                return inventory.quantity[i];
+            }
+        }
+        return 0;
+    }
+
+    public void DeductCannonBall(int quantity = 1)
+    {
+        for (int i = 0; i < inventory.goodsCode.Length; i++)
+        {
+            if (inventory.goodsCode[i] == GameManager.instance.GoodsCannonBallCode)
+            {
+                inventory.quantity[i] -= quantity;
+                return;
+            }
+        }
+    }
+
+    public bool isReloadingCannon = true;
+    private void ValidReloadingCannon()
+    {
+        // if (inventory != null && GetCannonBallInShip() <= 0)
+        // {
+        //     isReloadingCannon = false;
+        // }
+        isReloadingCannon = false;
+        for (int i = 0; i < timeReloadCannons.Length; i++)
+        {
+            if (cooldownCannons[i] > 0 && cooldownCannons[i] < timeReloadCannons[i])
+            {
+                Debug.Log("Reload Cannon Done reloading " + i + ":" + cooldownCannons[i] + "/" + timeReloadCannons[i]);
+                isReloadingCannon = true;
+                return;
+            }
+        }
+    }
+
     private void ReloadCannons()
     {
+        if (!isReloadingCannon) return;
+        // if (inventory != null && GetCannonBallInShip() <= 0)
+        // {
+        //     return;
+        // }
         for (int i = 0; i < 4; i++)
         {
             for (int c = 0; c < curShipData.numberDeck; c++)
             {
-                if (cooldownCannons[i * curShipData.numberDeck + c] < timeReloadCannons[i * curShipData.numberDeck + c])
+                int indexCannon = i * curShipData.numberDeck + c;
+                if (numberCannon[indexCannon] == 0) continue;
+                if (cooldownCannons[indexCannon] < timeReloadCannons[indexCannon])
                 {
-                    cooldownCannons[i * curShipData.numberDeck + c] += Time.deltaTime;
+                    if (cooldownCannons[indexCannon] == 0)
+                    {
+                        if (inventory != null)
+                        {
+                            int cannonBallRequired = numberCannon[indexCannon];
+                            if (GetCannonBallInShip() < cannonBallRequired)
+                            {
+                                ValidReloadingCannon();
+                                return;
+                            }
+                            DeductCannonBall(cannonBallRequired);
+                        }
+                    }
+                    cooldownCannons[indexCannon] += Time.deltaTime;
                 }
-                if (c < (curShipData.numberDeck - 1)) continue;
-                if (cooldownCannons[i * curShipData.numberDeck + c] >= timeReloadCannons[i * curShipData.numberDeck + c])
+                // if (c < (curShipData.numberDeck - 1)) continue;
+                if (c > 0) continue; //only first deck raise event
+                if (cooldownCannons[indexCannon] >= timeReloadCannons[indexCannon])
                 {
+                    Debug.Log("Reload Cannon Done " + indexCannon + " / " + c);
                     switch (i)
                     {
                         case 0: Events.InvokeOnAction(EVENT_CANNON_FRONT_READY); break;
@@ -249,6 +342,7 @@ public class Ship : MonoBehaviour
                 }
             }
         }
+        ValidReloadingCannon();
     }
 
     private bool CheckCannonReady(CannonDirection direction, bool IsFire = false)
@@ -300,7 +394,14 @@ public class Ship : MonoBehaviour
         }
     }
 
-    public void ApplyDamage(float damage, GameObject source)
+    internal void InitData(ScriptableShipCustom playerStartShipCustom)
+    {
+        ShipData = playerStartShipCustom.baseShipData.Clone<ScriptableShip>();
+        inventory = new ShipInventory();
+        JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(playerStartShipCustom.inventory), inventory);
+    }
+
+    public void TakeDamage(float damage, GameObject source)
     {
 
         SpawnHumanFly(source);
@@ -383,7 +484,7 @@ public class Ship : MonoBehaviour
     public void SpawnRandomFire()
     {
         GameObject fire = Instantiate(Fire, transform, false);
-        CapsuleCollider2D col = GetComponent<CapsuleCollider2D>();
+        CapsuleCollider2D col = ShipCollider;
         fire.transform.localPosition = new Vector2(
             Random.Range(-col.size.x / 2, col.size.x / 2),
             Random.Range(-col.size.y / 2, col.size.y / 2)
@@ -517,7 +618,7 @@ public class Ship : MonoBehaviour
             // Debug.Log(string.Format("calculate {0}/{1}/{2}/{3}", degreeRotate, absDegree, shipVelocity, forceRotate));
             Vector2 vRotate = forceRotate * VectorUtils.Rotate(ShipVelocity, (degreeRotate > 0 ? 1 : -1) * 90f, true).normalized;
             rotateDirection = vRotate;
-            CapsuleCollider2D col = GetComponent<CapsuleCollider2D>();
+            CapsuleCollider2D col = ShipCollider;
             float c = Mathf.PI * ActualSizeY / 2; // 1/2 perimeter
             if (forceRotate > 0)
             {
@@ -594,6 +695,7 @@ public class Ship : MonoBehaviour
         {
             vShip = ShipDirection.normalized * fixedSpeed;
         }
+        // rigidBody2d.AddForce(vShip);
         rigidBody2d.velocity = vShip;
         ShipVelocity = vShip;
     }
@@ -614,7 +716,7 @@ public class Ship : MonoBehaviour
         float angel = Vector2.Angle(toTarget, flag);
 
         Vector2 crossDir = VectorUtils.Rotate(ShipDirection, -90, true).normalized;
-        CapsuleCollider2D col = GetComponent<CapsuleCollider2D>();
+        CapsuleCollider2D col = ShipCollider;
         Vector2 pA = (Vector2)transform.position + ShipDirection.normalized * ActualSizeY / 2
         + crossDir * ActualSizeX / 2;
         Vector2 pB = (Vector2)transform.position + ShipDirection.normalized * ActualSizeY / 2
@@ -714,7 +816,7 @@ public class Ship : MonoBehaviour
 
     }
 
-    public int NumberCannonDirection(CannonDirection direction, int deck = 0)
+    public int NumberCannonDirectionFire(CannonDirection direction, int deck = 0, bool reload = true)
     {
         int indexCheck = -1;
         switch (direction)
@@ -733,14 +835,36 @@ public class Ship : MonoBehaviour
             // return numberCannon.Length > 3 ? numberCannon[3 * curShipData.numberDeck + deck] : 0;
             default: return 0;
         }
-        Debug.Log("check " + indexCheck + " " + direction + " " + deck + " " + curShipData.numberDeck);
-        return numberCannon.Length > indexCheck ? numberCannon[indexCheck] : 0;
+        if (numberCannon.Length > indexCheck)
+        {
+            if (cooldownCannons[indexCheck] >= timeReloadCannons[indexCheck])
+            {
+                if (reload)
+                {
+                    cooldownCannons[indexCheck] = 0;
+                    if (deck == 0)
+                    {
+                        switch (direction)
+                        {
+                            case CannonDirection.Front: Events.InvokeOnAction(EVENT_CANNON_FRONT_FIRE); break;
+                            case CannonDirection.Right: Events.InvokeOnAction(EVENT_CANNON_RIGHT_FIRE); break;
+                            case CannonDirection.Left: Events.InvokeOnAction(EVENT_CANNON_LEFT_FIRE); break;
+                            case CannonDirection.Back: Events.InvokeOnAction(EVENT_CANNON_BACK_FIRE); break;
+                            default: break;
+                        }
+                    }
+                }
+                return numberCannon[indexCheck];
+            }
+            return 0;
+        }
+        return 0;
     }
 
     public int countShot = 0;
     private void FireCannonOneDirection(CannonDirection direction)
     {
-        if (!CheckCannonReady(direction, true)) return;
+        if (!CheckCannonReady(direction)) return;
         // Vector2 to = Rotate(Vector2.down, transform.rotation.eulerAngles.z); //current front
         countShot++;
         StartCoroutine(DelayFire(direction, 0.1f));
@@ -758,8 +882,8 @@ public class Ship : MonoBehaviour
     private void FireCannonOneDirectionOnDeck(CannonDirection direction, int deck)
     {
         Vector2 fire = RotateByOneDirection(GetFrontDirection(), direction);
-        int numberFires = NumberCannonDirection(direction, deck);
-        CapsuleCollider2D col = GetComponent<CapsuleCollider2D>();
+        int numberFires = NumberCannonDirectionFire(direction, deck);
+        CapsuleCollider2D col = ShipCollider;
         List<Vector2> fromList = new List<Vector2>();
 
         float areaFireFace = 0;
@@ -834,15 +958,21 @@ public class Ship : MonoBehaviour
                 if (deck == 0) Debug.DrawLine(from, shot.Target, Color.red, 3f);
             }
         }
+        isReloadingCannon = true;
     }
 
     public void RegisterShipSkill(ScriptableShipSkill skillData)
     {
         if (shipSkills == null) shipSkills = new List<ShipSkill>();
-        Object instanceSkill = Instantiate(skillData.prefab, gameObject.transform, false);
+        Object instanceSkill = Instantiate(skillData.prefab, model.transform, false);
         ShipSkill shipSkill = ((GameObject)instanceSkill).GetComponent<ShipSkill>();
         shipSkill.RegisterShip(this);
         shipSkills.Add(shipSkill);
         // shipSkill.ActiveSkill();
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        Debug.Log("ship trigger " + other.tag);
     }
 }

@@ -8,6 +8,8 @@ TagManager:
   - Cannon
   - Minimap
   - OceanBounds
+  - CameraBounds
+  - ShipSkill
   layers:
   - Default
   - TransparentFX

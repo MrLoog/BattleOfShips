@@ -19,7 +19,6 @@ public class ShipSkill : MonoBehaviour
     public virtual bool RegisterShip(Ship ship)
     {
         this.ship = ship;
-        Debug.Log("Register Ship Skill");
         if ((type & SkillType.Passive) > 0) ActivePassive();
         return true;
     }
