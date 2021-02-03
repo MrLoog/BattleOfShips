@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 3307599177762406278, guid: ac5e03f0ebad94e4392d1b767ee140e1, type: 3}
   cannonName: Chain Shot
-  shipDamage: 300
-  humanDamage: 100
+  hullDamage: 1
+  sailDamage: 3
+  crewDamage: 2
+  damage: 2
   speed: 2
-  range: 10
+  range: 3
   sprite: {fileID: 0}

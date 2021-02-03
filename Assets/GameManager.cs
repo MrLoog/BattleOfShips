@@ -24,7 +24,8 @@ public class GameManager : MonoBehaviour
     public GameObject playerShip;
     public GameObject enemyShip;
 
-    public GameObject prefabCannonSight;
+    public GameObject InventoryMenu;
+
 
 
 
@@ -288,12 +289,8 @@ public class GameManager : MonoBehaviour
         ships.Add(scriptShip);
         cameraFollow.GetComponent<Cinemachine.CinemachineVirtualCamera>().Follow = playerShip.transform;
 
-        GameObject cannonSight = Instantiate(prefabCannonSight, newShip.transform, false);
-        CannonSight[] sights = cannonSight.GetComponentsInChildren<CannonSight>();
-        foreach (CannonSight s in sights)
-        {
-            s.shipOwner = scriptShip;
-        }
+        scriptShip.EnableCannonSight = true;
+        scriptShip.Events.RegisterListener(Ship.EVENT_TACKED_OTHER_SHIP).AddListener(TackedOtherShip);
 
         if (scriptableShipSkills.Length > 0)
         {
@@ -311,6 +308,28 @@ public class GameManager : MonoBehaviour
         PlayerCannonCtrl.Instance.StartSync();
         PlayerWheelCtrl.Instance.StartSync();
         ShipSkillCtrl.Instance.StartSync();
+    }
+
+    private void TackedOtherShip()
+    {
+        Time.timeScale = 0f;
+        InventoryMenu.GetComponent<ShipInventoryMenu>().ShowInventory(playerShip.GetComponent<Ship>().LastCollision2D.gameObject.GetComponent<Ship>());
+    }
+
+    public float prevSpeed = 1f;
+
+    public void PauseGame()
+    {
+        prevSpeed = Time.timeScale;
+        Time.timeScale = 0f;
+    }
+
+    public void ResumeGame()
+    {
+        if (Time.timeScale == 0f)
+        {
+            Time.timeScale = prevSpeed > 0f ? prevSpeed : 1;
+        }
     }
 
     private GameObject SpawnShip(int group)

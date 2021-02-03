@@ -26,6 +26,7 @@ public class PlayerSailCtrl : MonoBehaviour
     public bool isSync = false;
 
     public Slider sailSet;
+    public Toggle toggleSail;
 
     // Start is called before the first frame update
     void Start()
@@ -41,6 +42,7 @@ public class PlayerSailCtrl : MonoBehaviour
             ship = GameManager.instance.playerShip.GetComponent<Ship>();
             ship.OnChangeSailDirection.AddListener(UpdateSailInfo);
             sailSet.value = ship.sailSet;
+            toggleSail.isOn = ship.AutoSail;
             UpdateSailInfo();
             isSync = true;
         }
@@ -97,5 +99,13 @@ public class PlayerSailCtrl : MonoBehaviour
     public void ChangeSailSet()
     {
         ship?.SetSail(sailSet.value);
+    }
+
+    public void ToggleAutoSail()
+    {
+        if (ship != null)
+        {
+            ship.AutoSail = toggleSail.isOn;
+        }
     }
 }

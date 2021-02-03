@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 3307599177762406278, guid: ac5e03f0ebad94e4392d1b767ee140e1, type: 3}
   cannonName: Grape Shot
-  shipDamage: 70
-  humanDamage: 300
-  speed: 2
-  range: 10
+  hullDamage: 2
+  sailDamage: 2
+  crewDamage: 2
+  damage: 2
+  speed: 3
+  range: 4
   sprite: {fileID: 0}

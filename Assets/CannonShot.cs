@@ -81,7 +81,7 @@ public class CannonShot : MonoBehaviour
             if (owner.shipId != ship.shipId)
             {
                 PerformExplosion();
-                ship.TakeDamage(GetDamage(), gameObject);
+                ship.TakeDamage(GetShipDamage(), gameObject);
                 EndTravel(false);
             }
             // Debug.Log("OnTriggerEnter2D" + col.gameObject.name + " : " + gameObject.name + " : " + Time.time);
@@ -94,7 +94,17 @@ public class CannonShot : MonoBehaviour
     }
     public float GetDamage()
     {
-        return 5f;
+        return data.damage;
+    }
+
+    public DamageDealShip GetShipDamage()
+    {
+        return new DamageDealShip()
+        {
+            hullDamage = data.hullDamage,
+            sailDamage = data.sailDamage,
+            crewDamage = data.crewDamage
+        };
     }
 
     public void EndTravel(bool onSea = true)

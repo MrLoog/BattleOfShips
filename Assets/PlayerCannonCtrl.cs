@@ -18,6 +18,8 @@ public class PlayerCannonCtrl : MonoBehaviour
     public Ship playerShip;
     public bool isSync = false;
 
+    public Toggle toggleCannonSight;
+
 
     void Awake()
     {
@@ -173,5 +175,11 @@ public class PlayerCannonCtrl : MonoBehaviour
         CannonDirection direction = CannonDirection.Front | CannonDirection.Right | CannonDirection.Left | CannonDirection.Back;
 
         playerShip.FireCannon(direction);
+    }
+
+
+    public void ToggleCannonSight()
+    {
+        playerShip.EnableCannonSight = toggleCannonSight.isOn;
     }
 }

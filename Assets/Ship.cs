@@ -28,6 +28,7 @@ public class Ship : MonoBehaviour
     public const string EVENT_CANNON_LEFT_READY = "CANNON_LEFT_READY";
     public const string EVENT_CANNON_BACK_FIRE = "CANNON_BACK_FIRE";
     public const string EVENT_CANNON_BACK_READY = "CANNON_BACK_READY";
+    public const string EVENT_TACKED_OTHER_SHIP = "TACKED_OTHER_SHIP";
     public bool ForceStop = false;
     public float windForceValue = 0f;
     public float fixedSpeed = 0f;  // 0 mean not apply
@@ -43,8 +44,9 @@ public class Ship : MonoBehaviour
 
     public List<ShipSkill> shipSkills;
 
+    public ScriptableShipCustom customData;
     public ScriptableShip shipData; //origin data
-    public ScriptableShip startShipData; //buff data
+    public ScriptableShip startShipData; //permanent data
     public ScriptableShip curShipData; //data change on battle
 
     public ScriptableShip ShipData
@@ -74,6 +76,7 @@ public class Ship : MonoBehaviour
             }
         }
     }
+
 
     public bool IsSameShip(Ship ship)
     {
@@ -118,6 +121,10 @@ public class Ship : MonoBehaviour
         }
     }
 
+    public int Group { get; set; }
+
+    [SerializeField]
+    public bool AutoSail { get; set; } = true;
     public float sailSet = 1f;
 
     internal void SetSail(float value)
@@ -200,11 +207,45 @@ public class Ship : MonoBehaviour
     public GameObject HumanFly;
 
     public GameObject model;
+    public GameObject prefabCannonSight;
+    public GameObject cannonSight;
     public SpriteRenderer spriteRenderer;
 
     public bool IsDeath => curShipData.hullHealth <= 0;
 
-    public int Group { get; set; }
+
+    private bool enableCannonSight;
+    public bool EnableCannonSight
+    {
+        get
+        {
+            return enableCannonSight;
+        }
+        set
+        {
+            if (value)
+            {
+                if (cannonSight == null)
+                {
+                    cannonSight = Instantiate(prefabCannonSight, transform, false);
+                    CannonSight[] sights = cannonSight.GetComponentsInChildren<CannonSight>();
+                    foreach (CannonSight s in sights)
+                    {
+                        s.shipOwner = this;
+                    }
+                }
+                else
+                {
+                    cannonSight.SetActive(true);
+                }
+            }
+            else
+            {
+                cannonSight?.SetActive(false);
+            }
+            enableCannonSight = value;
+        }
+    }
 
     private Rigidbody2D rigidBody2d;
 
@@ -214,7 +255,17 @@ public class Ship : MonoBehaviour
     {
         spriteRenderer = model.GetComponent<SpriteRenderer>();
         rigidBody2d = GetComponent<Rigidbody2D>();
-        ShipData = ShipData; //clone start data
+        if (customData != null)
+        {
+            InitData(customData);
+        }
+        else if (ShipData != null)
+        {
+            ShipData = ShipData; //clone start data
+        }
+        ShipHealthBar healthBar = GetComponentInChildren<ShipHealthBar>();
+        if (healthBar != null)
+            healthBar.shipOwner = this;
         // cooldownCannons = new float[4] { 0f, 0f, 0f, 0f };
         // timeReloadCannons = new float[4] { 3f, 3f, 3f, 3f };
     }
@@ -401,58 +452,87 @@ public class Ship : MonoBehaviour
         JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(playerStartShipCustom.inventory), inventory);
     }
 
-    public void TakeDamage(float damage, GameObject source)
+    public void EnterNoCrewState()
     {
+        AutoSail = false;
+        GetComponent<ShipAI>().enabled = false;
+        curShipData.oarsSpeed = 0;
+        Debug.Log("Test Damage Inflict Crew Damage Enter No Crew");
+    }
 
-        SpawnHumanFly(source);
-        float curHealth = curShipData.hullHealth;
-        float maxHealth = startShipData.hullHealth;
-        float healthRateB = curHealth / maxHealth;
-        float healthRateA = (curHealth - damage) / maxHealth;
 
-        if (healthRateA <= 0f)
+    public void TakeDamage(DamageDealShip damage, GameObject source)
+    {
+        if (damage.crewDamage > 0)
         {
-            spriteRenderer.sprite = imgStateShip.deathState;
-            MakeDeathShip();
-        }
-        else if ((healthRateB > 0.2f) && (healthRateA <= 0.2f))
-        {
-            spriteRenderer.sprite = imgStateShip.dangerState;
-            SpawnRandomFire();
-        }
-        else if ((healthRateB > 0.5f) && (healthRateA <= 0.5f))
-        {
-            SpawnRandomFire();
-        }
-        else if ((healthRateB > 0.7f) && (healthRateA <= 0.7f))
-        {
-            spriteRenderer.sprite = imgStateShip.damagedState;
-            SpawnRandomFire();
-        }
-        else if (healthRateA > 0.7f)
-        {
-            RestoreState();
-        }
-
-        curShipData.hullHealth -= damage;
-        if (lastTimeHit >= curShipData.TimeHitToStun)
-        {
-            lastTimeHit = 0;
-            totalHitConsecutive = 1;
-            Debug.Log("Stun first hit");
-        }
-        else
-        {
-            totalHitConsecutive++;
-            Debug.Log("Stun accum hit " + totalHitConsecutive);
-            if (totalHitConsecutive >= curShipData.MaxHitToStun)
+            SpawnHumanFly(source);
+            curShipData.maxCrew -= (int)damage.crewDamage;
+            Debug.Log("Test Damage Inflict Crew Damage " + (int)damage.crewDamage + "=>" + curShipData.maxCrew);
+            if (curShipData.maxCrew <= 0)
             {
-                Debug.Log("Stun get stunned ");
-                stunEffect?.SetActive(true);
-                isStuned = true;
+                curShipData.maxCrew = 0;
+                EnterNoCrewState();
+            }
+        }
+        if (damage.sailDamage > 0)
+        {
+            curShipData.sailHealth -= (int)damage.sailDamage;
+            Debug.Log("Test Damage Inflict sail Damage " + (int)damage.sailDamage + "=>" + curShipData.sailHealth);
+
+            if (curShipData.sailHealth <= 0) curShipData.sailHealth = 0;
+            RevalidMovement();
+        }
+        if (damage.hullDamage > 0)
+        {
+            float curHealth = curShipData.hullHealth;
+            float maxHealth = startShipData.hullHealth;
+            float healthRateB = curHealth / maxHealth;
+            float healthRateA = (curHealth - damage.hullDamage) / maxHealth;
+
+            if (healthRateA <= 0f)
+            {
+                spriteRenderer.sprite = imgStateShip.deathState;
+                MakeDeathShip();
+            }
+            else if ((healthRateB > 0.2f) && (healthRateA <= 0.2f))
+            {
+                spriteRenderer.sprite = imgStateShip.dangerState;
+                SpawnRandomFire();
+            }
+            else if ((healthRateB > 0.5f) && (healthRateA <= 0.5f))
+            {
+                SpawnRandomFire();
+            }
+            else if ((healthRateB > 0.7f) && (healthRateA <= 0.7f))
+            {
+                spriteRenderer.sprite = imgStateShip.damagedState;
+                SpawnRandomFire();
+            }
+            else if (healthRateA > 0.7f)
+            {
+                // RestoreState();
+            }
+
+            curShipData.hullHealth -= damage.hullDamage;
+            if (lastTimeHit >= curShipData.TimeHitToStun)
+            {
                 lastTimeHit = 0;
-                totalHitConsecutive = 0;
-                accumStunTime = 0;
+                totalHitConsecutive = 1;
+                Debug.Log("Stun first hit");
+            }
+            else
+            {
+                totalHitConsecutive++;
+                Debug.Log("Stun accum hit " + totalHitConsecutive);
+                if (totalHitConsecutive >= curShipData.MaxHitToStun)
+                {
+                    Debug.Log("Stun get stunned ");
+                    stunEffect?.SetActive(true);
+                    isStuned = true;
+                    lastTimeHit = 0;
+                    totalHitConsecutive = 0;
+                    accumStunTime = 0;
+                }
             }
         }
     }
@@ -637,6 +717,7 @@ public class Ship : MonoBehaviour
 
     public void CalculateSailPos()
     {
+        if (!AutoSail) return;
         float angelShipWind = Vector2.Angle(Wind, ShipDirection);
         angelShipWind = 180 - Mathf.Abs(angelShipWind); //small degree
         float angelSail = angelShipWind / 2;
@@ -681,7 +762,10 @@ public class Ship : MonoBehaviour
         Vector2 vShip = Vector2.zero;
         if (fixedSpeed == 0)
         {
-            Vector2 actualWindForce = Wind * sailSet;
+            Vector2 actualWindForce = Wind * sailSet; //reduce by sail user control
+            actualWindForce = actualWindForce * curShipData.sailHealth / startShipData.sailHealth; //reduce by sail damage 
+
+            Debug.Log("Test Damage Inflict Sail Damage " + (curShipData.sailHealth / startShipData.sailHealth) + " => " + actualWindForce);
             Vector2 vSail = VectorUtils.GetForceOnLine(actualWindForce, SailDirecion, false);
             vShip = VectorUtils.GetForceOnLine(vSail, ShipDirection);
             // Debug.Log(string.Format("calculate move {0}/{1}/{2}", Wind, vSail, vShip));
@@ -974,5 +1058,19 @@ public class Ship : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         Debug.Log("ship trigger " + other.tag);
+    }
+
+    public Collision2D LastCollision2D { get; set; }
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.tag.Equals(GameSettings.TAG_SHIP))
+        {
+            LastCollision2D = other;
+            Events.InvokeOnAction(EVENT_TACKED_OTHER_SHIP);
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D other)
+    {
     }
 }
