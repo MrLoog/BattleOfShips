@@ -64,8 +64,7 @@ public class Ship : MonoBehaviour
             , curShipData.sizeRateLength * ShipCollider.size.y / model.transform.localScale.y);
 
             model.transform.localScale = new Vector3(curShipData.sizeRateWidth, curShipData.sizeRateLength, 0);
-            Debug.Log("change size " + ShipCollider.size + " + " + new Vector3(curShipData.sizeRateWidth, curShipData.sizeRateLength, 0));
-
+            
             numberCannon = curShipData.numberCannons;
             cooldownCannons = new float[numberCannon.Length];
             timeReloadCannons = new float[numberCannon.Length];
@@ -283,7 +282,7 @@ public class Ship : MonoBehaviour
             accumStunTime += Time.deltaTime;
             if (accumStunTime >= curShipData.TimeRegainStun)
             {
-                Debug.Log("stun exit stun");
+                // Debug.Log("stun exit stun");
                 stunEffect?.SetActive(false);
                 isStuned = false;
                 accumStunTime = 0;
@@ -340,7 +339,7 @@ public class Ship : MonoBehaviour
         {
             if (cooldownCannons[i] > 0 && cooldownCannons[i] < timeReloadCannons[i])
             {
-                Debug.Log("Reload Cannon Done reloading " + i + ":" + cooldownCannons[i] + "/" + timeReloadCannons[i]);
+                // Debug.Log("Reload Cannon Done reloading " + i + ":" + cooldownCannons[i] + "/" + timeReloadCannons[i]);
                 isReloadingCannon = true;
                 return;
             }

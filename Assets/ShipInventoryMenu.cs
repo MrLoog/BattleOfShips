@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Linq;
+using System;
 
 public class ShipInventoryMenu : MonoBehaviour
 {
@@ -21,15 +22,111 @@ public class ShipInventoryMenu : MonoBehaviour
     public GameObject panelInventory;
     public GameObject panelInventoryOther;
     public GameObject prefabItem;
+
+    public GameObject panelTransferItem;
+    private List<Ship> ships = new List<Ship>();
+
+    private List<ShipInventory> inventories = new List<ShipInventory>();
     public bool isShow = false;
 
-    List<GameObject> slots = new List<GameObject>();
-    List<GameObject> slotsOther = new List<GameObject>();
+    private List<ScriptableShipGoods> goods;
+
+    List<ScriptableShipGoods> Goods
+    {
+        get
+        {
+            if (goods == null)
+            {
+                goods = GameManager.instance.goods.ToList();
+            }
+            return goods;
+        }
+    }
+    TransferItemCtrl transferPanel;
+
 
 
     // Start is called before the first frame update
     void Start()
     {
+
+        transferPanel = panelTransferItem.GetComponent<TransferItemCtrl>();
+        transferPanel.OnDoneTransfer += TransferItemSelected;
+    }
+
+
+    private int AddInventoryIndex(ShipInventory inventory, int wantIndex = -1)
+    {
+        if (wantIndex >= 0)
+        {
+            if (inventories.Count <= wantIndex)
+            {
+                for (int i = inventories.Count; i <= wantIndex; i++)
+                {
+                    inventories.Add(null);
+                }
+            }
+            inventories[wantIndex] = inventory;
+            return wantIndex;
+        }
+        else
+        {
+            inventories.Add(inventory);
+            return inventories.Count - 1;
+        }
+    }
+
+    private int AddShipIndex(Ship ship, int wantIndex = -1)
+    {
+        if (wantIndex >= 0)
+        {
+            if (ships.Count <= wantIndex)
+            {
+                for (int i = ships.Count; i <= wantIndex; i++)
+                {
+                    ships.Add(null);
+                }
+            }
+            ships[wantIndex] = ship;
+            return wantIndex;
+        }
+        else
+        {
+            ships.Add(ship);
+            return ships.Count - 1;
+        }
+    }
+
+    private void TransferItemSelected(int[] result)
+    {
+        int quantity = result[0];
+        int fromInvIndex = result[1];
+        ShipInventory inventoryDeduct = inventories[fromInvIndex == 0 ? 0 : 1];
+        ShipInventory inventoryAdd = inventories[fromInvIndex == 0 ? 1 : 0];
+        inventoryDeduct.quantity[indexTransfer] -= quantity;
+        int i = 0;
+        for (; i < inventoryAdd.goodsCode.Length; i++)
+        {
+            if (inventoryAdd.goodsCode[i] == inventoryDeduct.goodsCode[indexTransfer])
+            {
+                inventoryAdd.quantity[i] += quantity;
+                break;
+            }
+        }
+        if (i == inventoryAdd.goodsCode.Length)
+        {
+            inventoryAdd.goodsCode = inventoryDeduct.goodsCode.Concat(new string[] { inventoryDeduct.goodsCode[indexTransfer] }).ToArray();
+            inventoryAdd.quantity = inventoryDeduct.quantity.Concat(new int[] { quantity }).ToArray();
+        }
+
+        ShowInventoryDetails(
+                panelInventory,
+                0
+            );
+        ShowInventoryDetails(
+                panelInventoryOther,
+                1
+            );
     }
 
     // Update is called once per frame
@@ -49,11 +146,10 @@ public class ShipInventoryMenu : MonoBehaviour
         gameObject.SetActive(true);
         if (GameManager.instance.playerShip != null)
         {
-
+            AddShipIndex(GameManager.instance.playerShip.GetComponent<Ship>(), 0);
             ShowInventoryDetails(
-                slots,
                 panelInventory,
-                GameManager.instance.playerShip.GetComponent<Ship>().inventory
+                AddInventoryIndex(ships[0].inventory, 0)
             );
             /*
             for (int i = slots.Count; i > 0; i--)
@@ -85,10 +181,10 @@ public class ShipInventoryMenu : MonoBehaviour
         if (otherShip != null)
         {
             panelInventoryOther.SetActive(true);
+            AddShipIndex(otherShip, 1);
             ShowInventoryDetails(
-                slotsOther,
                 panelInventoryOther,
-                otherShip.inventory
+                AddInventoryIndex(otherShip.inventory, 1)
             );
             /*
             for (int i = slotsOther.Count; i > 0; i--)
@@ -118,16 +214,22 @@ public class ShipInventoryMenu : MonoBehaviour
         }
     }
 
-    private void ShowInventoryDetails(List<GameObject> lst, GameObject panel, ShipInventory inventory)
+    private void ClearAllChilds(GameObject obj)
     {
-        for (int i = lst.Count; i > 0; i--)
+        for (int i = 0; i < obj.transform.childCount; i++)
         {
-            Destroy(lst[i - 1]);
+            Destroy(obj.transform.GetChild(i).gameObject);
         }
-        slots.Clear();
+    }
+
+    private void ShowInventoryDetails(GameObject panel, int indexInv)
+    {
+        ClearAllChilds(panel);
+        ShipInventory inventory = inventories[indexInv];
+        Debug.Log("Inventory should show " + inventory.goodsCode.Length);
         for (int i = 0; i < inventory.goodsCode.Length; i++)
         {
-            ScriptableShipGoods aGoods = GameManager.instance.goods.ToList().Where(x => x.codeName.Equals(inventory.goodsCode[i])).FirstOrDefault();
+            ScriptableShipGoods aGoods = Goods.Where(x => x.codeName.Equals(inventory.goodsCode[i])).FirstOrDefault();
             if (aGoods != null)
             {
                 GameObject item = Instantiate(prefabItem, panel.transform, false);
@@ -135,12 +237,35 @@ public class ShipInventoryMenu : MonoBehaviour
                 item.GetComponentInChildren<Text>().text = inventory.quantity[i].ToString();
                 Debug.Log("Item found " + inventory.goodsCode[i]);
                 item.SetActive(true);
-                lst.Add(item);
+                int indexPass = i;
+                Debug.Log("Register index inv " + indexInv);
+
+                item.GetComponent<Button>().onClick.AddListener(() =>
+                {
+                    ShowTransferItem(indexInv, indexPass);
+                });
             }
             else
             {
                 Debug.Log("Item " + inventory.goodsCode[i]);
             }
+        }
+    }
+
+    private int indexTransfer;
+    private void ShowTransferItem(int indexInv, int index)
+    {
+        indexTransfer = index;
+        ShipInventory inventory = inventories[indexInv];
+        if (transferPanel != null)
+        {
+            transferPanel.ShowTransferItem(
+                Goods.Where(x => x.codeName == inventory.goodsCode[index]).FirstOrDefault(),
+                inventory.quantity[index],
+                indexInv,
+                ships[indexInv],
+                ships[indexInv == 0 ? 1 : 0]
+            );
         }
     }
 

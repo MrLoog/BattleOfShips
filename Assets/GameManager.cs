@@ -26,6 +26,8 @@ public class GameManager : MonoBehaviour
 
     public GameObject InventoryMenu;
 
+    public GameObject ModalPopupUtil;
+
 
 
 
@@ -61,6 +63,8 @@ public class GameManager : MonoBehaviour
     public Sprite MinimapAllySprite;
 
     public string GoodsCannonBallCode = "CannonBall";
+
+    public ModalPopupCtrl PopupCtrl => ModalPopupUtil.GetComponent<ModalPopupCtrl>();
 
     void Awake()
     {
@@ -309,11 +313,79 @@ public class GameManager : MonoBehaviour
         PlayerWheelCtrl.Instance.StartSync();
         ShipSkillCtrl.Instance.StartSync();
     }
-
     private void TackedOtherShip()
     {
-        Time.timeScale = 0f;
-        InventoryMenu.GetComponent<ShipInventoryMenu>().ShowInventory(playerShip.GetComponent<Ship>().LastCollision2D.gameObject.GetComponent<Ship>());
+        PauseGame();
+        Ship target = playerShip.GetComponent<Ship>().LastCollision2D.gameObject.GetComponent<Ship>();
+        PopupCtrl.ShowDialog(
+            title: "Confirm Perform Tacked",
+            content: "Are you sure want to perform Tacked?",
+            okText: "Yes",
+            cancelText: "No",
+            onResult: (i) =>
+            {
+                if (i == 1)
+                {
+                    ShipTackedBattle result = CalculateTacked2Ship(playerShip.GetComponent<Ship>(), target);
+                    if (result.Result == 1) //win
+                    {
+                        PromptResultWin(result);
+                    }
+                    else if (result.Result == 0)
+                    {
+                        //draw
+                        PromptResultDraw(result);
+                    }
+                    else if (result.Result == 2)
+                    { //lose
+
+                        ResumeGame();
+                    }
+
+                }
+                else
+                {
+                    ResumeGame();
+                }
+            }
+        );
+        // Time.timeScale = 0f;
+        // InventoryMenu.GetComponent<ShipInventoryMenu>().ShowInventory(playerShip.GetComponent<Ship>().LastCollision2D.gameObject.GetComponent<Ship>());
+    }
+
+    private void PromptResultDraw(ShipTackedBattle result)
+    {
+        PopupCtrl.ShowDialog(
+                    title: "Tacked Result",
+                    content: string.Format("Tacked Result is Draw! You lose {0} crew. Enemy lose {1} crew.", result.Ship1Damaged, result.Ship2Damaged),
+                    okText: "Ok",
+                    cancelText: null,
+                    onResult: (i) =>
+                    {
+                        ResumeGame();
+                    }
+                );
+    }
+
+    private void PromptResultWin(ShipTackedBattle result)
+    {
+        PopupCtrl.ShowDialog(
+                    title: "Tacked Result",
+                    content: string.Format("You are Winner! {0} crew are death.", result.Ship1Damaged),
+                    okText: "Ok",
+                    cancelText: null,
+                    onResult: (i) =>
+                    {
+                        InventoryMenu.GetComponent<ShipInventoryMenu>().ShowInventory(result.ship2);
+                    }
+                );
+    }
+
+    private ShipTackedBattle CalculateTacked2Ship(Ship ship1, Ship ship2)
+    {
+        ShipTackedBattle battle = new ShipTackedBattle(ship1, ship2);
+        battle.CalculateResult();
+        return battle;
     }
 
     public float prevSpeed = 1f;
