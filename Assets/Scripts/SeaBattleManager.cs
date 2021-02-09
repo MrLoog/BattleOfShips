@@ -7,14 +7,16 @@ using UnityEngine.Events;
 using UnityEngine.Tilemaps;
 using Random = UnityEngine.Random;
 
-public class GameManager : MonoBehaviour
+public class SeaBattleManager : BaseSceneManager
 {
     [System.Flags]
     public enum CannonDirection
     {
         None = 0, Front = 1, Right = 2, Left = 4, Back = 8
     }
-    public static GameManager instance;
+    public static SeaBattleManager Instance;
+
+    public GameManager gameManager;
 
     public PoolManager<WrapPool> poolCannon;
     public PoolManager<WrapPool> poolHumanFly;
@@ -66,9 +68,16 @@ public class GameManager : MonoBehaviour
 
     public ModalPopupCtrl PopupCtrl => ModalPopupUtil.GetComponent<ModalPopupCtrl>();
 
+
     void Awake()
     {
-        instance = this;
+        if (Instance != null && Instance != this)
+            Destroy(gameObject);
+        else
+            Instance = this;
+        // DontDestroyOnLoad(gameObject);
+        gameManager = GameManager.Instance;
+
         Resources.LoadAll<ScriptableCannonBall>("ScriptableObjects");
         scriptableShips = Resources.LoadAll<ScriptableShip>("ScriptableObjects");
         goods = Resources.LoadAll<ScriptableShipGoods>("ScriptableObjects");
@@ -285,7 +294,9 @@ public class GameManager : MonoBehaviour
         }
         Ship scriptShip = newShip.GetComponent<Ship>();
         // scriptShip.ShipData = playerStartShip.Clone<ScriptableShip>();
-        scriptShip.InitData(playerStartShipCustom);
+        ScriptableShipCustom defaultShip = playerStartShipCustom.Clone<ScriptableShipCustom>();
+        defaultShip.captain.health = 100;
+        scriptShip.InitData(defaultShip);
         playerShip = newShip;
         scriptShip.Group = 0;
         scriptShip.shipId = 0;

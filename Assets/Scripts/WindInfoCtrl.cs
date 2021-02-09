@@ -42,7 +42,7 @@ public class WindInfoCtrl : MonoBehaviour
     }
     public void UpdateWindForceInfo()
     {
-        Vector2 windForce = GameManager.instance.windForce;
+        Vector2 windForce = SeaBattleManager.Instance.windForce;
         WindForce.text = string.Format((windForce.magnitude * 10).ToString());
 
         Vector2 realCtrlDirection = VectorUtils.Rotate(Vector2.up, DefaultRotate, true);

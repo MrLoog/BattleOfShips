@@ -14,9 +14,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 0}
   baseShipData: {fileID: 11400000, guid: ce93fd651fd874449b1423f6ee8fad71, type: 2}
+  curShipData: {fileID: 0}
   inventory:
     goodsCode:
     - CannonBall
     - GrapeShot
     - ChainBall
     quantity: e8030000e8030000e8030000
+  captain: {fileID: 11400000, guid: 9871a2875282cb144a08a2ced3ef3855, type: 2}
+  upgrades: []
+  skills:
+  - {fileID: 11400000, guid: 815a06f490de5b3409c49c399e16ea08, type: 2}
+  - {fileID: 11400000, guid: 031ecbde6f9b4b54289de5002aef181c, type: 2}
+  - {fileID: 11400000, guid: 841195f77aa180b47b7af51f9869926f, type: 2}

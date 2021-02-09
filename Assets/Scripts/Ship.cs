@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using static GameManager;
+using static SeaBattleManager;
 
 public class Ship : MonoBehaviour
 {
@@ -307,7 +307,7 @@ public class Ship : MonoBehaviour
     {
         for (int i = 0; i < inventory.goodsCode.Length; i++)
         {
-            if (inventory.goodsCode[i] == GameManager.instance.GoodsCannonBallCode)
+            if (inventory.goodsCode[i] == SeaBattleManager.Instance.GoodsCannonBallCode)
             {
                 return inventory.quantity[i];
             }
@@ -319,7 +319,7 @@ public class Ship : MonoBehaviour
     {
         for (int i = 0; i < inventory.goodsCode.Length; i++)
         {
-            if (inventory.goodsCode[i] == GameManager.instance.GoodsCannonBallCode)
+            if (inventory.goodsCode[i] == SeaBattleManager.Instance.GoodsCannonBallCode)
             {
                 inventory.quantity[i] -= quantity;
                 return;
@@ -545,7 +545,7 @@ public class Ship : MonoBehaviour
         {
             AI.enabled = true;
         }
-        ApplyWindForce(GameManager.instance.windForce);
+        ApplyWindForce(SeaBattleManager.Instance.windForce);
     }
 
     public void MakeDeathShip()
@@ -577,7 +577,7 @@ public class Ship : MonoBehaviour
     {
         if (source == null) return;
 
-        WrapPool wrapPool = GameManager.instance.poolHumanFly.GetPooledObject();
+        WrapPool wrapPool = SeaBattleManager.Instance.poolHumanFly.GetPooledObject();
         if (wrapPool != null)
         {
             GameObject humanfly = wrapPool.poolObj;
@@ -591,7 +591,7 @@ public class Ship : MonoBehaviour
             humanfly.SetActive(true);
             humanfly.GetComponentInChildren<HumanFly>().OnAnimateDone = delegate ()
             {
-                GameManager.instance.poolHumanFly.RePooledObject(wrapPool);
+                SeaBattleManager.Instance.poolHumanFly.RePooledObject(wrapPool);
             };
 
             humanfly.GetComponentInChildren<HumanFly>().StartAnimate(direction);
@@ -1019,7 +1019,7 @@ public class Ship : MonoBehaviour
         }
         foreach (Vector2 from in fromList)
         {
-            WrapPool wrapPool = GameManager.instance.poolCannon.GetPooledObject();
+            WrapPool wrapPool = SeaBattleManager.Instance.poolCannon.GetPooledObject();
             Debug.Assert(wrapPool != null, "cannon should avaiable");
             if (wrapPool != null)
             {
@@ -1033,7 +1033,7 @@ public class Ship : MonoBehaviour
                 // shot.speed = speed;
                 shot.OnImpactTarget = delegate ()
                 {
-                    GameManager.instance.poolCannon.RePooledObject(wrapPool);
+                    SeaBattleManager.Instance.poolCannon.RePooledObject(wrapPool);
                 };
                 shot.gameObject.SetActive(true);
                 shot.StartTravel();

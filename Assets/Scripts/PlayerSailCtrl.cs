@@ -37,9 +37,9 @@ public class PlayerSailCtrl : MonoBehaviour
     public void StartSync()
     {
         isSync = false;
-        if (GameManager.instance.playerShip != null)
+        if (SeaBattleManager.Instance.playerShip != null)
         {
-            ship = GameManager.instance.playerShip.GetComponent<Ship>();
+            ship = SeaBattleManager.Instance.playerShip.GetComponent<Ship>();
             ship.OnChangeSailDirection.AddListener(UpdateSailInfo);
             sailSet.value = ship.sailSet;
             toggleSail.isOn = ship.AutoSail;
@@ -62,7 +62,7 @@ public class PlayerSailCtrl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GameManager.instance.playerShip == null) isSync = false;
+        if (SeaBattleManager.Instance.playerShip == null) isSync = false;
         if (isRotate && isSync)
         {
             Vector2 startV = StartPos - (Vector2)sail.transform.position;

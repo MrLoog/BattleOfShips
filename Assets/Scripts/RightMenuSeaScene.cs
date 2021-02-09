@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WindChangeSkill : ShipSkill
+public class RightMenuSeaScene : MonoBehaviour
 {
+
     // Start is called before the first frame update
     void Start()
     {
@@ -16,14 +17,9 @@ public class WindChangeSkill : ShipSkill
 
     }
 
-    public override void ActiveSkill()
+    public void PressReturnTown()
     {
-        GameManager.instance.RandomWindForce();
-    }
-
-    public override void ToggleSkill()
-    {
-        // base.ToggleSkill();
-        ActiveSkill();
+        UnityEngine.SceneManagement.SceneManager.LoadScene("TownScene");
+        Debug.Log("Press Return Town");
     }
 }

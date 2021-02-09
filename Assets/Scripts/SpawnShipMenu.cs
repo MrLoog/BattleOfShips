@@ -36,11 +36,11 @@ public class SpawnShipMenu : MonoBehaviour
             int.Parse(greenTeam.text),
             int.Parse(yellowTeam.text)
         };
-        GameManager.instance.SpawnNewShips(enemys);
+        SeaBattleManager.Instance.SpawnNewShips(enemys);
     }
 
     public void OnCancelPress()
     {
-        GameManager.instance.CloseDialogSpawnShipMenu();
+        SeaBattleManager.Instance.CloseDialogSpawnShipMenu();
     }
 }

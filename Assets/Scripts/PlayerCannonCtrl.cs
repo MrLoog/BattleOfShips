@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using static GameManager;
+using static SeaBattleManager;
 
 public class PlayerCannonCtrl : MonoBehaviour
 {
@@ -39,10 +39,10 @@ public class PlayerCannonCtrl : MonoBehaviour
     public void StartSync()
     {
         isSync = false;
-        if (GameManager.instance.playerShip != null)
+        if (SeaBattleManager.Instance.playerShip != null)
         {
-            playerShip = GameManager.instance.playerShip.GetComponent<Ship>();
-            PlayerShipDirection = GameManager.instance.GetPlayerShipFrontDirection();
+            playerShip = SeaBattleManager.Instance.playerShip.GetComponent<Ship>();
+            PlayerShipDirection = SeaBattleManager.Instance.GetPlayerShipFrontDirection();
             UpdateByPlayer();
             playerShip.Events.RegisterListener(Ship.EVENT_CANNON_FRONT_FIRE).AddListener(delegate ()
             {
@@ -83,10 +83,10 @@ public class PlayerCannonCtrl : MonoBehaviour
     void Update()
     {
         if (!isSync) return;
-        if (GameManager.instance.playerShip == null) isSync = false;
-        if (GameManager.instance.GetPlayerShipFrontDirection() != PlayerShipDirection)
+        if (SeaBattleManager.Instance.playerShip == null) isSync = false;
+        if (SeaBattleManager.Instance.GetPlayerShipFrontDirection() != PlayerShipDirection)
         {
-            PlayerShipDirection = GameManager.instance.GetPlayerShipFrontDirection();
+            PlayerShipDirection = SeaBattleManager.Instance.GetPlayerShipFrontDirection();
             UpdateByPlayer();
         }
 

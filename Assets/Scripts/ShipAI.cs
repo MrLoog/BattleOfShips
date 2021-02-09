@@ -25,7 +25,7 @@ public class ShipAI : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawWireSphere(GameManager.instance.playerShip.transform.position, 5f);
+        Gizmos.DrawWireSphere(SeaBattleManager.Instance.playerShip.transform.position, 5f);
     }
 
     // Update is called once per frame
@@ -38,7 +38,7 @@ public class ShipAI : MonoBehaviour
     {
         CurIntent = ShipIntent.Shot;
         ShotBehavior behavior = new ShotBehavior();
-        target = GameManager.instance.playerShip.GetComponent<Ship>();
+        target = SeaBattleManager.Instance.playerShip.GetComponent<Ship>();
         behavior.target = target;
         CurActionBehavior = behavior;
     }

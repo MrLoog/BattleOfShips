@@ -29,9 +29,9 @@ public class ShipSkillCtrl : MonoBehaviour
     public void StartSync()
     {
         isSync = false;
-        if (GameManager.instance.playerShip != null)
+        if (SeaBattleManager.Instance.playerShip != null)
         {
-            ship = GameManager.instance.playerShip.GetComponent<Ship>();
+            ship = SeaBattleManager.Instance.playerShip.GetComponent<Ship>();
             for (int i = 0; i < ship.shipSkills.Count; i++)
             {
                 avatarSkills[i] = ship.shipSkills[i].avatar;

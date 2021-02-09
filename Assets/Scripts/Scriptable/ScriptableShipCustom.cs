@@ -8,6 +8,13 @@ using UnityEngine;
 public class ScriptableShipCustom : ScriptableObjectPrefab
 {
     public ScriptableShip baseShipData;
-
+    public ScriptableShip curShipData;
     public ShipInventory inventory;
+
+    public ScriptableCaptain captain;
+
+    public ScriptableShipUpgrade[] upgrades;
+    public ScriptableShipSkill[] skills;
+
+    public Transform transform;
 }

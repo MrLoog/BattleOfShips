@@ -37,7 +37,7 @@ public class ShipInventoryMenu : MonoBehaviour
         {
             if (goods == null)
             {
-                goods = GameManager.instance.goods.ToList();
+                goods = SeaBattleManager.Instance.goods.ToList();
             }
             return goods;
         }
@@ -144,9 +144,9 @@ public class ShipInventoryMenu : MonoBehaviour
     public void ShowInventory(Ship otherShip = null)
     {
         gameObject.SetActive(true);
-        if (GameManager.instance.playerShip != null)
+        if (SeaBattleManager.Instance.playerShip != null)
         {
-            AddShipIndex(GameManager.instance.playerShip.GetComponent<Ship>(), 0);
+            AddShipIndex(SeaBattleManager.Instance.playerShip.GetComponent<Ship>(), 0);
             ShowInventoryDetails(
                 panelInventory,
                 AddInventoryIndex(ships[0].inventory, 0)
@@ -273,6 +273,6 @@ public class ShipInventoryMenu : MonoBehaviour
     {
         panelInventoryOther.SetActive(false);
         gameObject.SetActive(false);
-        GameManager.instance.ResumeGame();
+        SeaBattleManager.Instance.ResumeGame();
     }
 }

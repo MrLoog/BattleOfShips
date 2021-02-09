@@ -25,7 +25,7 @@ public class CameraCtrl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 shipPos = GameManager.instance.playerShip.transform.position;
+        Vector3 shipPos = SeaBattleManager.Instance.playerShip.transform.position;
         gameObject.transform.position = new Vector3(shipPos.x, shipPos.y, gameObject.transform.position.z);
     }
 }
