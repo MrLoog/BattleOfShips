@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 462f49c6bff21c245ad5b420d2271bc2, type: 3}
   m_Name: ShipOfTheLine
   m_EditorClassIdentifier: 
-  prefab: {fileID: 0}
   typeName: Ship of the Line
   type: 8
   maxCrew: 500

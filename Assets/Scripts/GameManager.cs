@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using UnityEngine;
 
 public class GameManager : BaseSceneManager
@@ -9,10 +10,29 @@ public class GameManager : BaseSceneManager
     public IStoreData database;
 
     public GameData gameData;
+    public GameData GameData
+    {
+        set
+        {
+            gameData = value;
+        }
+        get
+        {
+            if (gameData == null)
+            {
+                gameData = new GameData();
+                Debug.Log(JsonConvert.SerializeObject(gameData));
+            }
+            return (GameData)gameData;
+        }
+    }
 
-    public string mainSceneName = "MainScene";
+    public ScriptableShipCustom playerStarterShip;
+
+    public string mainSceneName = "GameScene";
     public string battleSceneName = "SeaBattleScene";
     public string townSceneName = "TownScene";
+
 
     public override void Awake()
     {
@@ -30,6 +50,7 @@ public class GameManager : BaseSceneManager
     {
     }
 
+
     // Update is called once per frame
     void Update()
     {
@@ -41,24 +62,48 @@ public class GameManager : BaseSceneManager
         ChangeScene(battleSceneName);
     }
 
+    public void ResumeGame()
+    {
+        ChangeScene(gameData.SceneCurrentName);
+    }
+
+    public void StartNewGame()
+    {
+        GameData.playerShip = playerStarterShip;
+        GameData.process = GameData.PROCESS_INIT_FIRST_SHIP;
+        ChangeScene(battleSceneName);
+    }
+
     public bool ChangeScene(string sceneName)
     {
+        Debug.Log("Change Scene " + sceneName);
         UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
-        gameData.SceneCurrentName = sceneName;
+        if (sceneName != mainSceneName)
+        {
+            GameData.SceneCurrentName = sceneName;
+        }
         return true;
     }
 
     #region store data
     private void OnApplicationQuit()
     {
+        SaveGame();
+    }
+
+    public void SaveGame()
+    {
+        if (GameData.SceneCurrentName != null && GameData.SceneCurrentName != GetType().Name)
+        {
+            SaveDataScene(GameData.SceneCurrentName.Replace("Scene", "Manager"));
+        }
         SaveData();
-        SaveDataScene(gameData.SceneCurrentName);
     }
 
     public void SaveData()
     {
         if (database == null) return;
-        database.SaveData(mainSceneName, gameData);
+        database.SaveData(this.name, GameData);
     }
 
     public void SaveDataScene(string sceneManagerName)
@@ -68,20 +113,27 @@ public class GameManager : BaseSceneManager
         if (gameObjectManager != null)
         {
             BaseSceneManager sceneMnager = gameObjectManager.GetComponent<BaseSceneManager>();
-            database.SaveData(sceneManagerName, sceneMnager.GetDataForSave());
+            BaseDataEntity dataSave = sceneMnager.GetDataForSave();
+            if (dataSave != null)
+            {
+                database.SaveData(sceneMnager.name, dataSave);
+            }
         }
     }
 
     public void LoadData()
     {
         if (database == null) return;
-        gameData = (GameData)database.LoadData(mainSceneName);
+        GameData = database.LoadData<GameData>(this.name);
     }
 
-    public BaseDataEntity LoadDataScene(string sceneManagerName)
+    public T LoadDataScene<T>(string sceneManagerName)
     {
-        if (database == null) return null;
-        return database.LoadData(sceneManagerName);
+        Debug.Log("Load Scene " + sceneManagerName);
+        if (database == null) return default(T);
+        T data = database.LoadData<T>(sceneManagerName);
+        // Debug.Log("Load Scene " + data.GetType() + " " + JsonConvert.SerializeObject(data));
+        return data;
     }
 
     #endregion store data

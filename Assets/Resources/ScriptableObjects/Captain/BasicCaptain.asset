@@ -12,13 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b520d205229a7f84ba7af19e823f4e34, type: 3}
   m_Name: BasicCaptain
   m_EditorClassIdentifier: 
-  prefab: {fileID: 0}
-  captainName: Unname
+  captainName: T??ng Th?ng
   healthUnit: 1
   attackUnit: 1
   healthPoint: 1
   attackPoint: 1
-  health: 1
+  health: 100
   attack: 1
   remainPoint: 0
   level: 1

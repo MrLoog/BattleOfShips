@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Tilemaps;
@@ -17,6 +18,19 @@ public class SeaBattleManager : BaseSceneManager
     public static SeaBattleManager Instance;
 
     public GameManager gameManager;
+
+    public SeaBattleData seaBattleData;
+    public SeaBattleData SeaBattleData
+    {
+        set
+        {
+            seaBattleData = value;
+        }
+        get
+        {
+            return (SeaBattleData)seaBattleData;
+        }
+    }
 
     public PoolManager<WrapPool> poolCannon;
     public PoolManager<WrapPool> poolHumanFly;
@@ -69,7 +83,7 @@ public class SeaBattleManager : BaseSceneManager
     public ModalPopupCtrl PopupCtrl => ModalPopupUtil.GetComponent<ModalPopupCtrl>();
 
 
-    void Awake()
+    public override void Awake()
     {
         if (Instance != null && Instance != this)
             Destroy(gameObject);
@@ -90,6 +104,7 @@ public class SeaBattleManager : BaseSceneManager
         {
             ships.Add(ShipManager.transform.GetChild(i).GetComponent<Ship>());
         }
+        base.Awake();
         // ships.Add(playerShip.GetComponent<Ship>());
         // ships.Add(enemyShip.GetComponent<Ship>());
         // ships.Add(enemyShip.GetComponent<Ship>());
@@ -97,8 +112,16 @@ public class SeaBattleManager : BaseSceneManager
     // Start is called before the first frame update
     void Start()
     {
-        SpawnPlayerShip();
-        RandomWindForce();
+        if (gameManager.GameData.process != GameData.PROCESS_INIT_FIRST_SHIP)
+        {
+            LoadGame();
+        }
+        else
+        {
+            SpawnPlayerShip();
+            RandomWindForce();
+            gameManager.GameData.process = GameData.PROCESS_FIRST_TIME_BATTLE;
+        }
         GameObject newCannon = Instantiate(prefabCannon);
         newCannon.SetActive(false);
         newCannon.GetComponent<CannonShot>().Data = ScriptableCannonBalls.Where(x => x.name == "RoundShot").First();
@@ -112,7 +135,8 @@ public class SeaBattleManager : BaseSceneManager
             WrapPool newInstance = poolCannon.newInstance;
             CannonShot cs = newInstance.poolObj.GetComponent<CannonShot>();
             newInstance.poolObj = Instantiate(prefabCannon);
-            newInstance.poolObj.GetComponent<CannonShot>().Data = cs.Data.Clone<ScriptableCannonBall>();
+            // newInstance.poolObj.GetComponent<CannonShot>().Data = cs.Data.Clone<ScriptableCannonBall>();
+            newInstance.poolObj.GetComponent<CannonShot>().Data = cs.Data;
             // newInstance.SetActive(false);
         };
 
@@ -129,6 +153,11 @@ public class SeaBattleManager : BaseSceneManager
             newInstance.poolObj = Instantiate(prefabHumanFly);
             // newInstance.SetActive(false);
         };
+
+        if (gameManager.GameData.process == GameData.PROCESS_INIT_FIRST_SHIP)
+        {
+            gameManager.GameData.process = GameData.PROCESS_FIRST_TIME_BATTLE;
+        }
     }
 
     // Update is called once per frame
@@ -281,7 +310,7 @@ public class SeaBattleManager : BaseSceneManager
         CloseDialogSpawnShipMenu();
     }
 
-    private void SpawnPlayerShip()
+    private GameObject SpawnPlayerShip(ScriptableShipCustom customData = null)
     {
         GameObject newShip = Instantiate(prefabShip, ShipManager.transform, false);
         foreach (Transform eachChild in newShip.transform)
@@ -294,35 +323,49 @@ public class SeaBattleManager : BaseSceneManager
         }
         Ship scriptShip = newShip.GetComponent<Ship>();
         // scriptShip.ShipData = playerStartShip.Clone<ScriptableShip>();
-        ScriptableShipCustom defaultShip = playerStartShipCustom.Clone<ScriptableShipCustom>();
-        defaultShip.captain.health = 100;
-        scriptShip.InitData(defaultShip);
+        if (customData == null)
+        {
+            Debug.Log("default ship");
+            ScriptableShipCustom defaultShip = gameManager.GameData.playerShip.Restore<ScriptableShipCustom>();
+            defaultShip.captain.health = 100;
+            defaultShip.captain.captainName = "Tường Thắng";
+            gameManager.GameData.playerShip = defaultShip;
+            scriptShip.InitData(defaultShip);
+            // if (scriptableShipSkills.Length > 0)
+            // {
+            //     scriptableShipSkills.Where(x =>
+            //     // x.name == "ShieldProtect" ||
+            //     x.name == "WindChangeSkill" ||
+            //     x.name == "WingOfWind" ||
+            //     x.name == "BurstShot").ToList().ForEach(x =>
+            //     {
+            //         scriptShip.RegisterShipSkill(x);
+            //     });
+            // }
+        }
+        else
+        {
+            scriptShip.InitData(customData);
+        }
+
         playerShip = newShip;
         scriptShip.Group = 0;
         scriptShip.shipId = 0;
         scriptShip.ImgStateShip = ImgShipGroups[0];
+
         ships.Add(scriptShip);
         cameraFollow.GetComponent<Cinemachine.CinemachineVirtualCamera>().Follow = playerShip.transform;
 
         scriptShip.EnableCannonSight = true;
         scriptShip.Events.RegisterListener(Ship.EVENT_TACKED_OTHER_SHIP).AddListener(TackedOtherShip);
 
-        if (scriptableShipSkills.Length > 0)
-        {
-            scriptableShipSkills.Where(x =>
-            // x.name == "ShieldProtect" ||
-            x.name == "WindChangeSkill" ||
-            x.name == "WingOfWind" ||
-            x.name == "BurstShot").ToList().ForEach(x =>
-            {
-                scriptShip.RegisterShipSkill(x.Clone<ScriptableShipSkill>());
-            });
-        }
+
 
         PlayerSailCtrl.Instance.StartSync();
         PlayerCannonCtrl.Instance.StartSync();
         PlayerWheelCtrl.Instance.StartSync();
         ShipSkillCtrl.Instance.StartSync();
+        return newShip;
     }
     private void TackedOtherShip()
     {
@@ -435,6 +478,17 @@ public class SeaBattleManager : BaseSceneManager
         return newShip;
     }
 
+    private GameObject SpawnShipFromData(ScriptableShipCustom customData)
+    {
+        GameObject newShip = Instantiate(prefabShip, ShipManager.transform, false);
+        Ship scriptShip = newShip.GetComponent<Ship>();
+        scriptShip.InitData(customData);
+        scriptShip.shipId = ships.Count + 1;
+        scriptShip.ImgStateShip = ImgShipGroups[scriptShip.Group];
+        ships.Add(scriptShip);
+        return newShip;
+    }
+
     internal void CloseDialogSpawnShipMenu()
     {
         DialogInputSpawnShip.SetActive(false);
@@ -442,4 +496,76 @@ public class SeaBattleManager : BaseSceneManager
         Time.timeScale = 1f;
     }
 
+    private void OnApplicationQuit()
+    {
+        //collect seaBattleData
+        // CollectSceneData();
+        //update gameData
+        // UpdateGameData();
+        //save
+        // SaveGame();
+    }
+
+    public override BaseDataEntity GetDataForSave()
+    {
+        CollectSceneData();
+        UpdateGameData();
+        return base.GetDataForSave();
+    }
+
+    public void CollectSceneData()
+    {
+        SeaBattleData = new SeaBattleData();
+        SeaBattleData.SetShipData(ships.Select(x => x.GetComponent<Ship>()).ToArray());
+        SeaBattleData.SetWindData(windForce, accumWindChangeInterval);
+    }
+
+    public void UpdateGameData()
+    {
+        if (playerShip != null)
+        {
+            gameManager.GameData.playerShip = playerShip.GetComponent<Ship>().GetCustomData();
+        }
+    }
+    public void SaveGame()
+    {
+        gameManager.SaveGame();
+    }
+
+    public void LoadGame()
+    {
+        if (SeaBattleData != null)
+        {
+            windForce = JsonUtility.FromJson<Vector2>(SeaBattleData.windDataJson);
+            OnWindChange.Invoke();
+            accumWindChangeInterval = SeaBattleData.windAccumTime;
+
+            for (int i = 0; i < SeaBattleData.shipDatas.Length; i++)
+            {
+                ScriptableShipCustom customData = SeaBattleData.shipDatas[i].Restore<ScriptableShipCustom>();
+                Debug.Log("Init custom1 " + JsonUtility.ToJson(customData));
+                Debug.Log("Init custom2 " + MyJsonUtil.SerializeScriptableObject(customData));
+                GameObject newShip = null;
+                if (i != SeaBattleData.playerShipIndex)
+                {
+                    newShip = SpawnShipFromData(customData);
+                }
+                else
+                {
+                    newShip = SpawnPlayerShip(customData);
+                }
+                newShip.transform.localPosition = new Vector3(
+                    SeaBattleData.transPosJsons[2 * i],
+                    SeaBattleData.transPosJsons[2 * i + 1],
+                    0
+                );
+                newShip.transform.localRotation = Quaternion.Euler(0,
+                    0,
+                    SeaBattleData.transRotJsons[i]
+                );
+                newShip.GetComponent<Ship>().ApplyWindForce(windForce);
+            }
+
+        }
+    }
 }

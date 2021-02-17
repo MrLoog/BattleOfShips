@@ -5,7 +5,7 @@ using UnityEngine;
 
 [Serializable]
 [CreateAssetMenu(fileName = "ScriptableShipUpgrade", menuName = "BoS/Ship Upgrade", order = 7)]
-public class ScriptableShipUpgrade : ScriptableObjectPrefab
+public class ScriptableShipUpgrade : MScriptableObject
 {
     [System.Flags]
     public enum UpradeType

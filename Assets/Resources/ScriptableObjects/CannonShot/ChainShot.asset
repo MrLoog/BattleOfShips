@@ -20,4 +20,4 @@ MonoBehaviour:
   damage: 2
   speed: 2
   range: 3
-  sprite: {fileID: 0}
+  sprite: {fileID: 21300000, guid: 0f15a42c16d62f541b774105e3b27059, type: 3}

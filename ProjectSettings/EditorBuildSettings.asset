@@ -8,4 +8,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SeaBattleScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Scenes/GameScene.unity
+    guid: 6f6249c177fe3484d8022b4e3b1ef86a
+  - enabled: 1
+    path: Assets/Scenes/TownScene.unity
+    guid: 0105a447b3331014983426d66f3956f4
   m_configObjects: {}

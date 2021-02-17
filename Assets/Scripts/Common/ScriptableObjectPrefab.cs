@@ -4,6 +4,6 @@ using UnityEngine;
 
 public class ScriptableObjectPrefab : MScriptableObject
 {
-    public Object prefab;
+    public GameObject prefab;
     
 }

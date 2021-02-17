@@ -19,7 +19,9 @@ public class RightMenuSeaScene : MonoBehaviour
 
     public void PressReturnTown()
     {
-        UnityEngine.SceneManagement.SceneManager.LoadScene("TownScene");
+        // UnityEngine.SceneManagement.SceneManager.LoadScene("TownScene");
+        SeaBattleManager.Instance.UpdateGameData();
+        GameManager.Instance.ChangeScene(GameManager.Instance.townSceneName);
         Debug.Log("Press Return Town");
     }
 }

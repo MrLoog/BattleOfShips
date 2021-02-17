@@ -44,6 +44,8 @@ public class Ship : MonoBehaviour
 
     public List<ShipSkill> shipSkills;
 
+    private List<ScriptableShipSkill> skillDatas;
+
     public ScriptableShipCustom customData;
     public ScriptableShip shipData; //origin data
     public ScriptableShip startShipData; //permanent data
@@ -64,7 +66,7 @@ public class Ship : MonoBehaviour
             , curShipData.sizeRateLength * ShipCollider.size.y / model.transform.localScale.y);
 
             model.transform.localScale = new Vector3(curShipData.sizeRateWidth, curShipData.sizeRateLength, 0);
-            
+
             numberCannon = curShipData.numberCannons;
             cooldownCannons = new float[numberCannon.Length];
             timeReloadCannons = new float[numberCannon.Length];
@@ -86,6 +88,15 @@ public class Ship : MonoBehaviour
     {
         return Group == ship.Group;
     }
+
+
+    internal bool IsPlayerShip()
+    {
+        return shipId == 0;
+    }
+
+
+
 
     public UnityEvent OnChangeSailDirection = new UnityEvent();
 
@@ -380,7 +391,7 @@ public class Ship : MonoBehaviour
                 if (c > 0) continue; //only first deck raise event
                 if (cooldownCannons[indexCannon] >= timeReloadCannons[indexCannon])
                 {
-                    Debug.Log("Reload Cannon Done " + indexCannon + " / " + c);
+                    // Debug.Log("Reload Cannon Done " + indexCannon + " / " + c);
                     switch (i)
                     {
                         case 0: Events.InvokeOnAction(EVENT_CANNON_FRONT_READY); break;
@@ -446,9 +457,50 @@ public class Ship : MonoBehaviour
 
     internal void InitData(ScriptableShipCustom playerStartShipCustom)
     {
-        ShipData = playerStartShipCustom.baseShipData.Clone<ScriptableShip>();
+        Debug.Log("Init custom " + JsonUtility.ToJson(playerStartShipCustom));
+        customData = playerStartShipCustom;
+        ShipData = playerStartShipCustom.baseShipData;
+        if (customData.curShipData != null)
+        {
+            curShipData = customData.curShipData;
+        }
         inventory = new ShipInventory();
         JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(playerStartShipCustom.inventory), inventory);
+        if (customData.group > 0)
+        {
+            Group = customData.group;
+        }
+        if (customData.skills != null)
+        {
+            foreach (ScriptableShipSkill skill in customData.skills)
+            {
+                RegisterShipSkill(skill);
+            }
+        }
+    }
+
+    internal ScriptableShipCustom GetCustomData()
+    {
+        ScriptableShipCustom result = null;
+        if (customData != null)
+        {
+            result = customData;
+        }
+        else
+        {
+            result = ScriptableObject.CreateInstance<ScriptableShipCustom>();
+            // result.captain
+            result.baseShipData = shipData;
+
+        }
+        result.curShipData = curShipData;
+        result.group = Group;
+        result.inventory = inventory;
+        if (skillDatas != null)
+        {
+            result.skills = skillDatas.ToArray();
+        }
+        return result;
     }
 
     public void EnterNoCrewState()
@@ -945,6 +997,7 @@ public class Ship : MonoBehaviour
     }
 
     public int countShot = 0;
+
     private void FireCannonOneDirection(CannonDirection direction)
     {
         if (!CheckCannonReady(direction)) return;
@@ -1047,6 +1100,9 @@ public class Ship : MonoBehaviour
     public void RegisterShipSkill(ScriptableShipSkill skillData)
     {
         if (shipSkills == null) shipSkills = new List<ShipSkill>();
+        if (skillDatas == null) skillDatas = new List<ScriptableShipSkill>();
+        skillDatas.Add(skillData);
+
         Object instanceSkill = Instantiate(skillData.prefab, model.transform, false);
         ShipSkill shipSkill = ((GameObject)instanceSkill).GetComponent<ShipSkill>();
         shipSkill.RegisterShip(this);

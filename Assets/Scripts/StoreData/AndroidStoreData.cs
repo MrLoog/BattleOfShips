@@ -27,11 +27,11 @@ public class AndroidStoreData : BaseStoreData
 
     public override bool SaveData(string key, BaseDataEntity data)
     {
-        return true;
+        return base.SaveData(key, data);
     }
 
-    public override BaseDataEntity LoadData(string key)
+    public override T LoadData<T>(string key)
     {
-        return null;
+        return base.LoadData<T>(key);
     }
 }

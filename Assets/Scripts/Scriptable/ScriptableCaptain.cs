@@ -5,7 +5,7 @@ using UnityEngine;
 
 [Serializable]
 [CreateAssetMenu(fileName = "ScriptableCaptain", menuName = "BoS/Captain", order = 8)]
-public class ScriptableCaptain : ScriptableObjectPrefab
+public class ScriptableCaptain : MScriptableObject
 {
     public string captainName;
     public float healthUnit;

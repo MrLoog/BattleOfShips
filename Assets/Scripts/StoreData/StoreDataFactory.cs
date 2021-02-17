@@ -10,10 +10,10 @@ public class StoreDataFactory
     internal static IStoreData GetDatabase()
     {
 
-#if UNITY_ANDROID
+// #if UNITY_ANDROID
         return AndroidStoreData.Instance;
-#else
-        return null;
-#endif
+// #else
+        // return null;
+// #endif
     }
 }

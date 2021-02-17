@@ -28,7 +28,7 @@ public class ShipHealthBar : MonoBehaviour
                 shipOwner.curShipData.sailHealth / (float)shipOwner.startShipData.sailHealth,
                 sailBar.transform.localScale.y
             );
-            Debug.Log("Health Bar " + shipOwner.curShipData.maxCrew + " / " + shipOwner.startShipData.maxCrew);
+            // Debug.Log("Health Bar " + shipOwner.curShipData.maxCrew + " / " + shipOwner.startShipData.maxCrew);
             crewBar.transform.localScale = new Vector3(
                 shipOwner.curShipData.maxCrew / (float)shipOwner.startShipData.maxCrew,
                 crewBar.transform.localScale.y

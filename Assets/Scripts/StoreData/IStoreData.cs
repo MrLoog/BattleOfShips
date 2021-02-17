@@ -5,5 +5,5 @@ using UnityEngine;
 public interface IStoreData
 {
     bool SaveData(string key, BaseDataEntity data);
-    BaseDataEntity LoadData(string key);
+    T LoadData<T>(string key);
 }
