@@ -14,4 +14,7 @@ public class ScriptableShipGoods : ScriptableObjectPrefab
     public Sprite image;
 
     public string codeName;
+
+    public int basePrice;
+    public int baseQuantiy;
 }

@@ -18,3 +18,5 @@ MonoBehaviour:
   weight: 30
   image: {fileID: 5562307229471435780, guid: 487ea49dfff97ef4aa416596bac3eaa0, type: 3}
   codeName: Oil
+  basePrice: 30
+  baseQuantiy: 0

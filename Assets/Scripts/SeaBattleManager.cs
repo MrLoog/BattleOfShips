@@ -42,7 +42,6 @@ public class SeaBattleManager : BaseSceneManager
 
     public GameObject InventoryMenu;
 
-    public GameObject ModalPopupUtil;
 
 
 
@@ -80,7 +79,7 @@ public class SeaBattleManager : BaseSceneManager
 
     public string GoodsCannonBallCode = "CannonBall";
 
-    public ModalPopupCtrl PopupCtrl => ModalPopupUtil.GetComponent<ModalPopupCtrl>();
+    public ModalPopupCtrl PopupCtrl => gameManager.PopupCtrl;
 
 
     public override void Awake()
@@ -369,7 +368,7 @@ public class SeaBattleManager : BaseSceneManager
     }
     private void TackedOtherShip()
     {
-        PauseGame();
+        GameManager.Instance.PauseGamePlay();
         Ship target = playerShip.GetComponent<Ship>().LastCollision2D.gameObject.GetComponent<Ship>();
         PopupCtrl.ShowDialog(
             title: "Confirm Perform Tacked",
@@ -393,13 +392,13 @@ public class SeaBattleManager : BaseSceneManager
                     else if (result.Result == 2)
                     { //lose
 
-                        ResumeGame();
+                        GameManager.Instance.ResumeGamePlay();
                     }
 
                 }
                 else
                 {
-                    ResumeGame();
+                    GameManager.Instance.ResumeGamePlay();
                 }
             }
         );
@@ -416,7 +415,7 @@ public class SeaBattleManager : BaseSceneManager
                     cancelText: null,
                     onResult: (i) =>
                     {
-                        ResumeGame();
+                        GameManager.Instance.ResumeGamePlay();
                     }
                 );
     }
@@ -431,6 +430,17 @@ public class SeaBattleManager : BaseSceneManager
                     onResult: (i) =>
                     {
                         InventoryMenu.GetComponent<ShipInventoryMenu>().ShowInventory(result.ship2);
+                        List<ScriptableShipCustom> shipCustoms = new List<ScriptableShipCustom>();
+                        shipCustoms.Add(result.ship1.GetCustomData());
+                        shipCustoms.Add(result.ship2.GetCustomData());
+                        ShipInventoryCtrl transferCtrl = GameManager.Instance.ShipInventoryCtrl;
+                        transferCtrl.RegisterAvaiableShip(shipCustoms.ToArray(), 0);
+                        transferCtrl.OnHideInventory = delegate ()
+                        {
+                            GameManager.Instance.ShipInventoryCtrl.OnHideInventory = null;
+                            // result.ship1.InitData();
+                        };
+                        transferCtrl.ShowInventory(ShipInventoryCtrl.InventoryMode.Transfer);
                     }
                 );
     }
@@ -442,21 +452,6 @@ public class SeaBattleManager : BaseSceneManager
         return battle;
     }
 
-    public float prevSpeed = 1f;
-
-    public void PauseGame()
-    {
-        prevSpeed = Time.timeScale;
-        Time.timeScale = 0f;
-    }
-
-    public void ResumeGame()
-    {
-        if (Time.timeScale == 0f)
-        {
-            Time.timeScale = prevSpeed > 0f ? prevSpeed : 1;
-        }
-    }
 
     private GameObject SpawnShip(int group)
     {

@@ -22,7 +22,7 @@ public class BaseStoreData : IStoreData
         {
             string strData = EncodingUse.GetString(data);
 
-            T objData = (T)(typeof(MyJsonUtil).GetMethod("DeserializeObject").MakeGenericMethod(typeof(T)).Invoke(null, new object[] { strData }));
+            T objData = (T)(typeof(MyJsonUtil).GetMethod("DeserializeScriptableObject").MakeGenericMethod(typeof(T)).Invoke(null, new object[] { strData }));
             return objData;
         }
         return default(T);

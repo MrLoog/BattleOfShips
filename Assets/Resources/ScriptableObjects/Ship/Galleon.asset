@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 462f49c6bff21c245ad5b420d2271bc2, type: 3}
   m_Name: Galleon
   m_EditorClassIdentifier: 
-  prefab: {fileID: 0}
   typeName: Galleon
   type: 6
   maxCrew: 200
@@ -30,3 +29,5 @@ MonoBehaviour:
   MaxHitToStun: 5
   TimeHitToStun: 1
   TimeRegainStun: 7
+  basePrice: 1000000
+  shipTier: 5

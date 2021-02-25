@@ -115,8 +115,8 @@ public class ShipInventoryMenu : MonoBehaviour
         }
         if (i == inventoryAdd.goodsCode.Length)
         {
-            inventoryAdd.goodsCode = inventoryDeduct.goodsCode.Concat(new string[] { inventoryDeduct.goodsCode[indexTransfer] }).ToArray();
-            inventoryAdd.quantity = inventoryDeduct.quantity.Concat(new int[] { quantity }).ToArray();
+            inventoryAdd.goodsCode = inventoryAdd.goodsCode.Concat(new string[] { inventoryDeduct.goodsCode[indexTransfer] }).ToArray();
+            inventoryAdd.quantity = inventoryAdd.quantity.Concat(new int[] { quantity }).ToArray();
         }
 
         ShowInventoryDetails(
@@ -273,6 +273,6 @@ public class ShipInventoryMenu : MonoBehaviour
     {
         panelInventoryOther.SetActive(false);
         gameObject.SetActive(false);
-        SeaBattleManager.Instance.ResumeGame();
+        GameManager.Instance.ResumeGamePlay();
     }
 }

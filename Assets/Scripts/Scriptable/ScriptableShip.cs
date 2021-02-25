@@ -32,4 +32,6 @@ public class ScriptableShip : MScriptableObject
     public float TimeHitToStun = 1f;
     public float TimeRegainStun = 5f;
 
+    public int basePrice;
+    public int shipTier;
 }

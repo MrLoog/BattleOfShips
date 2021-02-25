@@ -14,4 +14,9 @@ public class GameData : BaseDataEntity
 
     public int process = 0; //mark general process 
     public ScriptableShipCustom playerShip;
+    public ScriptableShipCustom[] otherShips;
+
+    public int gold;
+
+    public MarketStateToday market;
 }

@@ -18,3 +18,5 @@ MonoBehaviour:
   weight: 25
   image: {fileID: 6384954778881241154, guid: 487ea49dfff97ef4aa416596bac3eaa0, type: 3}
   codeName: Rum
+  basePrice: 20
+  baseQuantiy: 0

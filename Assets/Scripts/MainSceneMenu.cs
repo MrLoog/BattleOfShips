@@ -14,7 +14,7 @@ public class MainSceneMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (GameManager.Instance.gameData.process > GameData.PROCESS_INIT_FIRST_SHIP)
+        if (GameManager.Instance.GameData.process > GameData.PROCESS_INIT_FIRST_SHIP)
         {
             ButtonResume.SetActive(true);
         }
@@ -35,4 +35,5 @@ public class MainSceneMenu : MonoBehaviour
     {
         GameManager.Instance.ResumeGame();
     }
+
 }

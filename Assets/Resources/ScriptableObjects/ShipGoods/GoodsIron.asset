@@ -18,3 +18,5 @@ MonoBehaviour:
   weight: 50
   image: {fileID: -8074536796870241026, guid: 487ea49dfff97ef4aa416596bac3eaa0, type: 3}
   codeName: Iron
+  basePrice: 20
+  baseQuantiy: 0

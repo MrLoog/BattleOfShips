@@ -1,12 +1,23 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Newtonsoft.Json;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GameManager : BaseSceneManager
 {
     public static GameManager Instance;
 
+    public GameObject ModalPopupUtil;
+
+    public ModalPopupCtrl PopupCtrl => ModalPopupUtil.GetComponent<ModalPopupCtrl>();
+    public GameObject ShipInventoryCanvas;
+
+    public ShipInventoryCtrl ShipInventoryCtrl => ShipInventoryCanvas.GetComponentInChildren<ShipInventoryCtrl>();
+
+    public UnityAction<int> OnGoldAccountChanged;
     public IStoreData database;
 
     public GameData gameData;
@@ -28,6 +39,7 @@ public class GameManager : BaseSceneManager
     }
 
     public ScriptableShipCustom playerStarterShip;
+    public ScriptableShipCustom[] otherShips;
 
     public string mainSceneName = "GameScene";
     public string battleSceneName = "SeaBattleScene";
@@ -41,6 +53,8 @@ public class GameManager : BaseSceneManager
         else
             Instance = this;
         DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(ShipInventoryCanvas);
+        DontDestroyOnLoad(PopupCtrl.gameObject); //modal util
 
         database = StoreDataFactory.GetDatabase();
         base.Awake();
@@ -48,6 +62,7 @@ public class GameManager : BaseSceneManager
     // Start is called before the first frame update
     void Start()
     {
+        // gameData.playerShip.test = new Test() { prop = "Test" };
     }
 
 
@@ -64,12 +79,22 @@ public class GameManager : BaseSceneManager
 
     public void ResumeGame()
     {
-        ChangeScene(gameData.SceneCurrentName);
+        ChangeScene(GameData.SceneCurrentName);
     }
 
     public void StartNewGame()
     {
         GameData.playerShip = playerStarterShip;
+        List<ScriptableShipCustom> lst = new List<ScriptableShipCustom>();
+        if (otherShips != null)
+        {
+            foreach (var item in otherShips)
+            {
+                lst.Add(item.Clone<ScriptableShipCustom>());
+            }
+        }
+        GameData.otherShips = lst.ToArray();
+        GameData.gold = 5000;
         GameData.process = GameData.PROCESS_INIT_FIRST_SHIP;
         ChangeScene(battleSceneName);
     }
@@ -137,4 +162,87 @@ public class GameManager : BaseSceneManager
     }
 
     #endregion store data
+
+    #region gold account
+    public bool IsEnoughGold(int amount)
+    {
+        return GameData.gold >= amount;
+    }
+
+    public int DeductGold(int amount)
+    {
+        if (!IsEnoughGold(amount)) return -1;
+        GameData.gold -= amount;
+        OnGoldAccountChanged?.Invoke(-amount);
+        return GameData.gold;
+    }
+
+    public int AddGold(int amount)
+    {
+        GameData.gold += amount;
+        OnGoldAccountChanged?.Invoke(amount);
+        return GameData.gold;
+    }
+
+    internal void DeleteShip(ScriptableShipCustom data)
+    {
+        if (GameData.otherShips == null) return;
+        List<ScriptableShipCustom> datas = GameData.otherShips.ToList();
+        datas.Remove(data);
+        GameData.otherShips = datas.ToArray();
+    }
+    #endregion
+
+
+    public void PressShowInventory()
+    {
+        if (GameData.otherShips.Length > 0)
+        {
+            List<ScriptableShipCustom> shipCustoms = new List<ScriptableShipCustom>();
+            shipCustoms.Add(GameData.playerShip);
+            shipCustoms.AddRange(GameData.otherShips);
+            ShipInventoryCtrl.RegisterAvaiableShip(shipCustoms.ToArray(), 0);
+            ShipInventoryCtrl.ShowInventory(ShipInventoryCtrl.InventoryMode.Transfer, 0, 1);
+        }
+    }
+
+    public void PressShowMarket()
+    {
+        if (GameData.otherShips.Length > 0)
+        {
+            List<ScriptableShipCustom> shipCustoms = new List<ScriptableShipCustom>();
+            shipCustoms.Add(GameData.playerShip);
+            shipCustoms.AddRange(GameData.otherShips);
+            ShipInventoryCtrl.RegisterAvaiableShip(shipCustoms.ToArray(), 0);
+            ShipInventoryCtrl.ShowInventory(ShipInventoryCtrl.InventoryMode.Shop, 0);
+        }
+    }
+
+    public float prevSpeed = 1f;
+
+    public void PauseGamePlay()
+    {
+        prevSpeed = Time.timeScale;
+        Time.timeScale = 0f;
+    }
+
+    public void ResumeGamePlay()
+    {
+        if (Time.timeScale == 0f)
+        {
+            Time.timeScale = prevSpeed > 0f ? prevSpeed : 1;
+        }
+    }
+
+    public MarketStateToday GetMarketStateToday()
+    {
+        if (GameData.market == null || GameData.market.time == null || GameData.market.time.ToString("yyyy-MM-dd") != DateTime.Now.ToString("yyyy-MM-dd"))
+        {
+            GameData.market = MarketStateFactory.BuildMarketStateToday(MyResourceUtils.ResourcesLoadAll<ScriptableShipGoods>(
+                MyResourceUtils.RESOURCES_PATH_SCRIPTABLE_OBJECTS_GOODS),
+                MarketStateFactory.RandomStateByProbability(MyResourceUtils.ResourcesLoadAll<ScriptableMarketState>(MyResourceUtils.RESOURCES_PATH_SCRIPTABLE_OBJECTS))
+                );
+        }
+        return GameData.market;
+    }
 }

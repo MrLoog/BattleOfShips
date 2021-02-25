@@ -38,8 +38,10 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\PlayerCtrl.cs" />
      <Compile Include="Assets\Scripts\Common\Extensions.cs" />
+     <Compile Include="Assets\Scripts\TownManager.cs" />
      <Compile Include="Assets\Scripts\CannonSight.cs" />
      <Compile Include="Assets\Scripts\ModalPopupCtrl.cs" />
+     <Compile Include="Assets\Scripts\Menu\TownScene\ShipManageInfo.cs" />
      <Compile Include="Assets\Scripts\Utils\Singleton.cs" />
      <Compile Include="Assets\Scripts\ShipAI.cs" />
      <Compile Include="Assets\Scripts\PlayerWheelCtrl.cs" />
@@ -61,6 +63,7 @@
      <Compile Include="Assets\Scripts\RoundShot.cs" />
      <Compile Include="Assets\Scripts\Scriptable\ScriptableCaptain.cs" />
      <Compile Include="Assets\Scripts\ParticleStopDestroyParent.cs" />
+     <Compile Include="Assets\Scripts\Menu\TownScene\TownSceneMenu.cs" />
      <Compile Include="Assets\Scripts\Ship.cs" />
      <Compile Include="Assets\Scripts\ShipHealthBar.cs" />
      <Compile Include="Assets\Scripts\Scriptable\ScriptableShipUpgrade.cs" />
@@ -72,13 +75,19 @@
      <Compile Include="Assets\Scripts\ShipTackedBattle.cs" />
      <Compile Include="Assets\Scripts\StoreData\AndroidStoreData.cs" />
      <Compile Include="Assets\Scripts\LevelSystem.cs" />
+     <Compile Include="Assets\Scripts\MyResourceUtils.cs" />
      <Compile Include="Assets\Scripts\Rotate.cs" />
+     <Compile Include="Assets\Scripts\Utils\MyGameObjectUtils.cs" />
+     <Compile Include="Assets\Scripts\ShipInventoryCtrl.cs" />
      <Compile Include="Assets\Scripts\ShipShieldSkill.cs" />
+     <Compile Include="Assets\Scripts\MainSceneMenu.cs" />
      <Compile Include="Assets\Scripts\PlayerSailCtrl.cs" />
      <Compile Include="Assets\Scripts\ShipSkillCtrl.cs" />
      <Compile Include="Assets\Scripts\RightMenuSeaScene.cs" />
      <Compile Include="Assets\Scripts\TimeTrail.cs" />
      <Compile Include="Assets\Scripts\Common\EventDict.cs" />
+     <Compile Include="Assets\Scripts\GameText.cs" />
+     <Compile Include="Assets\Scripts\Menu\TownScene\ShipManageMiniMenu.cs" />
      <Compile Include="Assets\Scripts\MyLocalization.cs" />
      <Compile Include="Assets\Scripts\Common\Cloneable.cs" />
      <Compile Include="Assets\Scripts\BaseShot.cs" />
@@ -95,11 +104,13 @@
      <Compile Include="Assets\Scripts\Scriptable\ScriptableShipGoods.cs" />
      <Compile Include="Assets\Scripts\TransferItemCtrl.cs" />
      <Compile Include="Assets\Scripts\StoreData\BaseStoreData.cs" />
+     <Compile Include="Assets\Scripts\ShipHelper.cs" />
      <Compile Include="Assets\Scripts\StoreData\BaseSceneManager.cs" />
      <Compile Include="Assets\Scripts\MapBounds.cs" />
      <Compile Include="Assets\Scripts\WeatherWindRate.cs" />
      <Compile Include="Assets\Scripts\BurstShot.cs" />
      <Compile Include="Assets\Scripts\Scriptable\ScriptableShipCustom.cs" />
+     <Compile Include="Assets\Scripts\Menu\TownScene\ShipManageMenu.cs" />
      <Compile Include="Assets\Scripts\StoreData\SeaBattleData.cs" />
      <Compile Include="Assets\Scripts\CartonBoomCallback.cs" />
      <Compile Include="Assets\Scripts\Common\GameObjectFactory.cs" />
@@ -112,8 +123,11 @@
      <Compile Include="Assets\Scripts\VCamCtrl.cs" />
      <Compile Include="Assets\Scripts\Utils\MyJsonUtil.cs" />
      <Compile Include="Assets\Scripts\SpawnShipMenu.cs" />
-     <Compile Include="Assets\Scripts\TownManager.cs" />
-     <Compile Include="Assets\Scripts\MainSceneMenu.cs" />
+     <Compile Include="Assets\Scripts\DropdownItemDisabled.cs" />
+     <Compile Include="Assets\Scripts\TransferCrewCtrl.cs" />
+     <Compile Include="Assets\Scripts\Scriptable\ScriptableMarketState.cs" />
+     <Compile Include="Assets\Scripts\MarketSystem.cs" />
+     <Compile Include="Assets\Scripts\TransferItemMarketCtrl.cs" />
      <None Include="Assets\3rd-Party\kenney_piratepack\License.txt" />
      <None Include="Assets\3rd-Party\kenney_piratepack\Spritesheet\shipsMiscellaneous_sheet@2.xml" />
      <None Include="Assets\3rd-Party\kenney_piratepack\Spritesheet\shipsMiscellaneous_sheet.xml" />

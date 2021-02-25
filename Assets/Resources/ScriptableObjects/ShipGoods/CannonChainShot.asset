@@ -18,3 +18,5 @@ MonoBehaviour:
   weight: 1
   image: {fileID: 2076556873598973142, guid: 487ea49dfff97ef4aa416596bac3eaa0, type: 3}
   codeName: ChainBall
+  basePrice: 2
+  baseQuantiy: 0

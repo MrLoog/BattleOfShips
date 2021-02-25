@@ -460,6 +460,7 @@ public class Ship : MonoBehaviour
         Debug.Log("Init custom " + JsonUtility.ToJson(playerStartShipCustom));
         customData = playerStartShipCustom;
         ShipData = playerStartShipCustom.baseShipData;
+        startShipData = playerStartShipCustom.PeakData;
         if (customData.curShipData != null)
         {
             curShipData = customData.curShipData;
@@ -478,6 +479,7 @@ public class Ship : MonoBehaviour
             }
         }
     }
+
 
     internal ScriptableShipCustom GetCustomData()
     {
@@ -500,6 +502,7 @@ public class Ship : MonoBehaviour
         {
             result.skills = skillDatas.ToArray();
         }
+        customData = result;
         return result;
     }
 
@@ -565,6 +568,7 @@ public class Ship : MonoBehaviour
             }
 
             curShipData.hullHealth -= damage.hullDamage;
+            if (curShipData.hullHealth <= 0) curShipData.hullHealth = 0;
             if (lastTimeHit >= curShipData.TimeHitToStun)
             {
                 lastTimeHit = 0;

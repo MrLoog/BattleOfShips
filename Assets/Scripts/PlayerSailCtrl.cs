@@ -28,6 +28,8 @@ public class PlayerSailCtrl : MonoBehaviour
     public Slider sailSet;
     public Toggle toggleSail;
 
+    public float sailChangeStep = 0.05f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -63,6 +65,8 @@ public class PlayerSailCtrl : MonoBehaviour
     void Update()
     {
         if (SeaBattleManager.Instance.playerShip == null) isSync = false;
+        if (!isSync) return;
+        UpdateSailUpDown();
         if (isRotate && isSync)
         {
             Vector2 startV = StartPos - (Vector2)sail.transform.position;
@@ -107,5 +111,63 @@ public class PlayerSailCtrl : MonoBehaviour
         {
             ship.AutoSail = toggleSail.isOn;
         }
+    }
+
+    public void DownSail()
+    {
+        sailSet.value -= (sailSet.value > sailChangeStep ? sailChangeStep : sailSet.value);
+    }
+
+    public void UpSail()
+    {
+        sailSet.value += ((sailSet.maxValue - sailSet.value) > sailChangeStep ? sailChangeStep : (sailSet.maxValue - sailSet.value));
+    }
+
+    public float timeHold = 0.5f;
+    public float accumTimeHold = 0f;
+    public int holdBtnSailCtrl = 0;
+    public bool isHold = false;
+
+    private void UpdateSailUpDown()
+    {
+        if (isHold || accumTimeHold > 0)
+        {
+            if (!isHold)
+            {
+                accumTimeHold = 0f;
+                Debug.Log("DownUpSail Change Sail Release");
+                if (holdBtnSailCtrl == -1) DownSail();
+                else UpSail();
+            }
+            else
+            {
+                accumTimeHold += Time.deltaTime;
+                if (accumTimeHold >= timeHold)
+                {
+                    Debug.Log("DownUpSail Change Sail Hold");
+                    accumTimeHold = 0.01f;
+                    if (holdBtnSailCtrl == -1) DownSail();
+                    else UpSail();
+                }
+            }
+        }
+    }
+    public void DownSailPress()
+    {
+        Debug.Log("DownUpSail DownSailPress");
+        holdBtnSailCtrl = -1;
+        isHold = true;
+    }
+
+    public void DownUpSailRelease()
+    {
+        Debug.Log("DownUpSail DownUpSailRelease");
+        isHold = false;
+    }
+    public void UpSailPress()
+    {
+        Debug.Log("DownUpSail UpSailPress");
+        holdBtnSailCtrl = 1;
+        isHold = true;
     }
 }

@@ -29,3 +29,5 @@ MonoBehaviour:
   MaxHitToStun: 15
   TimeHitToStun: 1
   TimeRegainStun: 5
+  basePrice: 1000000000
+  shipTier: 7

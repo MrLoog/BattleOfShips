@@ -12,15 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47ba2a5db735d2c47ab7e79044636f63, type: 3}
   m_Name: PlayerStartShip
   m_EditorClassIdentifier: 
-  prefab: {fileID: 0}
+  shipName: 
   baseShipData: {fileID: 11400000, guid: ce93fd651fd874449b1423f6ee8fad71, type: 2}
-  curShipData: {fileID: 0}
+  curShipData: {fileID: 11400000, guid: ce93fd651fd874449b1423f6ee8fad71, type: 2}
   inventory:
     goodsCode:
     - CannonBall
     - GrapeShot
     - ChainBall
     quantity: e8030000e8030000e8030000
+  group: 1
   captain: {fileID: 11400000, guid: 9871a2875282cb144a08a2ced3ef3855, type: 2}
   upgrades: []
   skills:

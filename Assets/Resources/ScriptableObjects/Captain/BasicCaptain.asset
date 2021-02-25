@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b520d205229a7f84ba7af19e823f4e34, type: 3}
   m_Name: BasicCaptain
   m_EditorClassIdentifier: 
-  captainName: T??ng Th?ng
+  captainName: "T\u01B0\u1EDDng Th\u1EAFng"
   healthUnit: 1
   attackUnit: 1
   healthPoint: 1

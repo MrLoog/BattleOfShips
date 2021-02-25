@@ -12,7 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 462f49c6bff21c245ad5b420d2271bc2, type: 3}
   m_Name: Schooner
   m_EditorClassIdentifier: 
-  prefab: {fileID: 0}
   typeName: Schooner
   type: 1
   maxCrew: 75
@@ -30,3 +29,5 @@ MonoBehaviour:
   MaxHitToStun: 3
   TimeHitToStun: 1
   TimeRegainStun: 5
+  basePrice: 10000
+  shipTier: 2
