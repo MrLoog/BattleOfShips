@@ -15,7 +15,7 @@ MonoBehaviour:
   prefab: {fileID: 0}
   itemName: Grape Ball
   description: 
-  weight: 3
+  weight: 1
   image: {fileID: 5090919988050679600, guid: 487ea49dfff97ef4aa416596bac3eaa0, type: 3}
   codeName: GrapeShot
   basePrice: 3

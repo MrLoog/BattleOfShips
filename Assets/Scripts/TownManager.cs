@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class TownManager : BaseSceneManager
@@ -16,6 +18,7 @@ public class TownManager : BaseSceneManager
         }
         get
         {
+            if (townData == null) townData = new TownData();
             return (TownData)townData;
         }
     }
@@ -41,6 +44,27 @@ public class TownManager : BaseSceneManager
     void Update()
     {
 
+    }
+
+    public Workshop GetWorkshopData()
+    {
+        if (TownData.workshop == null || TownData.workshop.timeRefresh == null || TownData.workshop.timeRefresh.ToString("yyyy-MM-dd") != DateTime.Now.ToString("yyyy-MM-dd"))
+        {
+            TownData.workshop = RefreshWorkshop();
+        }
+        return TownData.workshop;
+    }
+
+    public Workshop RefreshWorkshop()
+    {
+        ScriptableShipFactory factory = MyResourceUtils.ResourcesLoad<ScriptableShipFactory>(MyResourceUtils.RESOURCES_PATH_SCRIPTABLE_WORKSHOP);
+        Debug.Assert(factory != null, "factory should found");
+        Workshop result = TownData.workshop ?? (new Workshop());
+        result.timeRefresh = DateTime.Now;
+        int quantity = result.slot;
+        result.workshopShips = factory.GetRandomShip(quantity);
+        result.soldStatus = Enumerable.Repeat(false, quantity).ToArray();
+        return result;
     }
 
     public override BaseDataEntity GetDataForSave()

@@ -5211,10 +5211,17 @@ MonoBehaviour:
   itemName: {fileID: 997645429}
   itemQuantitySlider: {fileID: 289567520}
   itemMaxQuanity: {fileID: 702765887}
+  weightShipFrom: {fileID: 0}
+  weightShipTo: {fileID: 0}
+  inputQuantity: {fileID: 0}
   fromInvIndex: 0
+  toInvIndex: 0
   transferGoods: {fileID: 0}
   fromShip: {fileID: 0}
   toShip: {fileID: 0}
+  fromShipData: {fileID: 0}
+  toShipData: {fileID: 0}
+  preventChainUpdate: 0
 --- !u!1 &509267160
 GameObject:
   m_ObjectHideFlags: 0
@@ -55821,7 +55828,6 @@ MonoBehaviour:
   playerShip: {fileID: 0}
   enemyShip: {fileID: 0}
   InventoryMenu: {fileID: 1846966811}
-  ModalPopupUtil: {fileID: 0}
   windForce: {x: 0, y: 0}
   intervalWindChange: 300
   accumWindChangeInterval: 0
@@ -55851,19 +55857,19 @@ MonoBehaviour:
   weatherWindRates:
   - min: 0
     max: 0.8
-    percent: 0
+    weightProbability: 5
   - min: 0.9
     max: 1.4
-    percent: 35
+    weightProbability: 30
   - min: 1.5
     max: 2.2
-    percent: 55
+    weightProbability: 50
   - min: 2.3
     max: 2.6
-    percent: 10
+    weightProbability: 10
   - min: 2.7
     max: 3
-    percent: 0
+    weightProbability: 5
   Modal: {fileID: 400132595}
   DialogInputSpawnShip: {fileID: 1796691290}
   ImgShipGroups:
@@ -55875,7 +55881,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: e0cc5a4323279084bac42443d45e001e, type: 2}
   MinimapAllySprite: {fileID: 21300000, guid: 2701ab5dca4281e42a020a6af2b11d52, type: 3}
   GoodsCannonBallCode: CannonBall
-  prevSpeed: 1
 --- !u!4 &843383369
 Transform:
   m_ObjectHideFlags: 0

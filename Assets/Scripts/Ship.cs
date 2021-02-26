@@ -18,7 +18,7 @@ public class Ship : MonoBehaviour
         }
     }
 
-    public ShipInventory inventory;
+    public ShipInventory Inventory => customData?.inventory;
 
     public const string EVENT_CANNON_FRONT_FIRE = "CANNON_FRONT_FIRE";
     public const string EVENT_CANNON_FRONT_READY = "CANNON_FRONT_READY";
@@ -47,6 +47,14 @@ public class Ship : MonoBehaviour
     private List<ScriptableShipSkill> skillDatas;
 
     public ScriptableShipCustom customData;
+
+    public ScriptableShipCustom CustomData
+    {
+        get
+        {
+            return customData;
+        }
+    }
     public ScriptableShip shipData; //origin data
     public ScriptableShip startShipData; //permanent data
     public ScriptableShip curShipData; //data change on battle
@@ -267,12 +275,13 @@ public class Ship : MonoBehaviour
         rigidBody2d = GetComponent<Rigidbody2D>();
         if (customData != null)
         {
-            InitData(customData);
+            InitFromCustomData(customData);
         }
         else if (ShipData != null)
         {
             ShipData = ShipData; //clone start data
         }
+        BuildCustomData(); //init custom data if empty
         ShipHealthBar healthBar = GetComponentInChildren<ShipHealthBar>();
         if (healthBar != null)
             healthBar.shipOwner = this;
@@ -316,11 +325,11 @@ public class Ship : MonoBehaviour
 
     public int GetCannonBallInShip()
     {
-        for (int i = 0; i < inventory.goodsCode.Length; i++)
+        for (int i = 0; i < Inventory.goodsCode.Length; i++)
         {
-            if (inventory.goodsCode[i] == SeaBattleManager.Instance.GoodsCannonBallCode)
+            if (Inventory.goodsCode[i] == SeaBattleManager.Instance.GoodsCannonBallCode)
             {
-                return inventory.quantity[i];
+                return Inventory.quantity[i];
             }
         }
         return 0;
@@ -328,11 +337,11 @@ public class Ship : MonoBehaviour
 
     public void DeductCannonBall(int quantity = 1)
     {
-        for (int i = 0; i < inventory.goodsCode.Length; i++)
+        for (int i = 0; i < Inventory.goodsCode.Length; i++)
         {
-            if (inventory.goodsCode[i] == SeaBattleManager.Instance.GoodsCannonBallCode)
+            if (Inventory.goodsCode[i] == SeaBattleManager.Instance.GoodsCannonBallCode)
             {
-                inventory.quantity[i] -= quantity;
+                Inventory.quantity[i] -= quantity;
                 return;
             }
         }
@@ -374,7 +383,7 @@ public class Ship : MonoBehaviour
                 {
                     if (cooldownCannons[indexCannon] == 0)
                     {
-                        if (inventory != null)
+                        if (Inventory != null)
                         {
                             int cannonBallRequired = numberCannon[indexCannon];
                             if (GetCannonBallInShip() < cannonBallRequired)
@@ -455,7 +464,7 @@ public class Ship : MonoBehaviour
         }
     }
 
-    internal void InitData(ScriptableShipCustom playerStartShipCustom)
+    internal void InitFromCustomData(ScriptableShipCustom playerStartShipCustom)
     {
         Debug.Log("Init custom " + JsonUtility.ToJson(playerStartShipCustom));
         customData = playerStartShipCustom;
@@ -463,10 +472,9 @@ public class Ship : MonoBehaviour
         startShipData = playerStartShipCustom.PeakData;
         if (customData.curShipData != null)
         {
-            curShipData = customData.curShipData;
+            curShipData = customData.curShipData.Clone<ScriptableShip>(); ;
         }
-        inventory = new ShipInventory();
-        JsonUtility.FromJsonOverwrite(JsonUtility.ToJson(playerStartShipCustom.inventory), inventory);
+
         if (customData.group > 0)
         {
             Group = customData.group;
@@ -481,7 +489,7 @@ public class Ship : MonoBehaviour
     }
 
 
-    internal ScriptableShipCustom GetCustomData()
+    internal ScriptableShipCustom BuildCustomData()
     {
         ScriptableShipCustom result = null;
         if (customData != null)
@@ -493,16 +501,14 @@ public class Ship : MonoBehaviour
             result = ScriptableObject.CreateInstance<ScriptableShipCustom>();
             // result.captain
             result.baseShipData = shipData;
-
+            if (skillDatas != null)
+            {
+                result.skills = skillDatas.ToArray();
+            }
+            customData = result;
         }
         result.curShipData = curShipData;
         result.group = Group;
-        result.inventory = inventory;
-        if (skillDatas != null)
-        {
-            result.skills = skillDatas.ToArray();
-        }
-        customData = result;
         return result;
     }
 

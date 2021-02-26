@@ -18,3 +18,5 @@ MonoBehaviour:
   weight: 50
   image: {fileID: 8022720534580876532, guid: 487ea49dfff97ef4aa416596bac3eaa0, type: 3}
   codeName: Sugar
+  basePrice: 27
+  baseQuantiy: 0

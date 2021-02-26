@@ -11,7 +11,7 @@ public class ScriptableMarketState : MScriptableObject
 {
     public string description;
 
-    public float probability;
+    public int probability;
     public string[] goodsCode;
     public float[] minRatePrice;
     public float[] maxRatePrice;
@@ -100,23 +100,6 @@ public class MarketStateFactory
 
     public static ScriptableMarketState RandomStateByProbability(ScriptableMarketState[] source)
     {
-        float maxRange = 0f;
-        float[,] level = new float[source.Length, 2];
-        for (int i = 0; i < source.Length; i++)
-        {
-            level[i, 0] = maxRange;
-            maxRange += source[i].probability;
-            level[i, 1] = maxRange - 1;
-        }
-        float selected = Random.Range(0f, maxRange - 1);
-
-        for (int i = 0; i < source.Length; i++)
-        {
-            if (level[i, 0] <= selected && level[i, 1] >= selected)
-            {
-                return source[i];
-            }
-        }
-        return null;
+        return source[CommonUtils.RandomByRate(source.Select(x => x.probability).ToArray())];
     }
 }

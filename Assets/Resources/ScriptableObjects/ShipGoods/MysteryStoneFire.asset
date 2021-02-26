@@ -18,3 +18,5 @@ MonoBehaviour:
   weight: 1
   image: {fileID: -3984842083949327620, guid: 487ea49dfff97ef4aa416596bac3eaa0, type: 3}
   codeName: FireStone
+  basePrice: 100
+  baseQuantiy: 0

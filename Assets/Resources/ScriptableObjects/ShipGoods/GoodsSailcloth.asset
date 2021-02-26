@@ -18,3 +18,5 @@ MonoBehaviour:
   weight: 30
   image: {fileID: 8292284122000357534, guid: 487ea49dfff97ef4aa416596bac3eaa0, type: 3}
   codeName: Sailcloth
+  basePrice: 15
+  baseQuantiy: 0

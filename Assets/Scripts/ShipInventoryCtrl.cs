@@ -481,25 +481,28 @@ public class ShipInventoryCtrl : MonoBehaviour
     {
         MyGameObjectUtils.ClearAllChilds(panel);
         ShipInventory inventory = AvaiableShips[indexInv].inventory;
-        for (int i = 0; i < inventory.goodsCode.Length; i++)
+        if (inventory.goodsCode != null)
         {
-            ScriptableShipGoods aGoods = Goods.Where(x => x.codeName.Equals(inventory.goodsCode[i])).FirstOrDefault();
-            if (aGoods != null)
+            for (int i = 0; i < inventory.goodsCode.Length; i++)
             {
-                GameObject item = Instantiate(prefabItem, panel.transform, false);
-                item.GetComponent<Image>().sprite = aGoods.image;
-                item.GetComponentInChildren<Text>().text = inventory.quantity[i].ToString();
-                item.SetActive(true);
-                int indexPass = i;
-
-                item.GetComponent<Button>().onClick.AddListener(() =>
+                ScriptableShipGoods aGoods = Goods.Where(x => x.codeName.Equals(inventory.goodsCode[i])).FirstOrDefault();
+                if (aGoods != null)
                 {
-                    ShowTransferItem(indexInv, indexPass);
-                });
-            }
-            else
-            {
-                Debug.Log("Item " + inventory.goodsCode[i]);
+                    GameObject item = Instantiate(prefabItem, panel.transform, false);
+                    item.GetComponent<Image>().sprite = aGoods.image;
+                    item.GetComponentInChildren<Text>().text = inventory.quantity[i].ToString();
+                    item.SetActive(true);
+                    int indexPass = i;
+
+                    item.GetComponent<Button>().onClick.AddListener(() =>
+                    {
+                        ShowTransferItem(indexInv, indexPass);
+                    });
+                }
+                else
+                {
+                    Debug.Log("Item " + inventory.goodsCode[i]);
+                }
             }
         }
         DisplayCapacity();

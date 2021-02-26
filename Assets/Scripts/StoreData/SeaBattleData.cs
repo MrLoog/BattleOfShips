@@ -28,7 +28,7 @@ public class SeaBattleData : BaseDataEntity
         transPosJsons = new float[shipDatas.Length * 2];
         for (int i = 0; i < scriptShips.Length; i++)
         {
-            shipDatas[i] = scriptShips[i].GetCustomData();
+            shipDatas[i] = scriptShips[i].CustomData;
             Transform transform = scriptShips[i].gameObject.transform;
             transRotJsons[i] = transform.localRotation.eulerAngles.z;
             transPosJsons[2 * i] = transform.localPosition.x;

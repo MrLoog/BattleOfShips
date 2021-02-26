@@ -8,5 +8,5 @@ public class WeatherWindRate
 {
     public float min;
     public float max;
-    public float percent;
+    public int weightProbability;
 }

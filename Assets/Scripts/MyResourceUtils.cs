@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,6 +7,8 @@ public class MyResourceUtils
 {
     public const string RESOURCES_PATH_SCRIPTABLE_OBJECTS = "ScriptableObjects";
     public const string RESOURCES_PATH_SCRIPTABLE_OBJECTS_GOODS = "ScriptableObjects/ShipGoods";
+
+    public const string RESOURCES_PATH_SCRIPTABLE_WORKSHOP = "ScriptableObjects/ShipFactory/Market/MarketSellShip";
 
     public static T ResourcesLoad<T>(string path) where T : UnityEngine.Object
     {
@@ -16,4 +19,5 @@ public class MyResourceUtils
     {
         return Resources.LoadAll<T>(path);
     }
+
 }

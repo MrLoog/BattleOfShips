@@ -20,7 +20,7 @@ MonoBehaviour:
   oarsSpeed: 0.15
   MaxDegreeRotate: 40
   windConversionRate: 0.55
-  capacity: 150
+  capacity: 2200
   capacityWeightRate: 0.4
   sizeRateWidth: 0.9
   sizeRateLength: 0.9

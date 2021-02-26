@@ -149,7 +149,7 @@ public class ShipInventoryMenu : MonoBehaviour
             AddShipIndex(SeaBattleManager.Instance.playerShip.GetComponent<Ship>(), 0);
             ShowInventoryDetails(
                 panelInventory,
-                AddInventoryIndex(ships[0].inventory, 0)
+                AddInventoryIndex(ships[0].Inventory, 0)
             );
             /*
             for (int i = slots.Count; i > 0; i--)
@@ -184,7 +184,7 @@ public class ShipInventoryMenu : MonoBehaviour
             AddShipIndex(otherShip, 1);
             ShowInventoryDetails(
                 panelInventoryOther,
-                AddInventoryIndex(otherShip.inventory, 1)
+                AddInventoryIndex(otherShip.Inventory, 1)
             );
             /*
             for (int i = slotsOther.Count; i > 0; i--)

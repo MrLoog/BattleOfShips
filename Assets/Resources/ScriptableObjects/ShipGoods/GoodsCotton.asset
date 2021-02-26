@@ -18,5 +18,5 @@ MonoBehaviour:
   weight: 60
   image: {fileID: 3138192803094886823, guid: 487ea49dfff97ef4aa416596bac3eaa0, type: 3}
   codeName: Cotton
-  basePrice: 10
+  basePrice: 26
   baseQuantiy: 0

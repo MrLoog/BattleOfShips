@@ -227,27 +227,28 @@ public class SeaBattleManager : BaseSceneManager
         }
         else
         {
-            float maxRange = 0f;
-            float[,] level = new float[weatherWindRates.Length, 2];
-            for (int i = 0; i < weatherWindRates.Length; i++)
-            {
-                level[i, 0] = maxRange;
-                maxRange += weatherWindRates[i].percent;
-                level[i, 1] = maxRange - 1;
-            }
-            float selected = Random.Range(0f, maxRange - 1);
-            Debug.Log("random wind selected " + selected);
+            // float maxRange = 0f;
+            // float[,] level = new float[weatherWindRates.Length, 2];
+            // for (int i = 0; i < weatherWindRates.Length; i++)
+            // {
+            //     level[i, 0] = maxRange;
+            //     maxRange += weatherWindRates[i].percent;
+            //     level[i, 1] = maxRange - 1;
+            // }
+            // float selected = Random.Range(0f, maxRange - 1);
+            // Debug.Log("random wind selected " + selected);
 
-            for (int i = 0; i < weatherWindRates.Length; i++)
-            {
-                Debug.Log("random wind check " + level[i, 0] + " - " + level[i, 1]);
-                if (level[i, 0] <= selected && level[i, 1] >= selected)
-                {
-                    Debug.Log("random wind level " + i + " " + weatherWindRates[i].min + "-" + weatherWindRates[i].max);
-                    return (float)Math.Round(Random.Range(weatherWindRates[i].min, weatherWindRates[i].max), 1);
-                }
-            }
-            return 0f;
+            // for (int i = 0; i < weatherWindRates.Length; i++)
+            // {
+            //     Debug.Log("random wind check " + level[i, 0] + " - " + level[i, 1]);
+            //     if (level[i, 0] <= selected && level[i, 1] >= selected)
+            //     {
+            //         Debug.Log("random wind level " + i + " " + weatherWindRates[i].min + "-" + weatherWindRates[i].max);
+            //         return (float)Math.Round(Random.Range(weatherWindRates[i].min, weatherWindRates[i].max), 1);
+            //     }
+            // }
+            int choiceWindLevel = CommonUtils.RandomByRate(weatherWindRates.Select(x=>x.weightProbability).ToArray());
+            return (float)Math.Round(Random.Range(weatherWindRates[choiceWindLevel].min, weatherWindRates[choiceWindLevel].max), 1);
         }
     }
 
@@ -329,7 +330,7 @@ public class SeaBattleManager : BaseSceneManager
             defaultShip.captain.health = 100;
             defaultShip.captain.captainName = "Tường Thắng";
             gameManager.GameData.playerShip = defaultShip;
-            scriptShip.InitData(defaultShip);
+            scriptShip.InitFromCustomData(defaultShip);
             // if (scriptableShipSkills.Length > 0)
             // {
             //     scriptableShipSkills.Where(x =>
@@ -344,7 +345,7 @@ public class SeaBattleManager : BaseSceneManager
         }
         else
         {
-            scriptShip.InitData(customData);
+            scriptShip.InitFromCustomData(customData);
         }
 
         playerShip = newShip;
@@ -429,17 +430,12 @@ public class SeaBattleManager : BaseSceneManager
                     cancelText: null,
                     onResult: (i) =>
                     {
-                        InventoryMenu.GetComponent<ShipInventoryMenu>().ShowInventory(result.ship2);
+                        // InventoryMenu.GetComponent<ShipInventoryMenu>().ShowInventory(result.ship2);
                         List<ScriptableShipCustom> shipCustoms = new List<ScriptableShipCustom>();
-                        shipCustoms.Add(result.ship1.GetCustomData());
-                        shipCustoms.Add(result.ship2.GetCustomData());
+                        shipCustoms.Add(result.ship1.CustomData);
+                        shipCustoms.Add(result.ship2.CustomData);
                         ShipInventoryCtrl transferCtrl = GameManager.Instance.ShipInventoryCtrl;
                         transferCtrl.RegisterAvaiableShip(shipCustoms.ToArray(), 0);
-                        transferCtrl.OnHideInventory = delegate ()
-                        {
-                            GameManager.Instance.ShipInventoryCtrl.OnHideInventory = null;
-                            // result.ship1.InitData();
-                        };
                         transferCtrl.ShowInventory(ShipInventoryCtrl.InventoryMode.Transfer);
                     }
                 );
@@ -477,7 +473,7 @@ public class SeaBattleManager : BaseSceneManager
     {
         GameObject newShip = Instantiate(prefabShip, ShipManager.transform, false);
         Ship scriptShip = newShip.GetComponent<Ship>();
-        scriptShip.InitData(customData);
+        scriptShip.InitFromCustomData(customData);
         scriptShip.shipId = ships.Count + 1;
         scriptShip.ImgStateShip = ImgShipGroups[scriptShip.Group];
         ships.Add(scriptShip);
@@ -519,7 +515,7 @@ public class SeaBattleManager : BaseSceneManager
     {
         if (playerShip != null)
         {
-            gameManager.GameData.playerShip = playerShip.GetComponent<Ship>().GetCustomData();
+            gameManager.GameData.playerShip = playerShip.GetComponent<Ship>().CustomData;
         }
     }
     public void SaveGame()
