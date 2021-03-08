@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0318ebbd4345b647a9c8a8edfc13e6d, type: 3}
+  m_Name: StarterMarket
+  m_EditorClassIdentifier: 
+  shipList:
+  - {fileID: 11400000, guid: de3ec8eaf43cd66478ff1ea7a16c8804, type: 2}
+  shipRates: 
+  slotRate: 
+  skillList: []
+  hullMaterials:
+  - {fileID: 11400000, guid: b7ae878de2a37a84d9f9e047d60b0639, type: 2}
+  hullMaterialRates: 28000000
+  sailMaterials:
+  - {fileID: 11400000, guid: bf188e88cd1a2ad488caca1f6f1efa74, type: 2}
+  sailMaterialRates: 28000000

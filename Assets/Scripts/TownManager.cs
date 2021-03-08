@@ -9,6 +9,8 @@ public class TownManager : BaseSceneManager
     public static TownManager Instance;
     public GameManager gameManager;
 
+    public GameObject panelLevelSelect;
+
     public TownData townData;
     public TownData TownData
     {
@@ -48,9 +50,9 @@ public class TownManager : BaseSceneManager
 
     public Workshop GetWorkshopData()
     {
-        if (TownData.workshop == null || TownData.workshop.timeRefresh == null || TownData.workshop.timeRefresh.ToString("yyyy-MM-dd") != DateTime.Now.ToString("yyyy-MM-dd"))
+        if (TownData.workshop == null || TownData.workshop.timeRefresh == null || TownData.workshop.forceReload || TownData.workshop.timeRefresh.ToString("yyyy-MM-dd") != DateTime.Now.ToString("yyyy-MM-dd"))
         {
-            TownData.workshop = RefreshWorkshop();
+            RefreshWorkshop();
         }
         return TownData.workshop;
     }
@@ -64,6 +66,8 @@ public class TownManager : BaseSceneManager
         int quantity = result.slot;
         result.workshopShips = factory.GetRandomShip(quantity);
         result.soldStatus = Enumerable.Repeat(false, quantity).ToArray();
+        result.forceReload = false;
+        TownData.workshop = result;
         return result;
     }
 
@@ -100,7 +104,19 @@ public class TownManager : BaseSceneManager
     public void SetSail()
     {
         SaveGame();
-        GameManager.Instance.ChangeScene(GameManager.Instance.battleSceneName);
+        panelLevelSelect?.SetActive(true);
+        // GameManager.Instance.ChangeScene(GameManager.Instance.battleSceneName);
+    }
+
+    public void PlayLevel(ScriptableGameLevel level)
+    {
+        GameManager.Instance.PlayLevel = level;
+        GameManager.Instance.ChangeScene(GameManager.Instance.battleSceneName,SeaBattleManager.INTENT_BATTLE_LEVEL);
+    }
+
+    public void CloseLevelSelect()
+    {
+        panelLevelSelect?.SetActive(false);
     }
     #endregion
 

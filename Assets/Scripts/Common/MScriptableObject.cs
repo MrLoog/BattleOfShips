@@ -36,6 +36,11 @@ public abstract class MScriptableObject : ScriptableObject
 
         T defaultData = Resources.LoadAll<T>("ScriptableObjects").Where(x => x.name == this.name).FirstOrDefault();
         if (defaultData == null) defaultData = (T)this;
+        else
+        {
+            //prevent change affect original scriable object
+            // defaultData = defaultData.Clone<T>();
+        }
         // Debug.Log("Restore Mode found default");
         string jsonDefaultRef = JsonUtility.ToJson(defaultData); //json for copy default gameobject/prefab
                                                                  // Debug.Log("Json string before " + jsonDefaultRef);
@@ -81,16 +86,20 @@ public abstract class MScriptableObject : ScriptableObject
             }
             else if (prop.FieldType.IsSubclassOf(typeof(MScriptableObject)))
             {
+                Debug.Log("DeepOverride 11" + prop.Name);
                 if (value1 != null)
                 {
+                    Debug.Log("DeepOverride 111" + prop.Name);
                     MScriptableObject cloneValue = (MScriptableObject)value1.GetType()
                     .GetMethod("Clone")
                     .MakeGenericMethod(prop.FieldType)
                     .Invoke(value1, null);
+                    value1 = cloneValue; //change reference
                     prop.SetValue(target, cloneValue);
                 }
                 else
                 {
+                    Debug.Log("DeepOverride 112" + prop.Name);
                     prop.SetValue(target, value2);
                     continue;
                 }

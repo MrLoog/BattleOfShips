@@ -12,6 +12,8 @@ public class GameManager : BaseSceneManager
 
     public GameObject ModalPopupUtil;
 
+    public ToastService ToastService;
+
     public ModalPopupCtrl PopupCtrl => ModalPopupUtil.GetComponent<ModalPopupCtrl>();
     public GameObject ShipInventoryCanvas;
 
@@ -20,6 +22,26 @@ public class GameManager : BaseSceneManager
     public UnityAction<int> OnGoldAccountChanged;
     public IStoreData database;
 
+    public string MessageIntent;
+
+    private ScriptableGameLevel playLevel;
+
+    public ScriptableGameLevel PlayLevel
+    {
+        get
+        {
+            if (playLevel == null && gameData != null && gameData.playLevelName.Length > 0)
+            {
+                playLevel = MyResourceUtils.ResourcesLoadAll<ScriptableGameLevel>(MyResourceUtils.RESOURCES_PATH_SCRIPTABLE_OBJECTS).First(x => x.name == gameData.playLevelName);
+            }
+            return playLevel;
+        }
+        set
+        {
+            playLevel = value;
+            gameData.playLevelName = playLevel.name;
+        }
+    }
     public GameData gameData;
     public GameData GameData
     {
@@ -38,8 +60,13 @@ public class GameManager : BaseSceneManager
         }
     }
 
+    public int startGold = 10000;
     public ScriptableShipCustom playerStarterShip;
+
     public ScriptableShipCustom[] otherShips;
+
+    public ScriptableShipFactory StartShopFactory;
+    public ScriptableShipFactory FinalShopFactory;
 
     public string mainSceneName = "GameScene";
     public string battleSceneName = "SeaBattleScene";
@@ -55,6 +82,7 @@ public class GameManager : BaseSceneManager
         DontDestroyOnLoad(gameObject);
         DontDestroyOnLoad(ShipInventoryCanvas);
         DontDestroyOnLoad(PopupCtrl.gameObject); //modal util
+        DontDestroyOnLoad(ToastService.gameObject); //toast util
 
         database = StoreDataFactory.GetDatabase();
         base.Awake();
@@ -63,6 +91,7 @@ public class GameManager : BaseSceneManager
     void Start()
     {
         // gameData.playerShip.test = new Test() { prop = "Test" };
+        // GEventManager.Instance.InvokeEvent(GEventManager.EVENT_CLEAR_LEVEL);
     }
 
 
@@ -74,17 +103,18 @@ public class GameManager : BaseSceneManager
 
     public void StartBattle()
     {
-        ChangeScene(battleSceneName);
+        ChangeScene(battleSceneName, SeaBattleManager.INTENT_RESUME);
     }
 
     public void ResumeGame()
     {
-        ChangeScene(GameData.SceneCurrentName);
+        ChangeScene(GameData.SceneCurrentName, SeaBattleManager.INTENT_RESUME);
     }
 
     public void StartNewGame()
     {
         GameData.playerShip = playerStarterShip;
+        GameData.shipShopFactory = StartShopFactory.Clone<ScriptableShipFactory>();
         List<ScriptableShipCustom> lst = new List<ScriptableShipCustom>();
         if (otherShips != null)
         {
@@ -94,17 +124,19 @@ public class GameManager : BaseSceneManager
             }
         }
         GameData.otherShips = lst.ToArray();
-        GameData.gold = 5000;
+        GameData.gold = startGold;
         GameData.process = GameData.PROCESS_INIT_FIRST_SHIP;
-        ChangeScene(battleSceneName);
+        ChangeScene(battleSceneName, SeaBattleManager.INTENT_FIRST_BATTLE);
     }
 
-    public bool ChangeScene(string sceneName)
+    public bool ChangeScene(string sceneName, string intentMessage = "")
     {
         Debug.Log("Change Scene " + sceneName);
+        MessageIntent = intentMessage;
         UnityEngine.SceneManagement.SceneManager.LoadScene(sceneName);
         if (sceneName != mainSceneName)
         {
+            GameData.ScenePrevName = GameData.SceneCurrentName;
             GameData.SceneCurrentName = sceneName;
         }
         return true;
@@ -244,5 +276,10 @@ public class GameManager : BaseSceneManager
                 );
         }
         return GameData.market;
+    }
+
+    public void ShowToastText(string message, float time)
+    {
+        ToastService.ShowMessage(message, time);
     }
 }

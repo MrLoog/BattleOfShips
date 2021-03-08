@@ -7,7 +7,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ScriptableShip", menuName = "BoS/Ship", order = 2)]
 public class ScriptableShip : MScriptableObject
 {
-    
+
     [System.Flags]
     public enum ShipType
     {
@@ -35,4 +35,7 @@ public class ScriptableShip : MScriptableObject
 
     public int basePrice;
     public int shipTier;
+
+    public int hullMatQty;
+    public int sailMatQty;
 }

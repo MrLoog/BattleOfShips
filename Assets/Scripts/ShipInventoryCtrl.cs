@@ -155,6 +155,17 @@ public class ShipInventoryCtrl : MonoBehaviour
         DisplayPlayerGold();
     }
 
+    private void OnEnable()
+    {
+        GameManager.Instance.OnGoldAccountChanged += DisplayPlayerGold;
+        DisplayPlayerGold();
+    }
+
+    private void OnDisable()
+    {
+        GameManager.Instance.OnGoldAccountChanged -= DisplayPlayerGold;
+    }
+
     public void DisplayCapacity(int choice = 0)
     {
         if (choice >= 0 && FirstIndex >= 0 && FirstIndex < AvaiableShips.Count)
@@ -481,7 +492,7 @@ public class ShipInventoryCtrl : MonoBehaviour
     {
         MyGameObjectUtils.ClearAllChilds(panel);
         ShipInventory inventory = AvaiableShips[indexInv].inventory;
-        if (inventory.goodsCode != null)
+        if (inventory != null && inventory.goodsCode != null)
         {
             for (int i = 0; i < inventory.goodsCode.Length; i++)
             {

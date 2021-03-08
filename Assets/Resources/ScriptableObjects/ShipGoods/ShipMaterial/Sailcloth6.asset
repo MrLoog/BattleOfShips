@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af8293f0eb9be2a49a62b3b5a1992f5f, type: 3}
+  m_Name: Sailcloth6
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 0}
+  itemName: Sailcloth VI
+  description: 
+  weight: 42
+  image: {fileID: 8292284122000357534, guid: 487ea49dfff97ef4aa416596bac3eaa0, type: 3}
+  codeName: Sailcloth6
+  basePrice: 7000
+  baseQuantiy: 0
+  materialType: 1
+  effectRate: 5
+  speedAffect: 1
+  defense: 0

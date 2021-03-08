@@ -21,6 +21,8 @@ public class BaseStoreData : IStoreData
         if (data.Length > 0)
         {
             string strData = EncodingUse.GetString(data);
+            Debug.Log("Store Load data from " + GetDataPath(key) + " : " + strData);
+
 
             T objData = (T)(typeof(MyJsonUtil).GetMethod("DeserializeScriptableObject").MakeGenericMethod(typeof(T)).Invoke(null, new object[] { strData }));
             return objData;

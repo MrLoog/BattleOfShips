@@ -52,22 +52,21 @@ public class Ship : MonoBehaviour
     {
         get
         {
-            return customData;
+            return BuildCustomData();
+            // return customData;
         }
     }
     public ScriptableShip shipData; //origin data
     public ScriptableShip startShipData; //permanent data
-    public ScriptableShip curShipData; //data change on battle
 
-    public ScriptableShip ShipData
+    public ScriptableShip StartShipData
     {
         get
         {
-            return shipData;
+            return startShipData;
         }
         set
         {
-            shipData = value.Clone<ScriptableShip>();
             startShipData = value.Clone<ScriptableShip>();
             curShipData = value.Clone<ScriptableShip>();
             ShipCollider.size = new Vector2(curShipData.sizeRateWidth * ShipCollider.size.x / model.transform.localScale.x
@@ -83,6 +82,20 @@ public class Ship : MonoBehaviour
                 cooldownCannons[i] = 0f;
                 timeReloadCannons[i] = 3f;
             }
+        }
+    }
+
+    public ScriptableShip curShipData; //data change on battle
+
+    public ScriptableShip ShipData
+    {
+        get
+        {
+            return shipData;
+        }
+        set
+        {
+            shipData = value.Clone<ScriptableShip>();
         }
     }
 
@@ -139,7 +152,26 @@ public class Ship : MonoBehaviour
         }
     }
 
-    public int Group { get; set; }
+    public SpriteRenderer minimap;
+    private int group;
+    public int Group
+    {
+        get
+        {
+            return group;
+        }
+        set
+        {
+            group = value;
+            minimap.color = value == 0 ? //0 mean player group
+            Color.green :
+            Color.red;
+
+            // SetSpriteMinimap(value == SeaBattleManager.Instance.playerShip?.GetComponent<Ship>().Group ?
+            // SeaBattleManager.Instance.MinimapAllySprite :
+            // SeaBattleManager.Instance.MinimapEnemySprite);
+        }
+    }
 
     [SerializeField]
     public bool AutoSail { get; set; } = true;
@@ -282,6 +314,8 @@ public class Ship : MonoBehaviour
             ShipData = ShipData; //clone start data
         }
         BuildCustomData(); //init custom data if empty
+
+
         ShipHealthBar healthBar = GetComponentInChildren<ShipHealthBar>();
         if (healthBar != null)
             healthBar.shipOwner = this;
@@ -325,6 +359,7 @@ public class Ship : MonoBehaviour
 
     public int GetCannonBallInShip()
     {
+        if (Inventory == null || Inventory.goodsCode == null) return 0;
         for (int i = 0; i < Inventory.goodsCode.Length; i++)
         {
             if (Inventory.goodsCode[i] == SeaBattleManager.Instance.GoodsCannonBallCode)
@@ -337,6 +372,7 @@ public class Ship : MonoBehaviour
 
     public void DeductCannonBall(int quantity = 1)
     {
+        if (Inventory == null || Inventory.goodsCode == null) return;
         for (int i = 0; i < Inventory.goodsCode.Length; i++)
         {
             if (Inventory.goodsCode[i] == SeaBattleManager.Instance.GoodsCannonBallCode)
@@ -415,6 +451,18 @@ public class Ship : MonoBehaviour
         ValidReloadingCannon();
     }
 
+    internal void SetSpriteMinimap(Sprite minimapSprite)
+    {
+        foreach (Transform eachChild in transform)
+        {
+            if (eachChild.name == "MinimapInfo")
+            {
+                eachChild.GetComponent<SpriteRenderer>().sprite = minimapSprite;
+                return;
+            }
+        }
+    }
+
     private bool CheckCannonReady(CannonDirection direction, bool IsFire = false)
     {
         if (isStuned)
@@ -466,7 +514,6 @@ public class Ship : MonoBehaviour
 
     internal void InitFromCustomData(ScriptableShipCustom playerStartShipCustom)
     {
-        Debug.Log("Init custom " + JsonUtility.ToJson(playerStartShipCustom));
         customData = playerStartShipCustom;
         ShipData = playerStartShipCustom.baseShipData;
         startShipData = playerStartShipCustom.PeakData;
@@ -474,6 +521,12 @@ public class Ship : MonoBehaviour
         {
             curShipData = customData.curShipData.Clone<ScriptableShip>(); ;
         }
+
+        if (!(customData.unions != null && customData.unions.Length > 0))
+        {
+            customData.unions = new ScriptableShipCustom.Union[] { (ScriptableShipCustom.Union)((int)Random.Range(2, 6)) };
+        }
+        ImgStateShip = SeaBattleManager.Instance.GetImgStateShip(customData.unions[0]);
 
         if (customData.group > 0)
         {

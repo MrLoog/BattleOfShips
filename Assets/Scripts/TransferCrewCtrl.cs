@@ -200,7 +200,7 @@ public class TransferCrewCtrl : MonoBehaviour
                 inputQuantity.text = crewQuantitySlider.value.ToString();
             }
         }
-        catch (FormatException e)
+        catch (FormatException)
         {
             Debug.Log("Quantity Exception [" + inputQuantity.text + "]");
             preventChainUpdate = false;

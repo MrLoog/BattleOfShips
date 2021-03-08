@@ -77,6 +77,10 @@ public class ShipManageMenu : MonoBehaviour
         ShipManageInfo scriptInfo = newShipInfo.GetComponent<ShipManageInfo>();
         if (isMain) scriptInfo.isMainShip = true;
         scriptInfo.SetShipData(data, prefabInfoRow);
+        scriptInfo.OnFuncBtnClick += delegate ()
+        {
+            ShowMiniMenu(scriptInfo);
+        };
         newShipInfo.SetActive(true);
     }
 
@@ -103,7 +107,7 @@ public class ShipManageMenu : MonoBehaviour
     {
         if (focusShip != null)
         {
-            int cost = ShipHelper.CalculateRepairCost(focusShip.data.curShipData, focusShip.data.PeakData);
+            int cost = ShipHelper.CalculateRepairCost(focusShip.data);
             if (GameManager.Instance.IsEnoughGold(cost))
             {
                 GameManager.Instance.PopupCtrl.ShowDialog(

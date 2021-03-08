@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
+using System.Linq;
 
 public class CommonUtils
 {
@@ -24,5 +26,32 @@ public class CommonUtils
             }
         }
         return -1;
+    }
+
+    public static bool IsArrayNullEmpty<T>(T[] arr)
+    {
+        if (arr == null || arr.Length == 0)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public static bool IsStrMatchPattern(string check, string pattern)
+    {
+        Regex rgx = new Regex(pattern);
+        return rgx.IsMatch(check);
+    }
+
+    public static T[] AddElemToArray<T>(T[] arr, T elem)
+    {
+        if (arr == null)
+        {
+            return new T[] { elem };
+        }
+        else
+        {
+            return arr.Concat(new T[] { elem }).ToArray();
+        }
     }
 }

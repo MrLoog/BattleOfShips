@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   typeName: Ship of the Line
   type: 8
-  maxCrew: 298
-  hullHealth: 497
-  sailHealth: 299
+  maxCrew: 500
+  hullHealth: 500
+  sailHealth: 300
   oarsSpeed: 0.05
   MaxDegreeRotate: 30
   windConversionRate: 0.4
-  capacity: 3500
+  capacity: 300
   capacityWeightRate: 0.4
   sizeRateWidth: 1.5
   sizeRateLength: 1.5
@@ -31,3 +31,5 @@ MonoBehaviour:
   TimeRegainStun: 5
   basePrice: 0
   shipTier: 0
+  hullMatQty: 50
+  sailMatQty: 30

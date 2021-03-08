@@ -20,6 +20,10 @@ public class GameText
     public const string CONFIRM_SELL_TITLE = "cf_sell_tit";
     public const string CONFIRM_SELL_CONTENT = "cf_sell_cont";
     public const string CONFIRM_SELL_CONTENT_EXTRA = "cf_sell_cont_extra";
+    public const string CONFIRM_BUY_SHIP_TITLE = "cf_buy_ship_tit";
+    public const string CONFIRM_BUY_SHIP_CONTENT = "cf_buy_ship_cont";
+    public const string CONFIRM_SHOP_REFRESH_TITLE = "cf_shop_refresh_tit";
+    public const string CONFIRM_SHOP_REFRESH_CONTENT = "cf_shop_refresh_cont";
     public static Dictionary<string, string> dict = new Dictionary<string, string>()
     {
         {CONFIRM_REPAIR_TITLE,"Are You Sure?"},
@@ -37,6 +41,10 @@ public class GameText
         {CONFIRM_SELL_TITLE,"Sell Ship?"},
         {CONFIRM_SELL_CONTENT,"Ship price is {0:N0} gold. Cargo price is {1:N0} gold.{2} Are you sure sell ship?"},
         {CONFIRM_SELL_CONTENT_EXTRA,"{0} Crew will be lost."},
+        {CONFIRM_BUY_SHIP_TITLE,"Buy this Ship?"},
+        {CONFIRM_BUY_SHIP_CONTENT,"Are you sure you want buy this ship?. Price {0:N0}"},
+        {CONFIRM_SHOP_REFRESH_TITLE,"Refresh Shop?"},
+        {CONFIRM_SHOP_REFRESH_CONTENT,"Refresh Shop cost {0:N0},Are you sure?"},
     };
 
     public static string GetText(string key)

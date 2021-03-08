@@ -31,3 +31,5 @@ MonoBehaviour:
   TimeRegainStun: 5
   basePrice: 100000
   shipTier: 4
+  hullMatQty: 20
+  sailMatQty: 15

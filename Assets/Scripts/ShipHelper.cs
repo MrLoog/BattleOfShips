@@ -30,6 +30,7 @@ public class ShipHelper
         return false;
     }
 
+
     internal static void PerformFullRepair(ScriptableShipCustom data)
     {
         data.curShipData.sailHealth = data.PeakData.sailHealth;
@@ -55,22 +56,10 @@ public class ShipHelper
         return false;
     }
 
-    internal static int CalculateRepairCost(ScriptableShip curShipData, ScriptableShip baseShipData)
+    internal static int CalculateRepairCost(ScriptableShipCustom data)
     {
-        float hullDamaged = baseShipData.hullHealth - curShipData.hullHealth;
-        float sailDamaged = baseShipData.sailHealth - curShipData.sailHealth;
-        int basePrice = baseShipData.basePrice;
-        float hullSailRate = 3; // trọng số coi trọng hull health hơn sail
-        if (basePrice <= 0)
-        {
-            ScriptableShip template = MyResourceUtils.ResourcesLoadAll<ScriptableShip>(MyResourceUtils.RESOURCES_PATH_SCRIPTABLE_OBJECTS).Where(x => x.name == baseShipData.name).FirstOrDefault();
-            if (template != null)
-            {
-                basePrice = template.basePrice;
-                baseShipData.basePrice = basePrice;
-            }
-        }
-        int cost = (int)(basePrice * (hullDamaged * hullSailRate + sailDamaged) / (baseShipData.hullHealth * hullSailRate + baseShipData.sailHealth));
+
+        int cost = CalculateShipPrice(data, false, false, false) - CalculateShipPrice(data, false, false, true);
         return cost;
     }
 
@@ -82,8 +71,13 @@ public class ShipHelper
             return brokenPrice;
         }
 
+        int price = CalculateShipPrice(data);
+        return (int)(price * 0.7f);//drop value 
+    }
+
+    internal static int CalculateShipPrice(ScriptableShipCustom data, bool upgradeApply = true, bool skillApply = true, bool stateHealth = true)
+    {
         int basePrice = data.baseShipData.basePrice;
-        float hullSailRate = 3; // trọng số coi trọng hull health hơn sail
         if (basePrice <= 0)
         {
             ScriptableShip template = MyResourceUtils.ResourcesLoadAll<ScriptableShip>(MyResourceUtils.RESOURCES_PATH_SCRIPTABLE_OBJECTS).Where(x => x.name == data.baseShipData.name).FirstOrDefault();
@@ -93,10 +87,28 @@ public class ShipHelper
                 data.baseShipData.basePrice = basePrice;
             }
         }
-        int upgradeValue = CalculateUpgradeValue(data);
-        int cost = (int)(upgradeValue + basePrice * (data.curShipData.hullHealth * hullSailRate + data.curShipData.sailHealth) / (data.PeakData.hullHealth * hullSailRate + data.PeakData.sailHealth));
-        cost = (int)(cost * 0.7f); //drop value 
-        return cost;
+        int numberSlotSkill = GetNumberSkillSlot(data);
+        int price = (int)(
+            (upgradeApply ? CalculateUpgradeValue(data) : 0)
+        + (skillApply ? Mathf.Pow(3, numberSlotSkill) : 1)
+            * basePrice * (stateHealth ? CalculateStateHealth(data) : 1)
+            );
+        return price;
+    }
+
+    public static float CalculateStateHealth(ScriptableShipCustom data)
+    {
+        float hullSailRate = 3; // trọng số coi trọng hull health hơn sail
+        return (data.curShipData.hullHealth * hullSailRate + data.curShipData.sailHealth) / (data.PeakData.hullHealth * hullSailRate + data.PeakData.sailHealth);
+    }
+    private static int GetNumberSkillSlot(ScriptableShipCustom data)
+    {
+        return data.skills?.Length ?? 0;
+    }
+
+    private static int CalculateSkillsValue(ScriptableShipCustom data)
+    {
+        throw new NotImplementedException();
     }
 
     internal static int CalculateUpgradeValue(ScriptableShipCustom data)
@@ -131,8 +143,19 @@ public class ShipHelper
         return data.PeakData.capacity - CalculateAllCargoWeight(data);
     }
 
-    public static ScriptableShip GetShipUpgrade(ScriptableShipCustom data)
+
+    internal static ScriptableShip CalculatePeakData(ScriptableShipCustom data)
     {
-        return data.baseShipData;
+        ScriptableShip peakState = data.baseShipData;
+        if (peakState != null)
+        {
+            peakState = peakState.Clone<ScriptableShip>();
+
+            //apply material buff
+            peakState.hullHealth = peakState.hullHealth * (data.hullMaterial?.effectRate ?? 1);
+            peakState.sailHealth = peakState.sailHealth * (data.sailMaterial?.effectRate ?? 1);
+        }
+
+        return peakState;
     }
 }
