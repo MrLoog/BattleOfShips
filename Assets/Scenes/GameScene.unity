@@ -7687,6 +7687,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: d021399b58f744a41b428b9e04c688ac, type: 2}
   StartShopFactory: {fileID: 11400000, guid: c7a9cdd801438864385f55a5af9d1682, type: 2}
   FinalShopFactory: {fileID: 11400000, guid: 6457eaf55657fa6439bfcea5972ae2e9, type: 2}
+  firstBattleFlow: {fileID: 11400000, guid: 30d51b5358af7824ea00157d5ef8d00e, type: 2}
+  focusBattleFlow: {fileID: 0}
   mainSceneName: GameScene
   battleSceneName: SeaBattleScene
   townSceneName: TownScene

@@ -46,7 +46,7 @@ public class ShipManageMenu : MonoBehaviour
             Destroy(shipListContent.transform.GetChild(i - 1).gameObject);
         }
 
-        shipCustoms = new ScriptableShipCustom[GameManager.Instance.GameData.otherShips.Length + 1];
+        shipCustoms = new ScriptableShipCustom[(GameManager.Instance.GameData.otherShips?.Length ?? 0) + 1];
         ShowShip(GameManager.Instance.GameData.playerShip, true);
         shipCustoms[0] = GameManager.Instance.GameData.playerShip;
 

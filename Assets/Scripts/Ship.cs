@@ -8,6 +8,7 @@ public class Ship : MonoBehaviour
 {
 
     public int shipId;
+    public string BattleId => customData.battleId;
     private EventDict _events;
     public EventDict Events
     {
@@ -29,6 +30,7 @@ public class Ship : MonoBehaviour
     public const string EVENT_CANNON_BACK_FIRE = "CANNON_BACK_FIRE";
     public const string EVENT_CANNON_BACK_READY = "CANNON_BACK_READY";
     public const string EVENT_TACKED_OTHER_SHIP = "TACKED_OTHER_SHIP";
+    public const string EVENT_SHIP_DEFEATED = "SHIP_DEFEATED";
     public bool ForceStop = false;
     public float windForceValue = 0f;
     public float fixedSpeed = 0f;  // 0 mean not apply
@@ -68,6 +70,20 @@ public class Ship : MonoBehaviour
         set
         {
             startShipData = value.Clone<ScriptableShip>();
+            CurShipData = value.Clone<ScriptableShip>();
+        }
+    }
+
+    public ScriptableShip curShipData; //data change on battle
+
+    public ScriptableShip CurShipData
+    {
+        get
+        {
+            return curShipData;
+        }
+        set
+        {
             curShipData = value.Clone<ScriptableShip>();
             ShipCollider.size = new Vector2(curShipData.sizeRateWidth * ShipCollider.size.x / model.transform.localScale.x
             , curShipData.sizeRateLength * ShipCollider.size.y / model.transform.localScale.y);
@@ -84,8 +100,6 @@ public class Ship : MonoBehaviour
             }
         }
     }
-
-    public ScriptableShip curShipData; //data change on battle
 
     public ScriptableShip ShipData
     {
@@ -414,6 +428,7 @@ public class Ship : MonoBehaviour
             for (int c = 0; c < curShipData.numberDeck; c++)
             {
                 int indexCannon = i * curShipData.numberDeck + c;
+                Debug.Log("Bug indexCannon " + indexCannon + "/" + numberCannon.Length + "/" + shipId);
                 if (numberCannon[indexCannon] == 0) continue;
                 if (cooldownCannons[indexCannon] < timeReloadCannons[indexCannon])
                 {
@@ -516,7 +531,7 @@ public class Ship : MonoBehaviour
     {
         customData = playerStartShipCustom;
         ShipData = playerStartShipCustom.baseShipData;
-        startShipData = playerStartShipCustom.PeakData;
+        StartShipData = playerStartShipCustom.PeakData;
         if (customData.curShipData != null)
         {
             curShipData = customData.curShipData.Clone<ScriptableShip>(); ;
@@ -573,6 +588,11 @@ public class Ship : MonoBehaviour
         Debug.Log("Test Damage Inflict Crew Damage Enter No Crew");
     }
 
+    public void EnterStateDefeated()
+    {
+        Events.InvokeOnAction(EVENT_SHIP_DEFEATED);
+        Events.RemoveListener(EVENT_SHIP_DEFEATED);
+    }
 
     public void TakeDamage(DamageDealShip damage, GameObject source)
     {
@@ -585,6 +605,7 @@ public class Ship : MonoBehaviour
             {
                 curShipData.maxCrew = 0;
                 EnterNoCrewState();
+                EnterStateDefeated();
             }
         }
         if (damage.sailDamage > 0)
@@ -606,6 +627,7 @@ public class Ship : MonoBehaviour
             {
                 spriteRenderer.sprite = imgStateShip.deathState;
                 MakeDeathShip();
+                EnterStateDefeated();
             }
             else if ((healthRateB > 0.2f) && (healthRateA <= 0.2f))
             {
@@ -1179,6 +1201,7 @@ public class Ship : MonoBehaviour
     }
 
     public Collision2D LastCollision2D { get; set; }
+
     void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.tag.Equals(GameSettings.TAG_SHIP))

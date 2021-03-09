@@ -47,4 +47,6 @@ public class ScriptableShipCustom : MScriptableObject
     public ScriptableShipMaterial hullMaterial;
     public ScriptableShipMaterial sailMaterial;
 
+    public string battleId;
+
 }

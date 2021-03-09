@@ -141,7 +141,7 @@ public class TransferItemMarketCtrl : MonoBehaviour
                 inputQuantity.text = itemQuantitySlider.value.ToString();
             }
         }
-        catch (FormatException e)
+        catch (FormatException)
         {
             Debug.Log("Quantity Exception [" + inputQuantity.text + "]");
             preventChainUpdate = false;

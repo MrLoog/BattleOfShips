@@ -16,6 +16,8 @@ public class SeaBattleData : BaseDataEntity
     public float windAccumTime;
 
 
+    public ScriptableBattleFlow activeFlow;
+
     public SeaBattleData()
     {
 

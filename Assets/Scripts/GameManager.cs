@@ -20,6 +20,7 @@ public class GameManager : BaseSceneManager
     public ShipInventoryCtrl ShipInventoryCtrl => ShipInventoryCanvas.GetComponentInChildren<ShipInventoryCtrl>();
 
     public UnityAction<int> OnGoldAccountChanged;
+    public UnityAction<int> OnGemAccountChanged;
     public IStoreData database;
 
     public string MessageIntent;
@@ -61,6 +62,7 @@ public class GameManager : BaseSceneManager
     }
 
     public int startGold = 10000;
+    public int startGem = 10;
     public ScriptableShipCustom playerStarterShip;
 
     public ScriptableShipCustom[] otherShips;
@@ -68,11 +70,14 @@ public class GameManager : BaseSceneManager
     public ScriptableShipFactory StartShopFactory;
     public ScriptableShipFactory FinalShopFactory;
 
+    public ScriptableBattleFlow firstBattleFlow;
+    public ScriptableBattleFlow focusBattleFlow;
+
     public string mainSceneName = "GameScene";
     public string battleSceneName = "SeaBattleScene";
     public string townSceneName = "TownScene";
 
-
+    public object[] test;
     public override void Awake()
     {
         if (Instance != null && Instance != this)
@@ -113,19 +118,22 @@ public class GameManager : BaseSceneManager
 
     public void StartNewGame()
     {
+        GameData = new GameData();
         GameData.playerShip = playerStarterShip;
         GameData.shipShopFactory = StartShopFactory.Clone<ScriptableShipFactory>();
-        List<ScriptableShipCustom> lst = new List<ScriptableShipCustom>();
-        if (otherShips != null)
-        {
-            foreach (var item in otherShips)
-            {
-                lst.Add(item.Clone<ScriptableShipCustom>());
-            }
-        }
-        GameData.otherShips = lst.ToArray();
+        // List<ScriptableShipCustom> lst = new List<ScriptableShipCustom>();
+        // if (otherShips != null)
+        // {
+        //     foreach (var item in otherShips)
+        //     {
+        //         lst.Add(item.Clone<ScriptableShipCustom>());
+        //     }
+        // }
+        // GameData.otherShips = lst.ToArray();
         GameData.gold = startGold;
+        GameData.gem = startGem;
         GameData.process = GameData.PROCESS_INIT_FIRST_SHIP;
+        focusBattleFlow = firstBattleFlow.Clone<ScriptableBattleFlow>();
         ChangeScene(battleSceneName, SeaBattleManager.INTENT_FIRST_BATTLE);
     }
 
@@ -214,6 +222,26 @@ public class GameManager : BaseSceneManager
         GameData.gold += amount;
         OnGoldAccountChanged?.Invoke(amount);
         return GameData.gold;
+    }
+
+    public bool IsEnoughGem(int amount)
+    {
+        return GameData.gem >= amount;
+    }
+
+    public int DeductGem(int amount)
+    {
+        if (!IsEnoughGem(amount)) return -1;
+        GameData.gem -= amount;
+        OnGemAccountChanged?.Invoke(-amount);
+        return GameData.gem;
+    }
+
+    public int AddGem(int amount)
+    {
+        GameData.gem += amount;
+        OnGemAccountChanged?.Invoke(amount);
+        return GameData.gem;
     }
 
     internal void DeleteShip(ScriptableShipCustom data)

@@ -25,8 +25,8 @@ public class WorkshopMenu : MonoBehaviour
     public GameObject buttonRefresh;
     public Text PlayerGold;
 
-    private int costRefresh = 100000;
-    private const string TEMPLATE_REFRESH_BTN = "Refresh({0:N0})";
+    private int costRefresh = 3;
+    private const string TEMPLATE_REFRESH_BTN = "Refresh({0:N0} gem)";
     private const string TEMPLATE_PLAYER_GOLD = "<color=yellow>Gold: {0:N0}</color>";
 
     private Workshop workshop;
@@ -152,7 +152,7 @@ public class WorkshopMenu : MonoBehaviour
     }
     public void RefreshShop()
     {
-        if (GameManager.Instance.IsEnoughGold(costRefresh))
+        if (GameManager.Instance.IsEnoughGem(costRefresh))
         {
             GameManager.Instance.PopupCtrl.ShowDialog(
                 title: GameText.GetText(GameText.CONFIRM_SHOP_REFRESH_TITLE),
@@ -166,10 +166,14 @@ public class WorkshopMenu : MonoBehaviour
                           TownManager.Instance.RefreshWorkshop();
                           RequestWorkshopInfo();
                           ShowAllShip();
-                          GameManager.Instance.DeductGold(costRefresh);
+                          GameManager.Instance.DeductGem(costRefresh);
                       }
                   }
             );
+        }
+        else
+        {
+            GameManager.Instance.ToastService.ShowMessage(GameText.GetText(GameText.TOAST_NOT_ENOUGH_GEM), 3f);
         }
     }
 }

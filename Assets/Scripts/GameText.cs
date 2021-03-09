@@ -24,6 +24,14 @@ public class GameText
     public const string CONFIRM_BUY_SHIP_CONTENT = "cf_buy_ship_cont";
     public const string CONFIRM_SHOP_REFRESH_TITLE = "cf_shop_refresh_tit";
     public const string CONFIRM_SHOP_REFRESH_CONTENT = "cf_shop_refresh_cont";
+    public const string CONFIRM_BATTLE_RESTART_TITLE = "cf_battle_restart_tit";
+    public const string CONFIRM_BATTLE_RESTART_CONTENT = "cf_battle_restart_cont";
+    public const string TOAST_DECLARE_WIN = "toast_declare_win";
+    public const string TOAST_NOT_ENOUGH_GOLD = "toast_not_enough_gold";
+    public const string TOAST_NOT_ENOUGH_GEM = "toast_not_enough_gem";
+    public const string TOAST_CANNOT_RETURN_TOWN = "toast_return_town_refuse";
+    public const string CONFIRM_RETURN_TOWN_TITLE = "cf_return_town_tit";
+    public const string CONFIRM_RETURN_TOWN_CONTENT = "cf_return_town_cont";
     public static Dictionary<string, string> dict = new Dictionary<string, string>()
     {
         {CONFIRM_REPAIR_TITLE,"Are You Sure?"},
@@ -44,7 +52,15 @@ public class GameText
         {CONFIRM_BUY_SHIP_TITLE,"Buy this Ship?"},
         {CONFIRM_BUY_SHIP_CONTENT,"Are you sure you want buy this ship?. Price {0:N0}"},
         {CONFIRM_SHOP_REFRESH_TITLE,"Refresh Shop?"},
-        {CONFIRM_SHOP_REFRESH_CONTENT,"Refresh Shop cost {0:N0},Are you sure?"},
+        {CONFIRM_SHOP_REFRESH_CONTENT,"Refresh Shop cost {0:N0} gem,Are you sure?"},
+        {CONFIRM_BATTLE_RESTART_TITLE,"The Game will be restart"},
+        {CONFIRM_BATTLE_RESTART_CONTENT,"You are defeated. Try Again."},
+        {TOAST_DECLARE_WIN,"Congratulations, You are Winner!!! Let's Loot all them and return Town"},
+        {TOAST_CANNOT_RETURN_TOWN,"Cannot Return Town when you are in battle."},
+        {CONFIRM_RETURN_TOWN_TITLE,"Are you sure return Town?"},
+        {CONFIRM_RETURN_TOWN_CONTENT,"Make sure you take all before return to town."},
+        {TOAST_NOT_ENOUGH_GOLD,"Not Enough Gold"},
+        {TOAST_NOT_ENOUGH_GEM,"Not Enough Gem"},
     };
 
     public static string GetText(string key)

@@ -9,9 +9,9 @@ public class GActionManager : Singleton<GActionManager>
 {
     protected GActionManager() { }
 
-    internal bool Check(ActionApi aCheck)
+    internal object Check(ActionApi aCheck)
     {
-        return (bool)this.GetType().GetMethod(aCheck.actionName)?.Invoke(this, new object[] { aCheck.actionParams });
+        return this.GetType().GetMethod(aCheck.actionName)?.Invoke(this, new object[] { aCheck.actionParams });
     }
 
     internal void Perform(ActionApi aAction)
@@ -94,6 +94,55 @@ public class GActionManager : Singleton<GActionManager>
         {
             Debug.Log("Error UnlockShopMaterial");
         }
+    }
+    #endregion
+
+    #region  battle api
+    public void SpawnShip(params string[] args)
+    {
+        string type = args[0];
+        string index = args[1];
+        string pos = args.Length > 2 ? args[2] : "";
+        ScriptableShipCustom data = null;
+        ScriptableBattleFlow battleFlow = SeaBattleManager.Instance.SeaBattleData.activeFlow;
+        if (type == "0")
+        {
+            data = battleFlow.shipFactorys[Int32.Parse(index)].GetRandomShip().FirstOrDefault();
+        }
+        else
+        {
+            data = battleFlow.ships[Int32.Parse(index)].Clone<ScriptableShipCustom>();
+        }
+        data.group = 1;
+        data.battleId = type + index;
+        GameObject newShip = SeaBattleManager.Instance.SpawnShipFromData(data);
+    }
+
+    public void CommandAttack(params string[] args)
+    {
+        string type = args[0];
+        string index = args[1];
+        Ship shipCommand = SeaBattleManager.Instance.AllShip.FirstOrDefault(x => x.BattleId == (type + index));
+        shipCommand.gameObject.GetComponent<ShipAI>().enabled = true;
+    }
+    public void RestartGame(params string[] args)
+    {
+        GameManager.Instance.PauseGamePlay();
+        GameManager.Instance.PopupCtrl.ShowDialog(
+            title: GameText.GetText(GameText.CONFIRM_BATTLE_RESTART_TITLE),
+            content: GameText.GetText(GameText.CONFIRM_BATTLE_RESTART_CONTENT),
+            okText: GameText.GetText(GameText.CONFIRM_COMMON_OK),
+            cancelText: null,
+            onResult: (i) =>
+            {
+                SeaBattleManager.Instance.RestartBattle();
+                GameManager.Instance.ResumeGamePlay();
+            }
+        );
+    }
+    public void MakeWinGame(params string[] args)
+    {
+        SeaBattleManager.Instance.EndBattle(false);
     }
     #endregion
 

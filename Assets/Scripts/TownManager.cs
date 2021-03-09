@@ -59,7 +59,7 @@ public class TownManager : BaseSceneManager
 
     public Workshop RefreshWorkshop()
     {
-        ScriptableShipFactory factory = MyResourceUtils.ResourcesLoad<ScriptableShipFactory>(MyResourceUtils.RESOURCES_PATH_SCRIPTABLE_WORKSHOP);
+        ScriptableShipFactory factory = GameManager.Instance.gameData.shipShopFactory;
         Debug.Assert(factory != null, "factory should found");
         Workshop result = TownData.workshop ?? (new Workshop());
         result.timeRefresh = DateTime.Now;
@@ -111,7 +111,7 @@ public class TownManager : BaseSceneManager
     public void PlayLevel(ScriptableGameLevel level)
     {
         GameManager.Instance.PlayLevel = level;
-        GameManager.Instance.ChangeScene(GameManager.Instance.battleSceneName,SeaBattleManager.INTENT_BATTLE_LEVEL);
+        GameManager.Instance.ChangeScene(GameManager.Instance.battleSceneName, SeaBattleManager.INTENT_BATTLE_LEVEL);
     }
 
     public void CloseLevelSelect()

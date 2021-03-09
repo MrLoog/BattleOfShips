@@ -139,6 +139,7 @@
      <Compile Include="Assets\Scripts\Scriptable\ScriptableAchievement.cs" />
      <Compile Include="Assets\Scripts\Common\GEventManager.cs" />
      <Compile Include="Assets\Scripts\Common\GActionManager.cs" />
+     <Compile Include="Assets\Scripts\Scriptable\ScriptableBattleFlow.cs" />
      <None Include="Assets\3rd-Party\kenney_piratepack\License.txt" />
      <None Include="Assets\3rd-Party\kenney_piratepack\Spritesheet\shipsMiscellaneous_sheet@2.xml" />
      <None Include="Assets\3rd-Party\kenney_piratepack\Spritesheet\shipsMiscellaneous_sheet.xml" />

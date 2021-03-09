@@ -13,11 +13,13 @@ public class ScriptableAchievement : MScriptableObject
     public ActionApi[] actionCheck;
 
     public ActionApi[] actionResult;
-}
 
-[Serializable]
-public class ActionApi
-{
-    public string actionName;
-    public string[] actionParams;
+    public ConditionAction ToConditionAction()
+    {
+        ConditionAction ca = new ConditionAction();
+        ca.eventTrigger = eventTriggers;
+        ca.actionCheck = actionCheck;
+        ca.actionResult = actionResult;
+        return ca;
+    }
 }
