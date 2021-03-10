@@ -7672,6 +7672,7 @@ MonoBehaviour:
     playerShip: {fileID: 0}
     otherShips: []
     gold: 0
+    gem: 0
     market:
       goodsCodes: []
       prices: 
@@ -7681,7 +7682,8 @@ MonoBehaviour:
     shipShopFactory: {fileID: 0}
     levelCleared: []
     achievementCleared: []
-  startGold: 0
+  startGold: 5000
+  startGem: 10
   playerStarterShip: {fileID: 11400000, guid: 361100352b5176d4e95235d5c960d348, type: 2}
   otherShips:
   - {fileID: 11400000, guid: d021399b58f744a41b428b9e04c688ac, type: 2}

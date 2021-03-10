@@ -38,7 +38,7 @@ public class ScriptableShipFactory : MScriptableObject
             }
             else
             {
-                choiceShip = (int)Random.Range(0, shipPool.Count - 1);
+                choiceShip = Random.Range(0, shipPool.Count);
             }
             ScriptableShipCustom resultShip = ScriptableShipCustom.CreateInstance<ScriptableShipCustom>();
 
@@ -52,7 +52,7 @@ public class ScriptableShipFactory : MScriptableObject
                 ScriptableShipSkill[] choiceSkills = new ScriptableShipSkill[numberSlot];
                 for (int i = 0; i < numberSlot; i++)
                 {
-                    int choiceSkill = (int)Random.Range(0, skillPool2.Count - 1);
+                    int choiceSkill = Random.Range(0, skillPool2.Count);
                     choiceSkills[i] = skillPool2[choiceSkill];
                     skillPool2.RemoveAt(choiceSkill);
                 }
@@ -68,7 +68,7 @@ public class ScriptableShipFactory : MScriptableObject
                 }
                 else
                 {
-                    choice = Random.Range(0, hullMaterials.Length - 1);
+                    choice = Random.Range(0, hullMaterials.Length);
                 }
                 resultShip.hullMaterial = hullMaterials[choice];
             }
@@ -82,7 +82,7 @@ public class ScriptableShipFactory : MScriptableObject
                 }
                 else
                 {
-                    choice = Random.Range(0, sailMaterials.Length - 1);
+                    choice = Random.Range(0, sailMaterials.Length);
                 }
                 resultShip.sailMaterial = sailMaterials[choice];
             }

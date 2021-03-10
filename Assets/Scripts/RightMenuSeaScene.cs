@@ -36,10 +36,7 @@ public class RightMenuSeaScene : MonoBehaviour
                     GameManager.Instance.ResumeGamePlay();
                     if (i == ModalPopupCtrl.RESULT_POSITIVE)
                     {
-
-                        SeaBattleManager.Instance.UpdateGameData();
-                        SeaBattleManager.Instance.seaBattleData = null;
-                        GameManager.Instance.ChangeScene(GameManager.Instance.townSceneName);
+                        SeaBattleManager.Instance.ReturnTown();
                         Debug.Log("Press Return Town");
                     }
                 }

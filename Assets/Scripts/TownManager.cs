@@ -111,6 +111,7 @@ public class TownManager : BaseSceneManager
     public void PlayLevel(ScriptableGameLevel level)
     {
         GameManager.Instance.PlayLevel = level;
+        GameManager.Instance.focusBattleFlow = level.battleFlow.Clone<ScriptableBattleFlow>();
         GameManager.Instance.ChangeScene(GameManager.Instance.battleSceneName, SeaBattleManager.INTENT_BATTLE_LEVEL);
     }
 

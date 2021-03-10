@@ -8,15 +8,15 @@ public class CommonUtils
 {
     public static int RandomByRate(int[] weights)
     {
-        float maxRange = 0f;
-        float[,] level = new float[weights.Length, 2];
+        int maxRange = 0;
+        int[,] level = new int[weights.Length, 2];
         for (int i = 0; i < weights.Length; i++)
         {
             level[i, 0] = maxRange;
             maxRange += weights[i];
             level[i, 1] = maxRange;
         }
-        float selected = Random.Range(0f, maxRange - 1);
+        int selected = Random.Range(0, maxRange);
 
         for (int i = 0; i < weights.Length; i++)
         {

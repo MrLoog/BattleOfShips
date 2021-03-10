@@ -15,7 +15,18 @@ public class SeaBattleData : BaseDataEntity
     public string windDataJson;
     public float windAccumTime;
 
-
+    private RewardBattle reward;
+    public RewardBattle Reward
+    {
+        get
+        {
+            if (reward == null)
+            {
+                reward = new RewardBattle();
+            }
+            return reward;
+        }
+    }
     public ScriptableBattleFlow activeFlow;
 
     public SeaBattleData()

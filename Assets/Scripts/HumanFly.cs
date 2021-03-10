@@ -52,7 +52,7 @@ public class HumanFly : MonoBehaviour
 
     public void RandomSprite()
     {
-        int pick = Random.Range(0, sprites.Length - 1);
+        int pick = Random.Range(0, sprites.Length);
         Debug.Log("pick " + pick);
         GetComponent<SpriteRenderer>().sprite = sprites[pick];
     }

@@ -26,6 +26,8 @@ public class GameText
     public const string CONFIRM_SHOP_REFRESH_CONTENT = "cf_shop_refresh_cont";
     public const string CONFIRM_BATTLE_RESTART_TITLE = "cf_battle_restart_tit";
     public const string CONFIRM_BATTLE_RESTART_CONTENT = "cf_battle_restart_cont";
+    public const string CONFIRM_RETURN_TOWN_RUN_TITLE = "cf_return_town_run_tit";
+    public const string CONFIRM_RETURN_TOWN_RUN_CONTENT = "cf_return_town_run_cont";
     public const string TOAST_DECLARE_WIN = "toast_declare_win";
     public const string TOAST_NOT_ENOUGH_GOLD = "toast_not_enough_gold";
     public const string TOAST_NOT_ENOUGH_GEM = "toast_not_enough_gem";
@@ -61,6 +63,8 @@ public class GameText
         {CONFIRM_RETURN_TOWN_CONTENT,"Make sure you take all before return to town."},
         {TOAST_NOT_ENOUGH_GOLD,"Not Enough Gold"},
         {TOAST_NOT_ENOUGH_GEM,"Not Enough Gem"},
+        {CONFIRM_RETURN_TOWN_RUN_TITLE,"Run from Battle?"},
+        {CONFIRM_RETURN_TOWN_RUN_CONTENT,"Are you sure, you want to run from battle return to Town?"},
     };
 
     public static string GetText(string key)

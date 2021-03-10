@@ -97,7 +97,15 @@ public class GActionManager : Singleton<GActionManager>
     }
     #endregion
 
-    #region  battle api
+    #region battle api check
+    public bool IsEnemyRemain(params string[] args)
+    {
+        object check = SeaBattleManager.Instance.AllShip.FirstOrDefault(x => x.Group != 0 && !x.IsDefeated);
+        return check != null;
+    }
+
+    #endregion
+    #region  battle api action
     public void SpawnShip(params string[] args)
     {
         string type = args[0];
@@ -143,6 +151,92 @@ public class GActionManager : Singleton<GActionManager>
     public void MakeWinGame(params string[] args)
     {
         SeaBattleManager.Instance.EndBattle(false);
+        MarkLevelCleared();
+    }
+
+    public void MakeLoseGame(params string[] args)
+    {
+
+    }
+
+    public void AddRewardGold(params string[] args)
+    {
+        int index = Int32.Parse(args[0]);
+        ScriptableBattleFlow battleFlow = SeaBattleManager.Instance.SeaBattleData.activeFlow;
+        if (!CommonUtils.IsArrayNullEmpty(battleFlow.reward?.gold) && battleFlow.reward.gold.Length > index)
+        {
+            CommonUtils.AddElemToArray(
+                SeaBattleManager.Instance.SeaBattleData.Reward.gold,
+                battleFlow.reward.gold[index]
+                );
+        }
+    }
+    public void AddRewardGem(params string[] args)
+    {
+        int index = Int32.Parse(args[0]);
+        ScriptableBattleFlow battleFlow = SeaBattleManager.Instance.SeaBattleData.activeFlow;
+        if (!CommonUtils.IsArrayNullEmpty(battleFlow.reward?.gem) && battleFlow.reward.gem.Length > index)
+        {
+            CommonUtils.AddElemToArray(
+                SeaBattleManager.Instance.SeaBattleData.Reward.gem,
+                battleFlow.reward.gem[index]
+                );
+        }
+    }
+    public void AddRewardExp(params string[] args)
+    {
+        int index = Int32.Parse(args[0]);
+        ScriptableBattleFlow battleFlow = SeaBattleManager.Instance.SeaBattleData.activeFlow;
+        if (!CommonUtils.IsArrayNullEmpty(battleFlow.reward?.exp) && battleFlow.reward.exp.Length > index)
+        {
+            CommonUtils.AddElemToArray(
+                SeaBattleManager.Instance.SeaBattleData.Reward.exp,
+                battleFlow.reward.exp[index]
+                );
+        }
+    }
+    public void AddRewardShip(params string[] args)
+    {
+        int index = Int32.Parse(args[0]);
+        ScriptableBattleFlow battleFlow = SeaBattleManager.Instance.SeaBattleData.activeFlow;
+        if (!CommonUtils.IsArrayNullEmpty(battleFlow.reward?.ships) && battleFlow.reward.ships.Length > index)
+        {
+            CommonUtils.AddElemToArray(
+                SeaBattleManager.Instance.SeaBattleData.Reward.ships,
+                battleFlow.reward.ships[index]
+                );
+        }
+    }
+    public void AddRewardItem(params string[] args)
+    {
+        int index = Int32.Parse(args[0]);
+        ScriptableBattleFlow battleFlow = SeaBattleManager.Instance.SeaBattleData.activeFlow;
+        if (!CommonUtils.IsArrayNullEmpty(battleFlow.reward?.goodsCode) && battleFlow.reward.goodsCode.Length > index)
+        {
+            CommonUtils.AddElemToArray(
+                SeaBattleManager.Instance.SeaBattleData.Reward.goodsCode,
+                battleFlow.reward.goodsCode[index]
+                );
+
+            if (!CommonUtils.IsArrayNullEmpty(battleFlow.reward?.goodsQty) && battleFlow.reward.goodsQty.Length > index)
+            {
+                CommonUtils.AddElemToArray(
+                    SeaBattleManager.Instance.SeaBattleData.Reward.goodsQty,
+                    battleFlow.reward.goodsQty[index]
+                    );
+            }
+        }
+    }
+
+    public void MarkLevelCleared(params string[] args)
+    {
+        if (GameManager.Instance.PlayLevel != null)
+        {
+            if (GameManager.Instance.GameData.MakeClearedLevel(GameManager.Instance.PlayLevel.codeName))
+            {
+                GEventManager.Instance.InvokeEvent(GEventManager.EVENT_CLEAR_LEVEL);
+            }
+        }
     }
     #endregion
 

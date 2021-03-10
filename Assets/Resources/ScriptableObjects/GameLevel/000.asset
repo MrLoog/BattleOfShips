@@ -25,6 +25,4 @@ MonoBehaviour:
     First Level
 
     First Level'
-  enemyShipFactorys:
-  - {fileID: 11400000, guid: 08f7123097e0c7547a13f5856eb8fd8c, type: 2}
-  enemysExp: 
+  battleFlow: {fileID: 11400000, guid: fa03e7bd71549a948b6ec70bd0f20ad4, type: 2}

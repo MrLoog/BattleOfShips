@@ -41,16 +41,20 @@ MonoBehaviour:
     battleTime: []
     actionCheck: []
     actionResult:
-    - actionName: AddReward
+    - actionName: AddRewardGold
       actionParams:
-      - 0
       - 0
       expectResult: 
     - actionName: MakeWinGame
       actionParams: []
       expectResult: 
-  shipFactorys: []
+  shipFactorys:
+  - {fileID: 11400000, guid: 08f7123097e0c7547a13f5856eb8fd8c, type: 2}
   ships:
-  - {fileID: 11400000, guid: d021399b58f744a41b428b9e04c688ac, type: 2}
+  - {fileID: 0}
   shipRewards: []
   goldRewards: 88130000
+  gemRewards: 
+  expRewards: 
+  goodsReward: []
+  goodsQtyReward: 

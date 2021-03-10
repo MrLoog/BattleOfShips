@@ -55,6 +55,8 @@ public class SeaBattleManager : BaseSceneManager
     public UnityEvent OnWindChange;
 
     List<ScriptableCannonBall> ScriptableCannonBalls;
+
+
     public ScriptableShip[] scriptableShips;
     public ScriptableShipSkill[] scriptableShipSkills;
 
@@ -160,38 +162,19 @@ public class SeaBattleManager : BaseSceneManager
     public void StartBattle()
     {
         RandomWindForce();
-        if (!INTENT_FIRST_BATTLE.Equals(gameManager.MessageIntent))
+        if (INTENT_RESUME.Equals(gameManager.MessageIntent))
         {
-            if (INTENT_BATTLE_LEVEL.Equals(gameManager.MessageIntent))
-            {
-                Debug.Log("Perform Play Level");
-                RandomTeleport(SpawnPlayerShip(gameManager.GameData.playerShip.Restore<ScriptableShipCustom>()));
-                if (gameManager.PlayLevel.enemyShipFactorys != null)
-                {
-                    foreach (var factory in gameManager.PlayLevel.enemyShipFactorys)
-                    {
-                        foreach (var dataShip in factory.GetRandomShip())
-                        {
-                            dataShip.group = 1;
-                            RandomTeleport(SpawnShipFromData(dataShip));
-                        }
-                    }
-                }
-            }
-            else if (INTENT_RESUME.Equals(gameManager.MessageIntent))
-            {
-                LoadGame();
-            }
+            LoadGame();
         }
         else
         {
-            Debug.Log("Start First Battle");
             RandomTeleport(SpawnPlayerShip(gameManager.GameData.playerShip.Restore<ScriptableShipCustom>()));
             SeaBattleData = new SeaBattleData();
             SeaBattleData.activeFlow = gameManager.focusBattleFlow;
             SeaBattleData.activeFlow.ActiveFlow();
             GEventManager.Instance.InvokeEvent(GEventManager.EVENT_START_BATTLE);
-            gameManager.GameData.process = GameData.PROCESS_FIRST_TIME_BATTLE;
+            if (!INTENT_FIRST_BATTLE.Equals(gameManager.MessageIntent))
+                gameManager.GameData.process = GameData.PROCESS_FIRST_TIME_BATTLE;
         }
         IsBattle = true;
     }
@@ -303,8 +286,8 @@ public class SeaBattleManager : BaseSceneManager
 
     public void RandomTeleport(GameObject gameObject)
     {
-        int randX = Random.Range(battleFields.cellBounds.xMin, battleFields.cellBounds.xMax - 1);
-        int randY = Random.Range(battleFields.cellBounds.yMin, battleFields.cellBounds.yMax - 1);
+        int randX = Random.Range(battleFields.cellBounds.xMin, battleFields.cellBounds.xMax);
+        int randY = Random.Range(battleFields.cellBounds.yMin, battleFields.cellBounds.yMax);
         Vector3 newPos = battleFields.GetCellCenterWorld(new Vector3Int(randX, randY, 0));
         Debug.Log(string.Format("Teleport {0} / {1}-{2}:{3} / {4}-{5}:{6}",
         newPos,
@@ -409,8 +392,14 @@ public class SeaBattleManager : BaseSceneManager
     }
     private void TackedOtherShip()
     {
+        Ship mainShip = playerShip.GetComponent<Ship>();
+        Ship target = mainShip.LastCollision2D.gameObject.GetComponent<Ship>();
+        if (target.IsSameGroup(mainShip))
+        {
+            TransferCargo(mainShip.CustomData, target.CustomData);
+            return;
+        }
         GameManager.Instance.PauseGamePlay();
-        Ship target = playerShip.GetComponent<Ship>().LastCollision2D.gameObject.GetComponent<Ship>();
 
         PopupCtrl.ShowDialog(
             title: "Confirm Perform Tacked",
@@ -471,6 +460,7 @@ public class SeaBattleManager : BaseSceneManager
                     cancelText: null,
                     onResult: (i) =>
                     {
+                        TransferCargo(result.ship1.CustomData, result.ship2.CustomData);
                         // InventoryMenu.GetComponent<ShipInventoryMenu>().ShowInventory(result.ship2);
                         List<ScriptableShipCustom> shipCustoms = new List<ScriptableShipCustom>();
                         shipCustoms.Add(result.ship1.CustomData);
@@ -480,6 +470,17 @@ public class SeaBattleManager : BaseSceneManager
                         transferCtrl.ShowInventory(ShipInventoryCtrl.InventoryMode.Transfer);
                     }
                 );
+    }
+
+    private void TransferCargo(ScriptableShipCustom data1, ScriptableShipCustom data2)
+    {
+        GameManager.Instance.PauseGamePlay();
+        List<ScriptableShipCustom> shipCustoms = new List<ScriptableShipCustom>();
+        shipCustoms.Add(data1);
+        shipCustoms.Add(data2);
+        ShipInventoryCtrl transferCtrl = GameManager.Instance.ShipInventoryCtrl;
+        transferCtrl.RegisterAvaiableShip(shipCustoms.ToArray(), 0);
+        transferCtrl.ShowInventory(ShipInventoryCtrl.InventoryMode.Transfer);
     }
 
     private ShipTackedBattle CalculateTacked2Ship(Ship ship1, Ship ship2)
@@ -496,7 +497,7 @@ public class SeaBattleManager : BaseSceneManager
         Ship scriptShip = newShip.GetComponent<Ship>();
         if (scriptableShips.Length > 0)
         {
-            int choose = Random.Range(0, scriptableShips.Length - 1);
+            int choose = Random.Range(0, scriptableShips.Length);
             scriptShip.ShipData = scriptableShips[choose].Clone<ScriptableShip>();
         }
         else
@@ -523,6 +524,12 @@ public class SeaBattleManager : BaseSceneManager
         scriptShip.ApplyWindForce(windForce);
         ships.Add(scriptShip);
         return newShip;
+    }
+    public void ReturnTown(bool isRun = false)
+    {
+        UpdateGameData();
+        seaBattleData = null;
+        GameManager.Instance.ChangeScene(GameManager.Instance.townSceneName);
     }
 
     public ScriptableStateShip GetImgStateShip(ScriptableShipCustom.Union union)

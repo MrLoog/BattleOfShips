@@ -15,7 +15,6 @@ public class ScriptableGameLevel : MScriptableObject
     public string levelName;
     [TextArea(4, 100)]
     public string description;
-
-    public ScriptableShipFactory[] enemyShipFactorys;
-    public long[] enemysExp;
+    public ScriptableBattleFlow battleFlow;
+    public RewardBattle reward;
 }

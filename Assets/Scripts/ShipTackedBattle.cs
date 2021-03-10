@@ -41,6 +41,8 @@ public class ShipTackedBattle
             Ship2Damaged = LoseDamaged;
             ship1.curShipData.maxCrew -= Ship1Damaged;
             ship2.curShipData.maxCrew -= Ship2Damaged;
+            ship2.EnterStateDefeated();
+            ship2.Group = ship1.Group;
             Result = 1;
         }
         else
@@ -50,6 +52,8 @@ public class ShipTackedBattle
             Ship2Damaged = WinDamaged;
             ship1.curShipData.maxCrew -= Ship1Damaged;
             ship2.curShipData.maxCrew -= Ship2Damaged;
+            ship1.EnterStateDefeated();
+            ship1.Group = ship2.Group;
             Result = 2;
         }
     }

@@ -92,8 +92,8 @@ public class MarketStateFactory
 
         if (state.crewMinMaxQtyPrice != null && state.crewMinMaxQtyPrice.Length == 4)
         {
-            today.crewAvaiable = Random.Range(state.crewMinMaxQtyPrice[0], state.crewMinMaxQtyPrice[1]);
-            today.crewPrice = Random.Range(state.crewMinMaxQtyPrice[2], state.crewMinMaxQtyPrice[3]);
+            today.crewAvaiable = Random.Range(state.crewMinMaxQtyPrice[0], state.crewMinMaxQtyPrice[1] + 1);
+            today.crewPrice = Random.Range(state.crewMinMaxQtyPrice[2], state.crewMinMaxQtyPrice[3] + 1);
         }
         return today;
     }

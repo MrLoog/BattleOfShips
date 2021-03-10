@@ -235,6 +235,7 @@ public class Ship : MonoBehaviour
 
     public float lastTimeHit = 0f;
     public int totalHitConsecutive = 0;
+    public bool IsDefeated => curShipData.hullHealth <= 0 || curShipData.maxCrew <= 0;
 
 
     public ScriptableStateShip imgStateShip;
@@ -539,7 +540,7 @@ public class Ship : MonoBehaviour
 
         if (!(customData.unions != null && customData.unions.Length > 0))
         {
-            customData.unions = new ScriptableShipCustom.Union[] { (ScriptableShipCustom.Union)((int)Random.Range(2, 6)) };
+            customData.unions = new ScriptableShipCustom.Union[] { (ScriptableShipCustom.Union)((int)Random.Range(2, 7)) };
         }
         ImgStateShip = SeaBattleManager.Instance.GetImgStateShip(customData.unions[0]);
 
@@ -590,6 +591,7 @@ public class Ship : MonoBehaviour
 
     public void EnterStateDefeated()
     {
+        //call when out of hull health, crew, lose tacked
         Events.InvokeOnAction(EVENT_SHIP_DEFEATED);
         Events.RemoveListener(EVENT_SHIP_DEFEATED);
     }
@@ -623,7 +625,10 @@ public class Ship : MonoBehaviour
             float healthRateB = curHealth / maxHealth;
             float healthRateA = (curHealth - damage.hullDamage) / maxHealth;
 
-            if (healthRateA <= 0f)
+            curShipData.hullHealth -= damage.hullDamage;
+            if (curShipData.hullHealth <= 0) curShipData.hullHealth = 0;
+
+            if (healthRateA <= 0f && curShipData.hullHealth <= 0)
             {
                 spriteRenderer.sprite = imgStateShip.deathState;
                 MakeDeathShip();
@@ -647,9 +652,6 @@ public class Ship : MonoBehaviour
             {
                 // RestoreState();
             }
-
-            curShipData.hullHealth -= damage.hullDamage;
-            if (curShipData.hullHealth <= 0) curShipData.hullHealth = 0;
             if (lastTimeHit >= curShipData.TimeHitToStun)
             {
                 lastTimeHit = 0;

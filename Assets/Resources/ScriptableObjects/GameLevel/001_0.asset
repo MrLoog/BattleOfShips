@@ -19,5 +19,4 @@ MonoBehaviour:
   shortName: 2 -1
   levelName: 0010
   description: 
-  enemyShipFactorys: []
-  enemysExp: 
+  battleFlow: {fileID: 0}

@@ -31,7 +31,7 @@ public class GameManager : BaseSceneManager
     {
         get
         {
-            if (playLevel == null && gameData != null && gameData.playLevelName.Length > 0)
+            if (playLevel == null && gameData != null && gameData.playLevelName != null && gameData.playLevelName.Length > 0)
             {
                 playLevel = MyResourceUtils.ResourcesLoadAll<ScriptableGameLevel>(MyResourceUtils.RESOURCES_PATH_SCRIPTABLE_OBJECTS).First(x => x.name == gameData.playLevelName);
             }
@@ -282,8 +282,11 @@ public class GameManager : BaseSceneManager
 
     public void PauseGamePlay()
     {
-        prevSpeed = Time.timeScale;
-        Time.timeScale = 0f;
+        if (Time.timeScale > 0f)
+        {
+            prevSpeed = Time.timeScale;
+            Time.timeScale = 0f;
+        }
     }
 
     public void ResumeGamePlay()

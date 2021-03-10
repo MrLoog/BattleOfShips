@@ -105,12 +105,13 @@ public class GEventManager : Singleton<GEventManager>
         {
             if (aCheck.expectResult != null && aCheck.expectResult.Length > 0)
             {
-                check = (aCheck.expectResult == (string)GActionManager.Instance.Check(aCheck));
+                check = (aCheck.expectResult.ToLower() == GActionManager.Instance.Check(aCheck).ToString().ToLower());
             }
             else
             {
                 check = (bool)GActionManager.Instance.Check(aCheck);
             }
+            Debug.Log("Api Perform Check " + aCheck.actionName + ":" + check);
             if (!check) break;
         }
 
@@ -118,6 +119,7 @@ public class GEventManager : Singleton<GEventManager>
         {
             foreach (var aAction in battlePoint.actionResult)
             {
+                Debug.Log("Api Perform Action " + aAction.actionName);
                 GActionManager.Instance.Perform(aAction);
             }
             return true;

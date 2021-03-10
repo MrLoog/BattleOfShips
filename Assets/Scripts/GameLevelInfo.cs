@@ -14,7 +14,7 @@ public class GameLevelInfo : MonoBehaviour
     public UnityAction OnSelect;
     public UnityAction OnCancel;
 
-    private const string TEMPLATE_LEVEL_INFO = "{0}\nNumber Enemy: {1}";
+    private const string TEMPLATE_LEVEL_INFO = "{0}";
     // Start is called before the first frame update
     void Start()
     {
@@ -50,7 +50,6 @@ public class GameLevelInfo : MonoBehaviour
         title.text = level.levelName;
         content.text = string.Format(TEMPLATE_LEVEL_INFO
         , level.description
-        , level.enemyShipFactorys != null ? level.enemyShipFactorys.Length : 0
         );
     }
 }

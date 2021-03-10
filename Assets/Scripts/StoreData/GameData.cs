@@ -59,9 +59,14 @@ public class GameData : BaseDataEntity
         return find != null;
     }
 
-    internal void MakeClearedLevel(string levelCodeName)
+    internal bool MakeClearedLevel(string levelCodeName)
     {
+        if (!CommonUtils.IsArrayNullEmpty(levelCleared) && levelCleared.Contains(levelCodeName))
+        {
+            return false;
+        }
         levelCleared = CommonUtils.AddElemToArray(levelCleared, levelCodeName);
+        return true;
     }
 
     internal void MakeClearedAchivement(string achievementCode)
