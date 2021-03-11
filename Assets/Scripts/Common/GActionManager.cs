@@ -150,13 +150,13 @@ public class GActionManager : Singleton<GActionManager>
     }
     public void MakeWinGame(params string[] args)
     {
-        SeaBattleManager.Instance.EndBattle(false);
+        SeaBattleManager.Instance.EndBattle();
         MarkLevelCleared();
     }
 
     public void MakeLoseGame(params string[] args)
     {
-
+        SeaBattleManager.Instance.EndBattle(false);
     }
 
     public void AddRewardGold(params string[] args)

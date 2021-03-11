@@ -21,6 +21,11 @@ public class ScriptableShipFactory : MScriptableObject
     public ScriptableShipMaterial[] sailMaterials;
     public int[] sailMaterialRates;
 
+
+    public string[] goodsCode;
+    public int[] minQty;
+    public int[] maxQty;
+
     public ScriptableShipCustom[] GetRandomShip(int quantity = 1)
     {
         ScriptableShipCustom[] result = new ScriptableShipCustom[quantity];
@@ -87,6 +92,22 @@ public class ScriptableShipFactory : MScriptableObject
                 resultShip.sailMaterial = sailMaterials[choice];
             }
 
+            //random inventory
+            if (!CommonUtils.IsArrayNullEmpty(goodsCode))
+            {
+                resultShip.inventory = new ShipInventory();
+                resultShip.inventory.goodsCode = goodsCode;
+                bool isMaxDeclare = !CommonUtils.IsArrayNullEmpty(maxQty);
+                for (int i = 0; i < goodsCode.Length; i++)
+                {
+                    resultShip.inventory.quantity = CommonUtils.AddElemToArray(
+                        resultShip.inventory.quantity,
+                        Random.Range(minQty[i],
+                        isMaxDeclare ? (maxQty[i] + 1) : (minQty[i] + 1)
+                       )
+                    );
+                }
+            }
 
             resultShip.curShipData = resultShip.PeakData.Clone<ScriptableShip>();
 

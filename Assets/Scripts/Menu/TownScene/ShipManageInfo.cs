@@ -19,6 +19,7 @@ public class ShipManageInfo : MonoBehaviour
     public bool WorkshopMode = false;
 
     public UnityAction OnFuncBtnClick;
+    public int IndexId { get; internal set; }
 
     // Start is called before the first frame update
     void Start()
@@ -42,6 +43,7 @@ public class ShipManageInfo : MonoBehaviour
         }
         ShowData();
     }
+
 
     public void ShowData()
     {

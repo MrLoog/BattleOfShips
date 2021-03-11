@@ -27,6 +27,7 @@ public class ShipManageMenu : MonoBehaviour
 
 
     public ScriptableShipCustom[] shipCustoms;
+    public ShipManageInfo[] shipInfos;
     // Start is called before the first frame update
     void Start()
     {
@@ -47,6 +48,7 @@ public class ShipManageMenu : MonoBehaviour
         }
 
         shipCustoms = new ScriptableShipCustom[(GameManager.Instance.GameData.otherShips?.Length ?? 0) + 1];
+        shipInfos = null;
         ShowShip(GameManager.Instance.GameData.playerShip, true);
         shipCustoms[0] = GameManager.Instance.GameData.playerShip;
 
@@ -75,6 +77,8 @@ public class ShipManageMenu : MonoBehaviour
     {
         GameObject newShipInfo = Instantiate(prefabShipInfo, shipListContent.transform, false);
         ShipManageInfo scriptInfo = newShipInfo.GetComponent<ShipManageInfo>();
+        shipInfos = CommonUtils.AddElemToArray(shipInfos, scriptInfo);
+        scriptInfo.IndexId = shipInfos.Length;
         if (isMain) scriptInfo.isMainShip = true;
         scriptInfo.SetShipData(data, prefabInfoRow);
         scriptInfo.OnFuncBtnClick += delegate ()
@@ -102,6 +106,29 @@ public class ShipManageMenu : MonoBehaviour
         }
     }
 
+    public void PerformMakeMain()
+    {
+        if (focusShip != null)
+        {
+            int focusIndex = focusShip.IndexId - 1;
+            ScriptableShipCustom curMain = shipCustoms[0];
+            ShipManageInfo curMainInfo = shipInfos[0];
+
+            shipCustoms[0] = shipCustoms[focusIndex];
+            shipInfos[0] = shipInfos[focusIndex];
+            shipInfos[0].IndexId = 1;
+            shipInfos[0].isMainShip = true;
+
+            shipCustoms[focusIndex] = curMain;
+            shipInfos[focusIndex] = curMainInfo;
+            shipInfos[focusIndex].IndexId = focusIndex + 1;
+            shipInfos[focusIndex].isMainShip = false;
+
+            GameManager.Instance.GameData.playerShip = shipCustoms[0];
+            GameManager.Instance.GameData.otherShips[focusIndex - 1] = curMain;
+            MiniMenuCtrl.ValidFeatureAvaiable();
+        }
+    }
 
     public void PerformRepair()
     {
@@ -180,13 +207,26 @@ public class ShipManageMenu : MonoBehaviour
     {
         int indexShip = shipCustoms.ToList().IndexOf(focusShip.data);
         GameManager.Instance.ShipInventoryCtrl.RegisterAvaiableShip(shipCustoms, indexShip);
+        GameManager.Instance.ShipInventoryCtrl.OnHideInventory += OnDoneInventory;
         GameManager.Instance.ShipInventoryCtrl.ShowInventory(ShipInventoryCtrl.InventoryMode.Transfer);
+
+    }
+
+    private void OnDoneInventory()
+    {
+        GameManager.Instance.ShipInventoryCtrl.OnHideInventory -= OnDoneInventory;
+        foreach (var item in shipInfos)
+        {
+            item.ShowData();
+        }
+        MiniMenuCtrl.ValidFeatureAvaiable();
     }
 
     public void PerformShop()
     {
         int indexShip = shipCustoms.ToList().IndexOf(focusShip.data);
         GameManager.Instance.ShipInventoryCtrl.RegisterAvaiableShip(shipCustoms, indexShip);
+        GameManager.Instance.ShipInventoryCtrl.OnHideInventory += OnDoneInventory;
         GameManager.Instance.ShipInventoryCtrl.ShowInventory(ShipInventoryCtrl.InventoryMode.Shop, indexShip);
     }
 }

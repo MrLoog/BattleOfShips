@@ -48,13 +48,11 @@ MonoBehaviour:
     - actionName: MakeWinGame
       actionParams: []
       expectResult: 
-  shipFactorys:
-  - {fileID: 11400000, guid: 08f7123097e0c7547a13f5856eb8fd8c, type: 2}
+  shipFactorys: []
   ships:
-  - {fileID: 0}
-  shipRewards: []
-  goldRewards: 88130000
-  gemRewards: 
-  expRewards: 
-  goodsReward: []
-  goodsQtyReward: 
+  - {fileID: 11400000, guid: d021399b58f744a41b428b9e04c688ac, type: 2}
+  reward:
+    ships: []
+    gold: 88130000
+    exp: 
+    gem: 

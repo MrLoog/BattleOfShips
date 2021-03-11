@@ -54,4 +54,16 @@ public class CommonUtils
             return arr.Concat(new T[] { elem }).ToArray();
         }
     }
+
+    public static T[] AddElemToArray<T>(T[] arr, T[] elems)
+    {
+        if (arr == null)
+        {
+            return elems;
+        }
+        else
+        {
+            return arr.Concat(elems).ToArray();
+        }
+    }
 }

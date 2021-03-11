@@ -591,6 +591,9 @@ public class Ship : MonoBehaviour
 
     public void EnterStateDefeated()
     {
+        AutoSail = false;
+        GetComponent<ShipAI>().enabled = false;
+        curShipData.oarsSpeed = 0;
         //call when out of hull health, crew, lose tacked
         Events.InvokeOnAction(EVENT_SHIP_DEFEATED);
         Events.RemoveListener(EVENT_SHIP_DEFEATED);

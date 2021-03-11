@@ -91,6 +91,8 @@ public class SeaBattleManager : BaseSceneManager
 
     public bool IsBattle = false;
 
+    public float rateCrewConduct = 0.5f;
+
     public const string INTENT_RESUME = "RESUME";
     public const string INTENT_BATTLE_LEVEL = "BATTLE_LEVEL";
     public const string INTENT_FIRST_BATTLE = "FIRST_BATTLE";
@@ -188,8 +190,16 @@ public class SeaBattleManager : BaseSceneManager
     public void EndBattle(bool win = true)
     {
         IsBattle = false;
-        GameManager.Instance.ToastService.ShowMessage(GameText.GetText(GameText.TOAST_DECLARE_WIN), 5f);
+        if (win)
+        {
+            GameManager.Instance.ToastService.ShowMessage(GameText.GetText(GameText.TOAST_DECLARE_WIN), 5f);
+        }
+        else
+        {
+            StartCoroutine(InformLoseGame());
+        }
     }
+
 
     // Update is called once per frame
     void Update()
@@ -399,13 +409,22 @@ public class SeaBattleManager : BaseSceneManager
             TransferCargo(mainShip.CustomData, target.CustomData);
             return;
         }
+        Debug.Log("Check Conduct " + (target.CurShipData.maxCrew / target.ShipData.maxCrew) + "/" + rateCrewConduct);
+        if (rateCrewConduct < ((float)target.CurShipData.maxCrew / target.ShipData.maxCrew))
+        {
+            GameManager.Instance.ToastService.ShowMessage(
+                GameText.GetText(GameText.TOAST_CANNOT_CLOSE_COMBAT)
+                , 1f
+            );
+            return;
+        }
         GameManager.Instance.PauseGamePlay();
 
         PopupCtrl.ShowDialog(
-            title: "Confirm Perform Tacked",
-            content: "Are you sure want to perform Tacked?",
-            okText: "Yes",
-            cancelText: "No",
+            title: GameText.GetText(GameText.CONFIRM_CLOSE_COMBAT_TITLE),
+            content: GameText.GetText(GameText.CONFIRM_CLOSE_COMBAT_CONTENT),
+            okText: GameText.GetText(GameText.CONFIRM_COMMON_YES),
+            cancelText: GameText.GetText(GameText.CONFIRM_COMMON_NO),
             onResult: (i) =>
             {
                 if (i == 1)
@@ -421,8 +440,8 @@ public class SeaBattleManager : BaseSceneManager
                         PromptResultDraw(result);
                     }
                     else if (result.Result == 2)
-                    { //lose
-
+                    {
+                        //lose
                         GameManager.Instance.ResumeGamePlay();
                     }
 
@@ -440,9 +459,9 @@ public class SeaBattleManager : BaseSceneManager
     private void PromptResultDraw(ShipTackedBattle result)
     {
         PopupCtrl.ShowDialog(
-                    title: "Tacked Result",
-                    content: string.Format("Tacked Result is Draw! You lose {0} crew. Enemy lose {1} crew.", result.Ship1Damaged, result.Ship2Damaged),
-                    okText: "Ok",
+                    title: GameText.GetText(GameText.DIALOG_RESULT_COMBAT_TITLE),
+                    content: GameText.GetText(GameText.DIALOG_RESULT_COMBAT_DRAW_CONTENT, result.Ship1Damaged, result.Ship2Damaged),
+                    okText: GameText.GetText(GameText.CONFIRM_COMMON_OK),
                     cancelText: null,
                     onResult: (i) =>
                     {
@@ -454,20 +473,40 @@ public class SeaBattleManager : BaseSceneManager
     private void PromptResultWin(ShipTackedBattle result)
     {
         PopupCtrl.ShowDialog(
-                    title: "Tacked Result",
-                    content: string.Format("You are Winner! {0} crew are death.", result.Ship1Damaged),
-                    okText: "Ok",
+                    title: GameText.GetText(GameText.DIALOG_RESULT_COMBAT_TITLE),
+                    content: GameText.GetText(GameText.DIALOG_RESULT_COMBAT_WIN_CONTENT, result.Ship1Damaged),
+                    okText: GameText.GetText(GameText.CONFIRM_COMMON_OK),
                     cancelText: null,
                     onResult: (i) =>
                     {
-                        TransferCargo(result.ship1.CustomData, result.ship2.CustomData);
+                        ScriptableShipCustom targetCustom = result.ship2.CustomData;
+                        if (targetCustom.curShipData.hullHealth > 0)
+                        {
+                            seaBattleData.Reward.ships = CommonUtils.AddElemToArray(
+                                seaBattleData.Reward.ships,
+                                targetCustom
+                            );
+                            GameManager.Instance.ToastService.ShowMessage(
+                                GameText.GetText(GameText.TOAST_INFORM_AUTO_TAKE_SHIP),
+                                3f
+                            );
+                        }
+                        else
+                        {
+                            GameManager.Instance.ToastService.ShowMessage(
+                                GameText.GetText(GameText.TOAST_INFORM_LOOT_DEATH_SHIP),
+                                3f
+                            );
+                        }
+                        RemoveShip(result.ship2.shipId);
+                        TransferCargo(result.ship1.CustomData, targetCustom);
                         // InventoryMenu.GetComponent<ShipInventoryMenu>().ShowInventory(result.ship2);
-                        List<ScriptableShipCustom> shipCustoms = new List<ScriptableShipCustom>();
-                        shipCustoms.Add(result.ship1.CustomData);
-                        shipCustoms.Add(result.ship2.CustomData);
-                        ShipInventoryCtrl transferCtrl = GameManager.Instance.ShipInventoryCtrl;
-                        transferCtrl.RegisterAvaiableShip(shipCustoms.ToArray(), 0);
-                        transferCtrl.ShowInventory(ShipInventoryCtrl.InventoryMode.Transfer);
+                        // List<ScriptableShipCustom> shipCustoms = new List<ScriptableShipCustom>();
+                        // shipCustoms.Add(result.ship1.CustomData);
+                        // shipCustoms.Add(result.ship2.CustomData);
+                        // ShipInventoryCtrl transferCtrl = GameManager.Instance.ShipInventoryCtrl;
+                        // transferCtrl.RegisterAvaiableShip(shipCustoms.ToArray(), 0);
+                        // transferCtrl.ShowInventory(ShipInventoryCtrl.InventoryMode.Transfer);
                     }
                 );
     }
@@ -490,6 +529,15 @@ public class SeaBattleManager : BaseSceneManager
         return battle;
     }
 
+    public void RemoveShip(int shipId)
+    {
+        Ship s = AllShip.FirstOrDefault(x => x.shipId.Equals(shipId));
+        if (s != null)
+        {
+            AllShip.Remove(s);
+            Destroy(s.gameObject);
+        }
+    }
 
     private GameObject SpawnShip(int group)
     {
@@ -527,9 +575,30 @@ public class SeaBattleManager : BaseSceneManager
     }
     public void ReturnTown(bool isRun = false)
     {
+        if (!isRun) TakeReward();
         UpdateGameData();
         seaBattleData = null;
         GameManager.Instance.ChangeScene(GameManager.Instance.townSceneName);
+    }
+
+    public IEnumerator InformLoseGame()
+    {
+        float delayTime = 3f;
+        GameManager.Instance.ToastService.ShowMessage(
+            GameText.GetText(GameText.TOAST_YOU_LOSE_GAME),
+            delayTime
+        );
+        yield return new WaitForSeconds(delayTime);
+        GameManager.Instance.ToastService.ShowMessage(
+            GameText.GetText(GameText.TOAST_INFORM_LOSE_NEW_SHIP),
+            delayTime
+        );
+        yield return new WaitForSeconds(delayTime);
+        //give new ship for player
+        GameManager.Instance.GameData.playerShip = GameManager.Instance.playerStarterShip.Clone<ScriptableShipCustom>();
+        seaBattleData = null;
+        //set intent for town manager
+        GameManager.Instance.ChangeScene(GameManager.Instance.townSceneName, TownManager.INTENT_LOSE_GAME_RETURN);
     }
 
     public ScriptableStateShip GetImgStateShip(ScriptableShipCustom.Union union)
@@ -590,6 +659,26 @@ public class SeaBattleManager : BaseSceneManager
         if (playerShip != null)
         {
             gameManager.GameData.playerShip = playerShip.GetComponent<Ship>().CustomData;
+        }
+    }
+
+    public void TakeReward()
+    {
+        if (SeaBattleData.Reward != null)
+        {
+            RewardBattle reward = SeaBattleData.Reward;
+            if (!CommonUtils.IsArrayNullEmpty(reward.gold))
+            {
+                GameManager.Instance.AddGold(reward.gold.Sum());
+            }
+            if (!CommonUtils.IsArrayNullEmpty(reward.gem))
+            {
+                GameManager.Instance.AddGem(reward.gem.Sum());
+            }
+            if (!CommonUtils.IsArrayNullEmpty(reward.ships))
+            {
+                GameManager.Instance.GameData.otherShips = CommonUtils.AddElemToArray(GameManager.Instance.GameData.otherShips, reward.ships);
+            }
         }
     }
     public void SaveGame()

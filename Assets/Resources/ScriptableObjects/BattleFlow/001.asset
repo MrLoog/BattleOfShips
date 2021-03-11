@@ -33,7 +33,7 @@ MonoBehaviour:
     battleTime: []
     actionCheck: []
     actionResult:
-    - actionName: LoseGame
+    - actionName: MakeLoseGame
       actionParams: []
       expectResult: 
   - eventTrigger:
@@ -52,11 +52,10 @@ MonoBehaviour:
       actionParams: []
       expectResult: 
   shipFactorys:
-  - {fileID: 11400000, guid: 08f7123097e0c7547a13f5856eb8fd8c, type: 2}
+  - {fileID: 11400000, guid: 18ffcfa0967d499449beb9d41f07ac03, type: 2}
   ships: []
-  shipRewards: []
-  goldRewards: 88130000
-  gemRewards: 
-  expRewards: 
-  goodsReward: []
-  goodsQtyReward: 
+  reward:
+    ships: []
+    gold: 10270000
+    exp: 
+    gem: 

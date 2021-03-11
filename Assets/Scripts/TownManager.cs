@@ -11,6 +11,8 @@ public class TownManager : BaseSceneManager
 
     public GameObject panelLevelSelect;
 
+    public const string INTENT_LOSE_GAME_RETURN = "LOSE_GAME_NEW_SHIP";
+
     public TownData townData;
     public TownData TownData
     {
@@ -47,6 +49,7 @@ public class TownManager : BaseSceneManager
     {
 
     }
+    
 
     public Workshop GetWorkshopData()
     {

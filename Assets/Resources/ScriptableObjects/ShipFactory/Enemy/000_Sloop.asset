@@ -14,5 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   shipList:
   - {fileID: 11400000, guid: de3ec8eaf43cd66478ff1ea7a16c8804, type: 2}
+  shipRates: 
   slotRate: 
   skillList: []
+  hullMaterials: []
+  hullMaterialRates: 
+  sailMaterials: []
+  sailMaterialRates: 
+  goodsCode:
+  - CannonBall
+  minQty: 2c010000
+  maxQty: 

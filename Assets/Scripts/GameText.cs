@@ -34,6 +34,16 @@ public class GameText
     public const string TOAST_CANNOT_RETURN_TOWN = "toast_return_town_refuse";
     public const string CONFIRM_RETURN_TOWN_TITLE = "cf_return_town_tit";
     public const string CONFIRM_RETURN_TOWN_CONTENT = "cf_return_town_cont";
+    public const string TOAST_CANNOT_CLOSE_COMBAT = "toast_cannot_conduct";
+    public const string TOAST_INFORM_AUTO_TAKE_SHIP = "toast_inform_auto_take";
+    public const string TOAST_INFORM_LOOT_DEATH_SHIP = "toast_inform_loot_death";
+    public const string TOAST_YOU_LOSE_GAME = "toast_inform_lose";
+    public const string TOAST_INFORM_LOSE_NEW_SHIP = "toast_inform_new_ship";
+    public const string CONFIRM_CLOSE_COMBAT_TITLE = "cf_close_combat_tit";
+    public const string CONFIRM_CLOSE_COMBAT_CONTENT = "cf_close_combat_cont";
+    public const string DIALOG_RESULT_COMBAT_TITLE = "dl_result_combat_tit";
+    public const string DIALOG_RESULT_COMBAT_DRAW_CONTENT = "dl_result_combat_draw_cont";
+    public const string DIALOG_RESULT_COMBAT_WIN_CONTENT = "dl_result_combat_win_cont";
     public static Dictionary<string, string> dict = new Dictionary<string, string>()
     {
         {CONFIRM_REPAIR_TITLE,"Are You Sure?"},
@@ -56,15 +66,26 @@ public class GameText
         {CONFIRM_SHOP_REFRESH_TITLE,"Refresh Shop?"},
         {CONFIRM_SHOP_REFRESH_CONTENT,"Refresh Shop cost {0:N0} gem,Are you sure?"},
         {CONFIRM_BATTLE_RESTART_TITLE,"The Game will be restart"},
-        {CONFIRM_BATTLE_RESTART_CONTENT,"You are defeated. Try Again."},
-        {TOAST_DECLARE_WIN,"Congratulations, You are Winner!!! Let's Loot all them and return Town"},
+        {CONFIRM_BATTLE_RESTART_CONTENT,"You are defeated! Try Again."},
+        {TOAST_DECLARE_WIN,"Congratulations, You are Winner!!!\n Let's loot all them and Come back to Town"},
         {TOAST_CANNOT_RETURN_TOWN,"Cannot Return Town when you are in battle."},
-        {CONFIRM_RETURN_TOWN_TITLE,"Are you sure return Town?"},
-        {CONFIRM_RETURN_TOWN_CONTENT,"Make sure you take all before return to town."},
+        {CONFIRM_RETURN_TOWN_TITLE,"Return Town"},
+        {CONFIRM_RETURN_TOWN_CONTENT,"Are you sure you want to go back to town?"},
         {TOAST_NOT_ENOUGH_GOLD,"Not Enough Gold"},
         {TOAST_NOT_ENOUGH_GEM,"Not Enough Gem"},
-        {CONFIRM_RETURN_TOWN_RUN_TITLE,"Run from Battle?"},
+        {CONFIRM_RETURN_TOWN_RUN_TITLE,"Run from Battle? All thing you took from battle will lost."},
         {CONFIRM_RETURN_TOWN_RUN_CONTENT,"Are you sure, you want to run from battle return to Town?"},
+        {TOAST_CANNOT_CLOSE_COMBAT,"Target's crew health need reduce half to conduct success?"},
+        {CONFIRM_CLOSE_COMBAT_TITLE,"Perform close combat?"},
+        {CONFIRM_CLOSE_COMBAT_CONTENT,"Close combat will be auto calculate, are you sure?"},
+        {DIALOG_RESULT_COMBAT_TITLE,"Result Close Combat"},
+        {DIALOG_RESULT_COMBAT_DRAW_CONTENT,"Close Combat Result is Draw! You lose {0} crew. Enemy lose {1} crew."},
+        {DIALOG_RESULT_COMBAT_WIN_CONTENT,"You are Winner! {0} crew are death."},
+        {TOAST_INFORM_AUTO_TAKE_SHIP,"The Ship is automatically added to your list."},
+        {TOAST_INFORM_LOOT_DEATH_SHIP,"Enemy Ship is broken, Loot all before it sink, Captain!"},
+        {TOAST_YOU_LOSE_GAME,"You lose. Your Ship is taken by enemy."},
+        {TOAST_INFORM_LOSE_NEW_SHIP,"But The Chief will give you a new ship for continue. Try your best, Captain!"},
+
     };
 
     public static string GetText(string key)

@@ -24,5 +24,9 @@ MonoBehaviour:
     Second Level
 
     Second Level'
-  enemyShipFactorys: []
-  enemysExp: 
+  battleFlow: {fileID: 11400000, guid: af88c7a715f974f438c9daaaed5562d2, type: 2}
+  reward:
+    ships: []
+    gold: 
+    exp: 
+    gem: 

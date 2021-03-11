@@ -10,9 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c0318ebbd4345b647a9c8a8edfc13e6d, type: 3}
-  m_Name: 000_Sloop
+  m_Name: 001_Schooner
   m_EditorClassIdentifier: 
   shipList:
-  - {fileID: 11400000, guid: de3ec8eaf43cd66478ff1ea7a16c8804, type: 2}
+  - {fileID: 11400000, guid: adcb38d51068aa84084a8b3093b44019, type: 2}
+  shipRates: 
   slotRate: 
   skillList: []
+  hullMaterials: []
+  hullMaterialRates: 
+  sailMaterials: []
+  sailMaterialRates: 
+  goodsCode:
+  - CannonBall
+  minQty: 2c010000
+  maxQty: 

@@ -4407,7 +4407,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1071055173}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 2088405759}
+        m_TargetAssemblyTypeName: ShipManageMenu, Assembly-CSharp
+        m_MethodName: PerformMakeMain
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &1071055173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8237,6 +8249,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 361100352b5176d4e95235d5c960d348, type: 2}
   - {fileID: 11400000, guid: 361100352b5176d4e95235d5c960d348, type: 2}
   - {fileID: 11400000, guid: 361100352b5176d4e95235d5c960d348, type: 2}
+  shipInfos: []
 --- !u!114 &2088405760
 MonoBehaviour:
   m_ObjectHideFlags: 0

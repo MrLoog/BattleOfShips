@@ -23,6 +23,23 @@ public class ShipTackedBattle
 
     public void CalculateResult()
     {
+        if (ship1.curShipData.hullHealth == 0 || ship2.curShipData.hullHealth == 0)
+        {
+            //hull health = 0 crew surrender
+            if (ship1.curShipData.hullHealth == 0)
+            {
+                ship1.EnterStateDefeated();
+                ship1.Group = ship2.Group;
+                Result = 2;
+            }
+            else
+            {
+                ship2.EnterStateDefeated();
+                ship2.Group = ship1.Group;
+                Result = 1;
+            }
+            return;
+        }
         int crew1 = ship1.curShipData.maxCrew;
         int crew2 = ship2.curShipData.maxCrew;
         if (crew1 == crew2)
