@@ -12,10 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af8293f0eb9be2a49a62b3b5a1992f5f, type: 3}
   m_Name: Sailcloth6
   m_EditorClassIdentifier: 
+  active: 1
   prefab: {fileID: 0}
   itemName: Sailcloth VI
   description: 
-  weight: 42
+  weight: 30
   image: {fileID: 8292284122000357534, guid: 487ea49dfff97ef4aa416596bac3eaa0, type: 3}
   codeName: Sailcloth6
   basePrice: 7000

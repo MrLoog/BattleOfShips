@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9df192e153bca841bf04ad625502905, type: 3}
   m_Name: UnlockMaterial5
   m_EditorClassIdentifier: 
+  active: 1
   codeName: UnlockMaterial5
   eventTriggers:
   - CLEAR_LEVEL
@@ -19,7 +20,13 @@ MonoBehaviour:
   - actionName: IsClearLevel
     actionParams:
     - ^...4$
+    expectResult: 
   actionResult:
   - actionName: UnlockShopMaterial
     actionParams:
     - 5
+    expectResult: 
+  - actionName: ShowToast
+    actionParams:
+    - The Ship in Shop now can be made from Higher Material
+    expectResult: 

@@ -31,9 +31,12 @@ public class ShipAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CurActionBehavior.Update(this);
     }
 
+    void FixedUpdate()
+    {
+        CurActionBehavior.Update(this);
+    }
     public void DetermineIntent()
     {
         CurIntent = ShipIntent.Shot;
@@ -44,7 +47,19 @@ public class ShipAI : MonoBehaviour
     }
 
 
+    public void KeepPosition()
+    {
+        if (ship.sailSet != 0f)
+        {
+            ship.SetSail(0f);
+        }
+    }
 
+    public void FullMove()
+    {
+        if (ship.sailSet != 1f)
+            ship.SetSail(1f);
+    }
     public class ActionShipBehavior
     {
         public virtual void Update(ShipAI shipAI)
@@ -67,6 +82,8 @@ public class ShipAI : MonoBehaviour
     public class ShotBehavior : ActionShipBehavior
     {
         public Ship target;
+        private float accumWaitTimeShot = 0f;
+        private float waitTime = 0f;
 
         public ShotBehavior()
         {
@@ -74,12 +91,37 @@ public class ShipAI : MonoBehaviour
 
         public override void Update(ShipAI shipAI)
         {
+            shipAI.FireIfInRange();
+
+            /* try stop after fire
+            //if target in range => command ship fire
+            accumWaitTimeShot += Time.deltaTime;
+            if (accumWaitTimeShot > waitTime)
+            {
+                waitTime = shipAI.FireIfInRange();
+                accumWaitTimeShot = 0f;
+            }
+            if (waitTime > 0)
+            {
+                shipAI.KeepPosition();
+                Debug.Log("Ship AI Keep position");
+            }
+            else
+            {
+                Debug.Log("Ship AI moving");
+                shipAI.FullMove();
+            }
+            */
+            
             //calculate good position to fire
             Vector2 pos = FindPosToShot(shipAI);
             //command ship move to position
             shipAI.MoveTo(pos);
-            //if target in range => command ship fire
-            shipAI.FireIfInRange();
+        }
+
+        public void FixedUpdate()
+        {
+
         }
 
         public Vector2 FindPosToShot(ShipAI shipAI)
@@ -156,7 +198,7 @@ public class ShipAI : MonoBehaviour
 
     }
 
-    private void FireIfInRange()
+    private float FireIfInRange()
     {
         if (target != null)
         {
@@ -165,9 +207,11 @@ public class ShipAI : MonoBehaviour
             // Debug.Log("distance" + distance);
             if (distance <= 25f)
             {
-                ship.FireTarget(target.transform.position);
+                return ship.FireTarget(target.transform.position);
             }
+            return 0f;
         }
+        return 0f;
     }
 
     private void MoveTo(Vector2 pos)

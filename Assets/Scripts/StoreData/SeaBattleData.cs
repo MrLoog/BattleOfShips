@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [Serializable]
@@ -14,6 +15,10 @@ public class SeaBattleData : BaseDataEntity
 
     public string windDataJson;
     public float windAccumTime;
+
+    public ScriptableShipCustom[] levelShipDatas;
+    public bool[] IsLevelShipSpawn;
+    public bool[] IsRewardShipTake;
 
     private RewardBattle reward;
     public RewardBattle Reward
@@ -59,5 +64,19 @@ public class SeaBattleData : BaseDataEntity
     {
         windDataJson = JsonUtility.ToJson(wind);
         windAccumTime = accumTime;
+    }
+
+    internal ScriptableShipCustom[] GetLevelShipDataSpawn(string group, string indexInG)
+    {
+        List<ScriptableShipCustom> result = new List<ScriptableShipCustom>();
+        levelShipDatas.Select((item, index) => new { i = index, elem = item })
+        .Where(x => ScriptableGameLevel.IsBattleIdMatch(x.elem.battleId, group, indexInG))
+        .ToList()
+        .ForEach(x =>
+        {
+            IsLevelShipSpawn[x.i] = true;
+            result.Add(x.elem);
+        });
+        return result.ToArray();
     }
 }

@@ -49,7 +49,7 @@ public class TownManager : BaseSceneManager
     {
 
     }
-    
+
 
     public Workshop GetWorkshopData()
     {
@@ -67,7 +67,7 @@ public class TownManager : BaseSceneManager
         Workshop result = TownData.workshop ?? (new Workshop());
         result.timeRefresh = DateTime.Now;
         int quantity = result.slot;
-        result.workshopShips = factory.GetRandomShip(quantity);
+        result.workshopShips = factory.GetRandomShip(quantity, true);
         result.soldStatus = Enumerable.Repeat(false, quantity).ToArray();
         result.forceReload = false;
         TownData.workshop = result;

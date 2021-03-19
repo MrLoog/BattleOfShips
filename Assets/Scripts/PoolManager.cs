@@ -110,7 +110,18 @@ public class PoolManager<T> where T : ScriptableObject, IPoolAble
     private Factory<T> factory;
 
     public int limit = -1;
-    public int buffer = 10;
+    public int buffer = 100;
+    public int Buffer
+    {
+        get
+        {
+            return buffer;
+        }
+        set
+        {
+            buffer = value;
+        }
+    }
     public int numActive = 0;
     public int numInActive = 0;
     public int total = 0;

@@ -44,11 +44,15 @@ public class EventDict
             ActionDict.Remove(key);
     }
 
-    public void InvokeOnAction(string action)
+    public void InvokeOnAction(string action, bool removeAfter = false)
     {
         if (ActionDict.Keys.ToList().Contains(action))
         {
             ActionDict[action].Invoke();
+            if (removeAfter)
+            {
+                RemoveListener(action);
+            }
         }
     }
 }

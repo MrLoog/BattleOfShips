@@ -12,21 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6c22b3307d69774fb1e6c6535256ab9, type: 3}
   m_Name: 001
   m_EditorClassIdentifier: 
+  active: 1
   nextLevel:
-  - {fileID: 11400000, guid: b9be90164ecb97546ad469ff1c75f15a, type: 2}
-  - {fileID: 11400000, guid: 5a0dfac8f3595d44fbd2e2a7b6ad8c6b, type: 2}
+  - {fileID: 11400000, guid: d82bd15acaf593a41ac93a93ca5d3c49, type: 2}
   isMainLevel: 1
   codeName: 001
-  shortName: 2
+  shortName: 1
   levelName: 001
-  description: 'Second Level
-
-    Second Level
-
-    Second Level'
-  battleFlow: {fileID: 11400000, guid: af88c7a715f974f438c9daaaed5562d2, type: 2}
+  description: Battle with Sloop
+  battleFlow: {fileID: 11400000, guid: fa03e7bd71549a948b6ec70bd0f20ad4, type: 2}
+  groupShips:
+  - shipFactorys:
+    - {fileID: 11400000, guid: 08f7123097e0c7547a13f5856eb8fd8c, type: 2}
   reward:
     ships: []
     gold: 
     exp: 
     gem: 
+    goldModRate: 0
+    expModRate: 0
+    gemModRate: 0
+    goodsModRate: 0

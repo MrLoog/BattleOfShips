@@ -17,4 +17,5 @@ public class ScriptableShipGoods : ScriptableObjectPrefab
 
     public int basePrice;
     public int baseQuantiy;
+
 }

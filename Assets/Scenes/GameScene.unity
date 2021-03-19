@@ -4660,10 +4660,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: a01f9741275128d40b39d596f89a85b7, type: 3}
-    m_FontSize: 24
+    m_FontSize: 36
     m_FontStyle: 1
-    m_BestFit: 1
-    m_MinSize: 2
+    m_BestFit: 0
+    m_MinSize: 0
     m_MaxSize: 40
     m_Alignment: 4
     m_AlignByGeometry: 0
@@ -7685,8 +7685,8 @@ MonoBehaviour:
   startGold: 5000
   startGem: 10
   playerStarterShip: {fileID: 11400000, guid: 361100352b5176d4e95235d5c960d348, type: 2}
-  otherShips:
-  - {fileID: 11400000, guid: d021399b58f744a41b428b9e04c688ac, type: 2}
+  playerStarterShipTest: {fileID: 11400000, guid: 09f8df589a061a047bea1ce000d3edb2, type: 2}
+  otherShips: []
   StartShopFactory: {fileID: 11400000, guid: c7a9cdd801438864385f55a5af9d1682, type: 2}
   FinalShopFactory: {fileID: 11400000, guid: 6457eaf55657fa6439bfcea5972ae2e9, type: 2}
   firstBattleFlow: {fileID: 11400000, guid: 30d51b5358af7824ea00157d5ef8d00e, type: 2}
@@ -13385,6 +13385,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   txtMessage: {fileID: 814427634}
   defaultDelayTime: 3
+  IsShowing: 0
 --- !u!1 &2122013351
 GameObject:
   m_ObjectHideFlags: 0

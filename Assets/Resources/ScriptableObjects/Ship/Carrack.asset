@@ -20,7 +20,7 @@ MonoBehaviour:
   oarsSpeed: 0.1
   MaxDegreeRotate: 55
   windConversionRate: 0.58
-  capacity: 4000
+  capacity: 3500
   capacityWeightRate: 0.4
   sizeRateWidth: 1
   sizeRateLength: 1
@@ -29,7 +29,7 @@ MonoBehaviour:
   MaxHitToStun: 5
   TimeHitToStun: 1
   TimeRegainStun: 5
-  basePrice: 200000
+  basePrice: 700000
   shipTier: 4
   hullMatQty: 30
   sailMatQty: 20

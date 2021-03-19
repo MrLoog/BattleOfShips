@@ -47,10 +47,13 @@ public class CannonShot : MonoBehaviour
     internal Ship owner;
     internal Vector2 fireDirection;
 
+    private void Awake()
+    {
+        _rigidbody2D = GetComponent<Rigidbody2D>();
+    }
     // Start is called before the first frame update
     void Start()
     {
-        _rigidbody2D = GetComponent<Rigidbody2D>();
         LastPos = (Vector2)transform.position;
     }
 

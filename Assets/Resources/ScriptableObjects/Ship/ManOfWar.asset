@@ -15,8 +15,8 @@ MonoBehaviour:
   typeName: Man of War
   type: 8
   maxCrew: 400
-  hullHealth: 450
-  sailHealth: 230
+  hullHealth: 600
+  sailHealth: 450
   oarsSpeed: 0.05
   MaxDegreeRotate: 45
   windConversionRate: 0.5
@@ -29,7 +29,7 @@ MonoBehaviour:
   MaxHitToStun: 10
   TimeHitToStun: 1
   TimeRegainStun: 5
-  basePrice: 100000000
+  basePrice: 10000000
   shipTier: 6
   hullMatQty: 45
   sailMatQty: 23

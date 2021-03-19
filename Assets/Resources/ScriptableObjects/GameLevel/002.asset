@@ -12,13 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6c22b3307d69774fb1e6c6535256ab9, type: 3}
   m_Name: 002
   m_EditorClassIdentifier: 
+  active: 1
   nextLevel:
-  - {fileID: 11400000, guid: 2cbd0726bcfd50344a8ac07ffe62c2f5, type: 2}
+  - {fileID: 11400000, guid: 9bd6e823b1b923746a6f4ef3a3f6780a, type: 2}
   isMainLevel: 1
   codeName: 002
-  shortName: 3
+  shortName: 2
   levelName: 002
-  description: 
-  enemyShipFactorys:
-  - {fileID: 0}
-  enemysExp: 
+  description: Battle with Schooner
+  battleFlow: {fileID: 11400000, guid: fa03e7bd71549a948b6ec70bd0f20ad4, type: 2}
+  groupShips:
+  - shipFactorys:
+    - {fileID: 11400000, guid: 60d8723263835054aba66ed38cdce55c, type: 2}
+  reward:
+    ships: []
+    gold: 
+    exp: 
+    gem: 
+    goldModRate: 0
+    expModRate: 0
+    gemModRate: 0
+    goodsModRate: 0

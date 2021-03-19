@@ -29,7 +29,7 @@ MonoBehaviour:
   MaxHitToStun: 5
   TimeHitToStun: 1
   TimeRegainStun: 5
-  basePrice: 150000
+  basePrice: 350000
   shipTier: 4
   hullMatQty: 25
   sailMatQty: 18

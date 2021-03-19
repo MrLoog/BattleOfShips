@@ -39,6 +39,9 @@ public class GameText
     public const string TOAST_INFORM_LOOT_DEATH_SHIP = "toast_inform_loot_death";
     public const string TOAST_YOU_LOSE_GAME = "toast_inform_lose";
     public const string TOAST_INFORM_LOSE_NEW_SHIP = "toast_inform_new_ship";
+    public const string TOAST_CLOSE_COMBAT_OUT_RANGE = "toast_close_combat_out_range";
+    public const string TOAST_CLOSE_COMBAT_AVAIABLE = "toast_close_combat_avaiable";
+    public const string TOAST_LOOT_GOLD = "toast_loot_gold";
     public const string CONFIRM_CLOSE_COMBAT_TITLE = "cf_close_combat_tit";
     public const string CONFIRM_CLOSE_COMBAT_CONTENT = "cf_close_combat_cont";
     public const string DIALOG_RESULT_COMBAT_TITLE = "dl_result_combat_tit";
@@ -65,17 +68,17 @@ public class GameText
         {CONFIRM_BUY_SHIP_CONTENT,"Are you sure you want buy this ship?. Price {0:N0}"},
         {CONFIRM_SHOP_REFRESH_TITLE,"Refresh Shop?"},
         {CONFIRM_SHOP_REFRESH_CONTENT,"Refresh Shop cost {0:N0} gem,Are you sure?"},
-        {CONFIRM_BATTLE_RESTART_TITLE,"The Game will be restart"},
+        {CONFIRM_BATTLE_RESTART_TITLE,"Restart Game"},
         {CONFIRM_BATTLE_RESTART_CONTENT,"You are defeated! Try Again."},
-        {TOAST_DECLARE_WIN,"Congratulations, You are Winner!!!\n Let's loot all them and Come back to Town"},
-        {TOAST_CANNOT_RETURN_TOWN,"Cannot Return Town when you are in battle."},
+        {TOAST_DECLARE_WIN,"We are Winner!!!\n Let's loot all them and Come back to Town, Captain!"},
+        {TOAST_CANNOT_RETURN_TOWN,"We are in battle now, Captain!"},
         {CONFIRM_RETURN_TOWN_TITLE,"Return Town"},
         {CONFIRM_RETURN_TOWN_CONTENT,"Are you sure you want to go back to town?"},
         {TOAST_NOT_ENOUGH_GOLD,"Not Enough Gold"},
         {TOAST_NOT_ENOUGH_GEM,"Not Enough Gem"},
-        {CONFIRM_RETURN_TOWN_RUN_TITLE,"Run from Battle? All thing you took from battle will lost."},
-        {CONFIRM_RETURN_TOWN_RUN_CONTENT,"Are you sure, you want to run from battle return to Town?"},
-        {TOAST_CANNOT_CLOSE_COMBAT,"Target's crew health need reduce half to conduct success?"},
+        {CONFIRM_RETURN_TOWN_RUN_TITLE,"Run from Battle?"},
+        {CONFIRM_RETURN_TOWN_RUN_CONTENT,"All thing you took from battle will lost.\nAre you sure, you want to run from battle return to Town?"},
+        {TOAST_CANNOT_CLOSE_COMBAT,"We need to halve the enemy crew health in order to close combat, Captain!"},
         {CONFIRM_CLOSE_COMBAT_TITLE,"Perform close combat?"},
         {CONFIRM_CLOSE_COMBAT_CONTENT,"Close combat will be auto calculate, are you sure?"},
         {DIALOG_RESULT_COMBAT_TITLE,"Result Close Combat"},
@@ -85,6 +88,9 @@ public class GameText
         {TOAST_INFORM_LOOT_DEATH_SHIP,"Enemy Ship is broken, Loot all before it sink, Captain!"},
         {TOAST_YOU_LOSE_GAME,"You lose. Your Ship is taken by enemy."},
         {TOAST_INFORM_LOSE_NEW_SHIP,"But The Chief will give you a new ship for continue. Try your best, Captain!"},
+        {TOAST_CLOSE_COMBAT_OUT_RANGE,"Too far to do close combat!"},
+        {TOAST_CLOSE_COMBAT_AVAIABLE,"Captain, We now can do close combat on that ship!"},
+        {TOAST_LOOT_GOLD,"Captain! We found {0:N0} gold on Ship.\n+{0:N0}"},
 
     };
 

@@ -13,15 +13,22 @@ MonoBehaviour:
   m_Name: ShipTest
   m_EditorClassIdentifier: 
   shipName: 
-  baseShipData: {fileID: 11400000, guid: b6bdfe5c887d6bd47b59d5a88bb1d6cc, type: 2}
-  curShipData: {fileID: 11400000, guid: b6bdfe5c887d6bd47b59d5a88bb1d6cc, type: 2}
+  baseShipData: {fileID: 11400000, guid: de3ec8eaf43cd66478ff1ea7a16c8804, type: 2}
+  curShipData: {fileID: 11400000, guid: 726f927731129ba4cab21838372a82c5, type: 2}
   inventory:
     goodsCode:
     - CannonBall
-    - GrapeShot
-    - ChainBall
-    quantity: 640000006400000064000000
+    quantity: 2c010000
   group: 1
+  unions: 
   captain: {fileID: 0}
   upgrades: []
   skills: []
+  hullMaterial: {fileID: 0}
+  sailMaterial: {fileID: 0}
+  battleId: 
+  reward:
+    ships: []
+    gold: 
+    exp: 
+    gem: 

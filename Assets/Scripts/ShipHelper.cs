@@ -59,7 +59,9 @@ public class ShipHelper
     internal static int CalculateRepairCost(ScriptableShipCustom data)
     {
 
-        int cost = CalculateShipPrice(data, false, false, false) - CalculateShipPrice(data, false, false, true);
+        int cost = CalculateShipPrice(data, false, false, false) //exclude upgrade, exclude skill, full health
+        - CalculateShipPrice(data, false, false, true); //exclude upgrade, exclude skill, current health
+        cost = (int)(cost * 0.4f); // estimate 0.6 rate technology and 0.4 for work value, this remove 0.4 in case repair
         return cost;
     }
 

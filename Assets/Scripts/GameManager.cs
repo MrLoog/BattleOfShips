@@ -64,6 +64,7 @@ public class GameManager : BaseSceneManager
     public int startGold = 10000;
     public int startGem = 10;
     public ScriptableShipCustom playerStarterShip;
+    public ScriptableShipCustom playerStarterShipTest;
 
     public ScriptableShipCustom[] otherShips;
 
@@ -119,7 +120,13 @@ public class GameManager : BaseSceneManager
     public void StartNewGame()
     {
         GameData = new GameData();
+#if UNITY_EDITOR
+        // for test
+        GameData.playerShip = playerStarterShipTest;
+        // GameData.otherShips = lst.ToArray();
+#else
         GameData.playerShip = playerStarterShip;
+#endif
         GameData.shipShopFactory = StartShopFactory.Clone<ScriptableShipFactory>();
         // List<ScriptableShipCustom> lst = new List<ScriptableShipCustom>();
         // if (otherShips != null)
@@ -129,7 +136,7 @@ public class GameManager : BaseSceneManager
         //         lst.Add(item.Clone<ScriptableShipCustom>());
         //     }
         // }
-        // GameData.otherShips = lst.ToArray();
+
         GameData.gold = startGold;
         GameData.gem = startGem;
         GameData.process = GameData.PROCESS_INIT_FIRST_SHIP;

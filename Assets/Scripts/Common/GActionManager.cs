@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.Events;
 
 public class GActionManager : Singleton<GActionManager>
 {
@@ -95,6 +96,21 @@ public class GActionManager : Singleton<GActionManager>
             Debug.Log("Error UnlockShopMaterial");
         }
     }
+
+    public void ShowToast(params string[] args)
+    {
+        string message = args[0];
+        string[] time = ExtractValueComma(1, args);
+        if (CommonUtils.IsArrayNullEmpty(time))
+        {
+            ToastService.Instance.ShowMessage(message);
+        }
+        else
+        {
+            ToastService.Instance.ShowMessage(message, float.Parse(time[0]));
+        }
+
+    }
     #endregion
 
     #region battle api check
@@ -106,6 +122,18 @@ public class GActionManager : Singleton<GActionManager>
 
     #endregion
     #region  battle api action
+    private string[] ExtractValueComma(int indexPos, params string[] args)
+    {
+        string result = args.Length > indexPos ? args[indexPos] : "";
+        return result.Split(',');
+    }
+
+    private string[] ExtractValueSemicolon(int indexPos, params string[] args)
+    {
+        string result = args.Length > indexPos ? args[indexPos] : "";
+        return result.Split(';');
+    }
+
     public void SpawnShip(params string[] args)
     {
         string type = args[0];
@@ -125,6 +153,7 @@ public class GActionManager : Singleton<GActionManager>
         data.battleId = type + index;
         GameObject newShip = SeaBattleManager.Instance.SpawnShipFromData(data);
     }
+
 
     public void CommandAttack(params string[] args)
     {
@@ -167,7 +196,7 @@ public class GActionManager : Singleton<GActionManager>
         {
             CommonUtils.AddElemToArray(
                 SeaBattleManager.Instance.SeaBattleData.Reward.gold,
-                battleFlow.reward.gold[index]
+                battleFlow.reward.Gold[index]
                 );
         }
     }
@@ -179,7 +208,7 @@ public class GActionManager : Singleton<GActionManager>
         {
             CommonUtils.AddElemToArray(
                 SeaBattleManager.Instance.SeaBattleData.Reward.gem,
-                battleFlow.reward.gem[index]
+                battleFlow.reward.Gem[index]
                 );
         }
     }
@@ -191,7 +220,7 @@ public class GActionManager : Singleton<GActionManager>
         {
             CommonUtils.AddElemToArray(
                 SeaBattleManager.Instance.SeaBattleData.Reward.exp,
-                battleFlow.reward.exp[index]
+                battleFlow.reward.Exp[index]
                 );
         }
     }
@@ -222,7 +251,7 @@ public class GActionManager : Singleton<GActionManager>
             {
                 CommonUtils.AddElemToArray(
                     SeaBattleManager.Instance.SeaBattleData.Reward.goodsQty,
-                    battleFlow.reward.goodsQty[index]
+                    battleFlow.reward.GoodsQty[index]
                     );
             }
         }
@@ -238,6 +267,67 @@ public class GActionManager : Singleton<GActionManager>
             }
         }
     }
+
+    public void SpawnGroupShip(params string[] args)
+    {
+        // string[] groups = ExtractValueComma(0, args);
+        // string[] index = ExtractValueComma(1, args);
+        string[] pos = ExtractValueSemicolon(2, args);
+
+        ScriptableShipCustom[] datas = null;
+        PerformActionInGroupShip(
+            delegate (string group, string index)
+            {
+                datas = SeaBattleManager.Instance.SeaBattleData.GetLevelShipDataSpawn(group, index);
+
+                for (int j = 0; j < datas.Length; j++)
+                {
+                    SeaBattleManager.Instance.RandomTeleport(
+                        SeaBattleManager.Instance.SpawnShipFromData(datas[j])
+                    );
+                }
+            }
+            , args);
+    }
+
+    private void PerformActionInGroupShip(UnityAction<string, string> action, params string[] args)
+    {
+        string[] groups = ExtractValueComma(0, args);
+        string[] index = ExtractValueComma(1, args);
+        for (int i = 0; i < groups.Length; i++)
+        {
+            for (int k = 0; k < index.Length; k++)
+            {
+                action.Invoke(groups[i], index[k]);
+            }
+
+        }
+    }
+
+    public void CommandGroupAttack(params string[] args)
+    {
+        PerformActionInGroupShip(
+                    delegate (string group, string index)
+                    {
+                        SeaBattleManager.Instance.AllShip.Where(x => ScriptableGameLevel.IsBattleIdMatch(x.BattleId, group, index)
+        ).ToList().ForEach(x => x.gameObject.GetComponent<ShipAI>().enabled = true);
+                    }
+                    , args);
+
+    }
+
+    public void AddRewardLevel(params string[] args)
+    {
+        if (SeaBattleManager.Instance.SeaBattleData.activeFlow.type.Equals(ScriptableBattleFlow.FlowType.GameLevel) && GameManager.Instance.PlayLevel != null)
+        {
+            SeaBattleManager.Instance.SeaBattleData.Reward.Union(GameManager.Instance.PlayLevel.reward);
+        }
+        else if (SeaBattleManager.Instance.SeaBattleData.activeFlow.type.Equals(ScriptableBattleFlow.FlowType.Self))
+        {
+            SeaBattleManager.Instance.SeaBattleData.Reward.Union(SeaBattleManager.Instance.SeaBattleData.activeFlow.reward);
+        }
+    }
+
     #endregion
 
 

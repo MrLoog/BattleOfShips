@@ -14,11 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   typeName: Queen Anne's Revenge
   type: 10
-  maxCrew: 300
+  maxCrew: 200
   hullHealth: 450
   sailHealth: 300
   oarsSpeed: 0.2
-  MaxDegreeRotate: 60
+  MaxDegreeRotate: 65
   windConversionRate: 0.6
   capacity: 2000
   capacityWeightRate: 0.4

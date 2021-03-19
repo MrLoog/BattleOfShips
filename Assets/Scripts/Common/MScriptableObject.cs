@@ -8,6 +8,8 @@ using Newtonsoft.Json.Utilities;
 using UnityEngine;
 public abstract class MScriptableObject : ScriptableObject
 {
+    
+    public bool active = true;
     public T Clone<T>() where T : MScriptableObject
     {
         T newIns = InstanceNew<T>();

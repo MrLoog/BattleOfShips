@@ -66,4 +66,20 @@ public class CommonUtils
             return arr.Concat(elems).ToArray();
         }
     }
+
+    internal static T[] RandomElemFromList<T>(List<T> lst, int number = 1, bool removeAfterTake = false)
+    {
+        T[] result = new T[number];
+        int index = 0;
+
+        while (number > 0 && lst.Count > 0)
+        {
+            int take = Random.Range(0, lst.Count);
+            result[index++] = lst[take];
+            if (removeAfterTake) lst.RemoveAt(take);
+            number--;
+        }
+
+        return result;
+    }
 }

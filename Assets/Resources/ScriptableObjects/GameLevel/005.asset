@@ -12,13 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6c22b3307d69774fb1e6c6535256ab9, type: 3}
   m_Name: 005
   m_EditorClassIdentifier: 
+  active: 1
   nextLevel:
-  - {fileID: 11400000, guid: 6a067a0d0c1bd3c4d9f387a3357d01e3, type: 2}
+  - {fileID: 11400000, guid: f44243feb7e492f4d952716b5e1e01ad, type: 2}
   isMainLevel: 1
   codeName: 005
-  shortName: 6
+  shortName: 5
   levelName: 005
-  description: 
-  enemyShipFactorys:
-  - {fileID: 0}
-  enemysExp: 
+  description: Battle with Argosy
+  battleFlow: {fileID: 11400000, guid: fa03e7bd71549a948b6ec70bd0f20ad4, type: 2}
+  groupShips:
+  - shipFactorys:
+    - {fileID: 11400000, guid: 79521a4c11b727f47bfc18975de741b5, type: 2}
+  reward:
+    ships: []
+    gold: 
+    exp: 
+    gem: 
+    goldModRate: 0
+    expModRate: 0
+    gemModRate: 0
+    goodsModRate: 0

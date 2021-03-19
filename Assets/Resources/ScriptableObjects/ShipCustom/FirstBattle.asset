@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47ba2a5db735d2c47ab7e79044636f63, type: 3}
+  m_Name: FirstBattle
+  m_EditorClassIdentifier: 
+  shipName: 
+  baseShipData: {fileID: 11400000, guid: de3ec8eaf43cd66478ff1ea7a16c8804, type: 2}
+  curShipData: {fileID: 11400000, guid: 726f927731129ba4cab21838372a82c5, type: 2}
+  inventory:
+    goodsCode:
+    - CannonBall
+    quantity: 2c010000
+  group: 1
+  unions: 
+  captain: {fileID: 0}
+  upgrades: []
+  skills: []
+  hullMaterial: {fileID: 0}
+  sailMaterial: {fileID: 0}
+  battleId: 
+  reward:
+    ships: []
+    gold: 
+    exp: 
+    gem: 

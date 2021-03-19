@@ -31,6 +31,12 @@ public class Ship : MonoBehaviour
     public const string EVENT_CANNON_BACK_READY = "CANNON_BACK_READY";
     public const string EVENT_TACKED_OTHER_SHIP = "TACKED_OTHER_SHIP";
     public const string EVENT_SHIP_DEFEATED = "SHIP_DEFEATED";
+    public const string EVENT_HULL_75 = "HULL_75";
+    public const string EVENT_HULL_50 = "HULL_50";
+    public const string EVENT_HULL_25 = "HULL_25";
+    public const string EVENT_CREW_50 = "CREW_50";
+    public const string EVENT_CREW_0 = "CREW_0";
+    public const string EVENT_SAIL_0 = "SAIL_0";
     public bool ForceStop = false;
     public float windForceValue = 0f;
     public float fixedSpeed = 0f;  // 0 mean not apply
@@ -96,8 +102,23 @@ public class Ship : MonoBehaviour
             for (int i = 0; i < timeReloadCannons.Length; i++)
             {
                 cooldownCannons[i] = 0f;
-                timeReloadCannons[i] = 3f;
+                timeReloadCannons[i] = GetReloadCannonTimeDirection(GetDirectionByIndexCannon(i));
             }
+
+            ValidState();
+        }
+    }
+
+    private CannonDirection GetDirectionByIndexCannon(int i)
+    {
+        int direction = i / (curShipData.numberDeck == 0 ? 1 : curShipData.numberDeck);
+        switch (direction)
+        {
+            case 0: return CannonDirection.Front;
+            case 1: return CannonDirection.Right;
+            case 2: return CannonDirection.Left;
+            case 3: return CannonDirection.Back;
+            default: return CannonDirection.Front;
         }
     }
 
@@ -249,16 +270,10 @@ public class Ship : MonoBehaviour
         set
         {
             imgStateShip = value;
-            switch (stateShip)
-            {
-                case StateShip.Normal: spriteRenderer.sprite = imgStateShip.normalState; break;
-                case StateShip.Damaged: spriteRenderer.sprite = imgStateShip.damagedState; break;
-                case StateShip.Danger: spriteRenderer.sprite = imgStateShip.dangerState; break;
-                case StateShip.Death: spriteRenderer.sprite = imgStateShip.deathState; break;
-                default: spriteRenderer.sprite = imgStateShip.normalState; break;
-            }
+            ValidState();
         }
     }
+
 
     public enum StateShip
     {
@@ -370,6 +385,7 @@ public class Ship : MonoBehaviour
 
     void FixedUpdate()
     {
+
     }
 
     public int GetCannonBallInShip()
@@ -379,22 +395,32 @@ public class Ship : MonoBehaviour
         {
             if (Inventory.goodsCode[i] == SeaBattleManager.Instance.GoodsCannonBallCode)
             {
-                return Inventory.quantity[i];
+                return Inventory.quantity[i] - loadedCannon;
             }
         }
         return 0;
     }
 
-    public void DeductCannonBall(int quantity = 1)
+    public int loadedCannon = 0;
+
+    public void DeductCannonBall(int quantity = 1, bool fire = false)
     {
         if (Inventory == null || Inventory.goodsCode == null) return;
-        for (int i = 0; i < Inventory.goodsCode.Length; i++)
+        if (fire)
         {
-            if (Inventory.goodsCode[i] == SeaBattleManager.Instance.GoodsCannonBallCode)
+            for (int i = 0; i < Inventory.goodsCode.Length; i++)
             {
-                Inventory.quantity[i] -= quantity;
-                return;
+                if (Inventory.goodsCode[i] == SeaBattleManager.Instance.GoodsCannonBallCode)
+                {
+                    loadedCannon -= quantity;
+                    Inventory.quantity[i] -= quantity;
+                    return;
+                }
             }
+        }
+        else
+        {
+            loadedCannon += quantity;
         }
     }
 
@@ -530,19 +556,23 @@ public class Ship : MonoBehaviour
 
     internal void InitFromCustomData(ScriptableShipCustom playerStartShipCustom)
     {
+
+
         customData = playerStartShipCustom;
         ShipData = playerStartShipCustom.baseShipData;
-        StartShipData = playerStartShipCustom.PeakData;
-        if (customData.curShipData != null)
-        {
-            curShipData = customData.curShipData.Clone<ScriptableShip>(); ;
-        }
 
         if (!(customData.unions != null && customData.unions.Length > 0))
         {
             customData.unions = new ScriptableShipCustom.Union[] { (ScriptableShipCustom.Union)((int)Random.Range(2, 7)) };
         }
         ImgStateShip = SeaBattleManager.Instance.GetImgStateShip(customData.unions[0]);
+
+        StartShipData = playerStartShipCustom.PeakData;
+        if (customData.curShipData != null)
+        {
+            CurShipData = customData.curShipData.Clone<ScriptableShip>(); ;
+        }
+
 
         if (customData.group > 0)
         {
@@ -586,6 +616,7 @@ public class Ship : MonoBehaviour
         AutoSail = false;
         GetComponent<ShipAI>().enabled = false;
         curShipData.oarsSpeed = 0;
+        Events.InvokeOnAction(EVENT_CREW_0, true);
         Debug.Log("Test Damage Inflict Crew Damage Enter No Crew");
     }
 
@@ -595,8 +626,7 @@ public class Ship : MonoBehaviour
         GetComponent<ShipAI>().enabled = false;
         curShipData.oarsSpeed = 0;
         //call when out of hull health, crew, lose tacked
-        Events.InvokeOnAction(EVENT_SHIP_DEFEATED);
-        Events.RemoveListener(EVENT_SHIP_DEFEATED);
+        Events.InvokeOnAction(EVENT_SHIP_DEFEATED, true);
     }
 
     public void TakeDamage(DamageDealShip damage, GameObject source)
@@ -604,8 +634,13 @@ public class Ship : MonoBehaviour
         if (damage.crewDamage > 0)
         {
             SpawnHumanFly(source);
+            int before = curShipData.maxCrew;
             curShipData.maxCrew -= (int)damage.crewDamage;
             Debug.Log("Test Damage Inflict Crew Damage " + (int)damage.crewDamage + "=>" + curShipData.maxCrew);
+            if (before / (float)startShipData.maxCrew > 0.5f && curShipData.maxCrew / (float)startShipData.maxCrew <= 0.5f)
+            {
+                Events.InvokeOnAction(EVENT_CREW_50);
+            }
             if (curShipData.maxCrew <= 0)
             {
                 curShipData.maxCrew = 0;
@@ -633,28 +668,31 @@ public class Ship : MonoBehaviour
 
             if (healthRateA <= 0f && curShipData.hullHealth <= 0)
             {
-                spriteRenderer.sprite = imgStateShip.deathState;
                 MakeDeathShip();
                 EnterStateDefeated();
             }
             else if ((healthRateB > 0.2f) && (healthRateA <= 0.2f))
             {
-                spriteRenderer.sprite = imgStateShip.dangerState;
                 SpawnRandomFire();
+                Events.InvokeOnAction(EVENT_HULL_25);
             }
             else if ((healthRateB > 0.5f) && (healthRateA <= 0.5f))
             {
                 SpawnRandomFire();
+                Events.InvokeOnAction(EVENT_HULL_50);
             }
             else if ((healthRateB > 0.7f) && (healthRateA <= 0.7f))
             {
-                spriteRenderer.sprite = imgStateShip.damagedState;
                 SpawnRandomFire();
+                Events.InvokeOnAction(EVENT_HULL_75);
             }
             else if (healthRateA > 0.7f)
             {
                 // RestoreState();
             }
+
+            ValidState();
+
             if (lastTimeHit >= curShipData.TimeHitToStun)
             {
                 lastTimeHit = 0;
@@ -675,6 +713,45 @@ public class Ship : MonoBehaviour
                     accumStunTime = 0;
                 }
             }
+        }
+    }
+
+
+    public void ValidState()
+    {
+        if (curShipData == null || startShipData == null) return;
+        float curHealth = curShipData.hullHealth;
+        float maxHealth = startShipData.hullHealth;
+        float healthRate = curHealth / maxHealth;
+
+        if (healthRate <= 0)
+        {
+            stateShip = StateShip.Death;
+        }
+        else if (healthRate <= 0.2f)
+        {
+            stateShip = StateShip.Danger;
+        }
+        else if (healthRate <= 0.5f)
+        {
+        }
+        else if (healthRate <= 0.7f)
+        {
+            stateShip = StateShip.Damaged;
+        }
+        else if (healthRate > 0.7f)
+        {
+            stateShip = StateShip.Normal;
+            // RestoreState();
+        }
+
+        switch (stateShip)
+        {
+            case StateShip.Normal: spriteRenderer.sprite = imgStateShip.normalState; break;
+            case StateShip.Damaged: spriteRenderer.sprite = imgStateShip.damagedState; break;
+            case StateShip.Danger: spriteRenderer.sprite = imgStateShip.dangerState; break;
+            case StateShip.Death: spriteRenderer.sprite = imgStateShip.deathState; break;
+            default: spriteRenderer.sprite = imgStateShip.normalState; break;
         }
     }
 
@@ -837,13 +914,25 @@ public class Ship : MonoBehaviour
             forceRotate = Mathf.Abs(forceRotate);
             // Debug.Log(string.Format("calculate1 {0}/{1}/{2}/{3}", Mathf.Sin(absDegree), Mathf.Cos(absDegree), vShip.magnitude, forceRotate));
             // Debug.Log(string.Format("calculate {0}/{1}/{2}/{3}", degreeRotate, absDegree, shipVelocity, forceRotate));
-            Vector2 vRotate = forceRotate * VectorUtils.Rotate(ShipVelocity, (degreeRotate > 0 ? 1 : -1) * 90f, true).normalized;
-            rotateDirection = vRotate;
+            rotateDirection = VectorUtils.Rotate(ShipVelocity, (degreeRotate > 0 ? 1 : -1) * 90f, true).normalized;
+            Vector2 vRotate = forceRotate * rotateDirection;
+
+            // float magForRotate = vRotate.magnitude;
+
+            //add wind force for rotate
+            // Vector2 forceOnShip = VectorUtils.GetForceOnLine(Wind, ShipDirection, false);
+            // if (VectorUtils.IsSameDirection(forceOnShip, rotateDirection))
+            // {
+            //     // Debug.Log("Rotate add wind " + vRotate + "/" + forceOnShip);
+            //     forceRotate = forceRotate + forceOnShip.magnitude * curShipData.windConversionRate;
+            //     vRotate = vRotate.normalized * forceRotate;
+            // }
+
             CapsuleCollider2D col = ShipCollider;
             float c = Mathf.PI * ActualSizeY / 2; // 1/2 perimeter
             if (forceRotate > 0)
             {
-                rotateSpeed = c / vRotate.magnitude;
+                rotateSpeed = c / forceRotate;
             }
             else
             {
@@ -934,8 +1023,9 @@ public class Ship : MonoBehaviour
         Fires.Clear();
     }
 
-    public void FireTarget(Vector2 target)
+    public float FireTarget(Vector2 target)
     {
+        float waitTime = 0f;
         Vector2 toTarget = target - (Vector2)transform.position;
         Vector2 flag = VectorUtils.Rotate(ShipDirection, 45, true);
         float angel = Vector2.Angle(toTarget, flag);
@@ -959,6 +1049,7 @@ public class Ship : MonoBehaviour
             ))
             {
                 FireCannonOneDirection(CannonDirection.Front);
+                waitTime = GetReloadCannonTimeDirection(CannonDirection.Front);
             }
         }
         if (CheckCannonReady(CannonDirection.Left))
@@ -968,6 +1059,7 @@ public class Ship : MonoBehaviour
             ))
             {
                 FireCannonOneDirection(CannonDirection.Left);
+                waitTime = GetReloadCannonTimeDirection(CannonDirection.Front);
             }
         }
         if (CheckCannonReady(CannonDirection.Right))
@@ -977,6 +1069,7 @@ public class Ship : MonoBehaviour
             ))
             {
                 FireCannonOneDirection(CannonDirection.Right);
+                waitTime = GetReloadCannonTimeDirection(CannonDirection.Front);
             }
         }
 
@@ -987,9 +1080,10 @@ public class Ship : MonoBehaviour
             ))
             {
                 FireCannonOneDirection(CannonDirection.Back);
+                waitTime = GetReloadCannonTimeDirection(CannonDirection.Front);
             }
         }
-
+        return waitTime;
         /*
         //check by angel
         if (VectorUtils.IsRightSide(flag, toTarget))
@@ -1088,6 +1182,17 @@ public class Ship : MonoBehaviour
 
     public int countShot = 0;
 
+    public float GetReloadCannonTimeDirection(CannonDirection direction)
+    {
+        switch (direction)
+        {
+            case CannonDirection.Front: return 3f;
+            case CannonDirection.Right: return 3f;
+            case CannonDirection.Left: return 3f;
+            case CannonDirection.Back: return 3f;
+            default: return 3f;
+        }
+    }
     private void FireCannonOneDirection(CannonDirection direction)
     {
         if (!CheckCannonReady(direction)) return;
@@ -1103,6 +1208,57 @@ public class Ship : MonoBehaviour
             FireCannonOneDirectionOnDeck(direction, i);
             yield return new WaitForSeconds(delay);
         }
+    }
+
+    public IEnumerator RandomFire(List<Vector2> fromList, Vector2 directionFire)
+    {
+        int thisWaveShot = 0;
+        Vector2[] thisShots = null;
+        float delayWave = 0;
+        int countWave = 1;
+
+        while (fromList.Count > 0)
+        {
+            thisWaveShot = Random.Range(1, fromList.Count);
+            Debug.Log("Random Fire Before " + countWave + ":" + fromList.Count);
+            thisShots = CommonUtils.RandomElemFromList(fromList, thisWaveShot, true);
+            Debug.Log("Random Fire After " + countWave++ + ":" + fromList.Count);
+            Debug.Log("Random Fire Fire " + thisShots.Length);
+            foreach (Vector2 from in thisShots)
+            {
+                WrapPool wrapPool = SeaBattleManager.Instance.poolCannon.GetPooledObject();
+                Debug.Assert(wrapPool != null, "cannon should avaiable");
+                if (wrapPool != null)
+                {
+
+                    DeductCannonBall(1, true);//actual deduct cannon
+
+                    GameObject actualCannon = wrapPool.poolObj;
+                    CannonShot shot = actualCannon.GetComponent<CannonShot>();
+                    shot.ResetTravel();
+                    actualCannon.transform.position = from;
+                    shot.owner = this;
+                    shot.fireDirection = directionFire;
+                    // shot.Target = from + fire.normalized * 3f;
+                    // shot.speed = speed;
+                    shot.OnImpactTarget = delegate ()
+                    {
+                        SeaBattleManager.Instance.poolCannon.RePooledObject(wrapPool);
+                    };
+                    shot.gameObject.SetActive(true);
+                    shot.StartTravel();
+
+                    // if (deck == 0) Debug.DrawLine(from, shot.Target, Color.red, 3f);
+                }
+            }
+
+            //delay wave
+            delayWave = Random.Range(0.01f, 0.1f);
+            Debug.Log("Random Fire Delay " + delayWave);
+            if (fromList.Count > 0)
+                yield return new WaitForSeconds(delayWave);
+        }
+
     }
 
     private void FireCannonOneDirectionOnDeck(CannonDirection direction, int deck)
@@ -1160,30 +1316,34 @@ public class Ship : MonoBehaviour
             // fromList.Add((Vector2)transform.position + Rotate(fire, angel, true).normalized * areaOtherFace / 2);
 
         }
-        foreach (Vector2 from in fromList)
-        {
-            WrapPool wrapPool = SeaBattleManager.Instance.poolCannon.GetPooledObject();
-            Debug.Assert(wrapPool != null, "cannon should avaiable");
-            if (wrapPool != null)
-            {
-                GameObject actualCannon = wrapPool.poolObj;
-                CannonShot shot = actualCannon.GetComponent<CannonShot>();
-                shot.ResetTravel();
-                actualCannon.transform.position = from;
-                shot.owner = this;
-                shot.fireDirection = fire.normalized;
-                // shot.Target = from + fire.normalized * 3f;
-                // shot.speed = speed;
-                shot.OnImpactTarget = delegate ()
-                {
-                    SeaBattleManager.Instance.poolCannon.RePooledObject(wrapPool);
-                };
-                shot.gameObject.SetActive(true);
-                shot.StartTravel();
+        StartCoroutine(RandomFire(fromList, fire.normalized));
+        // foreach (Vector2 from in fromList)
+        // {
+        //     WrapPool wrapPool = SeaBattleManager.Instance.poolCannon.GetPooledObject();
+        //     Debug.Assert(wrapPool != null, "cannon should avaiable");
+        //     if (wrapPool != null)
+        //     {
 
-                if (deck == 0) Debug.DrawLine(from, shot.Target, Color.red, 3f);
-            }
-        }
+        //         DeductCannonBall(1, true);//actual deduct cannon
+
+        //         GameObject actualCannon = wrapPool.poolObj;
+        //         CannonShot shot = actualCannon.GetComponent<CannonShot>();
+        //         shot.ResetTravel();
+        //         actualCannon.transform.position = from;
+        //         shot.owner = this;
+        //         shot.fireDirection = fire.normalized;
+        //         // shot.Target = from + fire.normalized * 3f;
+        //         // shot.speed = speed;
+        //         shot.OnImpactTarget = delegate ()
+        //         {
+        //             SeaBattleManager.Instance.poolCannon.RePooledObject(wrapPool);
+        //         };
+        //         shot.gameObject.SetActive(true);
+        //         shot.StartTravel();
+
+        //         if (deck == 0) Debug.DrawLine(from, shot.Target, Color.red, 3f);
+        //     }
+        // }
         isReloadingCannon = true;
     }
 

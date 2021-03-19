@@ -12,20 +12,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a955fd26f7b8b6f48a46944a2b6eff84, type: 3}
   m_Name: FirstBattle
   m_EditorClassIdentifier: 
+  type: 1
   battlePoints:
   - eventTrigger:
     - START_BATTLE
     battleTime: []
     actionCheck: []
     actionResult:
-    - actionName: SpawnShip
+    - actionName: SpawnGroupShip
       actionParams:
-      - 1
       - 0
       expectResult: 
-    - actionName: CommandAttack
+    - actionName: CommandGroupAttack
       actionParams:
-      - 1
       - 0
       expectResult: 
   - eventTrigger:
@@ -49,8 +48,10 @@ MonoBehaviour:
       actionParams: []
       expectResult: 
   shipFactorys: []
-  ships:
-  - {fileID: 11400000, guid: d021399b58f744a41b428b9e04c688ac, type: 2}
+  ships: []
+  groupShips:
+  - shipFactorys:
+    - {fileID: 11400000, guid: 8e1840f80fac6634cbbf4da542c9cb94, type: 2}
   reward:
     ships: []
     gold: 88130000

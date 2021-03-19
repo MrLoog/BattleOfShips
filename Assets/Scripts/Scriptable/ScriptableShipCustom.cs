@@ -49,4 +49,6 @@ public class ScriptableShipCustom : MScriptableObject
 
     public string battleId;
 
+    public RewardBattle reward;
+
 }

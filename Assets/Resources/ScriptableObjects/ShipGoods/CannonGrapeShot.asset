@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddb7185ccfd39f643b2ea351c24efddc, type: 3}
   m_Name: CannonGrapeShot
   m_EditorClassIdentifier: 
+  active: 0
   prefab: {fileID: 0}
   itemName: Grape Ball
   description: 
