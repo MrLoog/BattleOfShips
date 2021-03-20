@@ -19,7 +19,7 @@ MonoBehaviour:
   actionCheck:
   - actionName: IsClearLevel
     actionParams:
-    - ^004$
+    - ^004_00$
     expectResult: 
   actionResult:
   - actionName: UnlockShopShip

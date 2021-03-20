@@ -8,6 +8,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ScriptableGameLevel", menuName = "BoS/Game Level", order = 12)]
 public class ScriptableGameLevel : MScriptableObject
 {
+
     public ScriptableGameLevel[] nextLevel;
 
     public bool isMainLevel = true;

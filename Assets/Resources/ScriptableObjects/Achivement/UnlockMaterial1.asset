@@ -19,7 +19,7 @@ MonoBehaviour:
   actionCheck:
   - actionName: IsClearLevel
     actionParams:
-    - ^...0$
+    - ^..._01$
     expectResult: 
   actionResult:
   - actionName: UnlockShopMaterial

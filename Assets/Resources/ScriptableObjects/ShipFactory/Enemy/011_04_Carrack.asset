@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c0318ebbd4345b647a9c8a8edfc13e6d, type: 3}
+  m_Name: 011_00_Carrack 4
+  m_EditorClassIdentifier: 
+  active: 1
+  shipList:
+  - {fileID: 11400000, guid: 7d4ed42af048ff24b9a8dd77cfaec9a2, type: 2}
+  shipCustomList: []
+  shipRates: 
+  slotRate: 
+  skillList: []
+  hullMaterials:
+  - {fileID: 0}
+  hullMaterialRates: 
+  sailMaterials:
+  - {fileID: 0}
+  sailMaterialRates: 
+  fixedInventory:
+    goodsCode:
+    - CannonBall
+    quantity: c8000000
+  goodsCode:
+  - Cotton2
+  - Iron2
+  - Oil2
+  - Plank2
+  - Rum2
+  - Sugar2
+  minQty: 05000000
+  maxQty: 14000000
+  maxWeight: 2500
+  reward:
+    ships: []
+    gold: 60ea0000
+    exp: 
+    gem: 
+    goldModRate: 0.25
+    expModRate: 0
+    gemModRate: 0
+    goodsModRate: 0

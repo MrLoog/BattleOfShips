@@ -101,7 +101,7 @@ public class GActionManager : Singleton<GActionManager>
     {
         string message = args[0];
         string[] time = ExtractValueComma(1, args);
-        if (CommonUtils.IsArrayNullEmpty(time))
+        if (CommonUtils.IsArrayNullEmpty(time) || time[0] == "")
         {
             ToastService.Instance.ShowMessage(message);
         }

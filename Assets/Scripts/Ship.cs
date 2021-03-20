@@ -256,7 +256,9 @@ public class Ship : MonoBehaviour
 
     public float lastTimeHit = 0f;
     public int totalHitConsecutive = 0;
-    public bool IsDefeated => curShipData.hullHealth <= 0 || curShipData.maxCrew <= 0;
+
+    public bool CloseCombatDefeated = false;
+    public bool IsDefeated => CloseCombatDefeated || curShipData.hullHealth <= 0 || curShipData.maxCrew <= 0;
 
 
     public ScriptableStateShip imgStateShip;
@@ -625,6 +627,7 @@ public class Ship : MonoBehaviour
         AutoSail = false;
         GetComponent<ShipAI>().enabled = false;
         curShipData.oarsSpeed = 0;
+        CloseCombatDefeated = true;
         //call when out of hull health, crew, lose tacked
         Events.InvokeOnAction(EVENT_SHIP_DEFEATED, true);
     }
