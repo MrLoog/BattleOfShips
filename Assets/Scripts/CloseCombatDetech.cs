@@ -15,6 +15,12 @@ public class CloseCombatDetech : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (owner == null || owner.IsPlayerShip())
+        {
+            gameObject.SetActive(false);
+            return;
+        }
+
         capCol = GetComponent<CapsuleCollider2D>();
         range = SeaBattleManager.Instance.rangeCloseConduct;
         capCol.size = new Vector2(capCol.size.x + range * 2, capCol.size.y + range * 2);

@@ -82,4 +82,12 @@ public class CommonUtils
 
         return result;
     }
+
+    internal static T[] RemoveFromArray<T>(T[] array, int indexRemove)
+    {
+        if (array == null) return array;
+        List<T> toList = array.ToList();
+        toList.RemoveAt(indexRemove);
+        return toList.ToArray();
+    }
 }

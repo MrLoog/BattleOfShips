@@ -59,9 +59,10 @@ public class ShipManageMiniMenu : MonoBehaviour
         }
         else
         {
-            gameObject.SetActive(true);
             focusShip = shipManageInfo;
+            transform.position = focusShip.transform.position;
             ValidFeatureAvaiable();
+            gameObject.SetActive(true);
         }
     }
 

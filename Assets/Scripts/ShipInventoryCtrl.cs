@@ -202,15 +202,21 @@ public class ShipInventoryCtrl : MonoBehaviour
     {
         int quantity = result[0];
         int fromInvIndex = result[1]; //0 mean sell, 1 mean buy
+        bool isSell = fromInvIndex == 0;
 
         ShipInventory inventoryShip = AvaiableShips[FirstIndex].inventory;
+        if (inventoryShip == null)
+        {
+            inventoryShip = new ShipInventory();
+            AvaiableShips[FirstIndex].inventory = inventoryShip;
+        }
         string[] goodsCodesAdd = null;
         int[] quantityAdd = null;
         string[] goodsCodesDeduct = null;
         int[] quantityDeduct = null;
 
 
-        if (fromInvIndex == 0)
+        if (isSell)
         {
             //sell
             goodsCodesAdd = marketStateToday.goodsCodes;
@@ -239,25 +245,29 @@ public class ShipInventoryCtrl : MonoBehaviour
         }
         if (i == goodsCodesAdd.Length)
         {
-            goodsCodesAdd.Concat(new string[] { goodsCodesDeduct[indexTransfer] });
-            quantityAdd.Concat(new int[] { quantity });
+            if (!isSell)
+            {
+                //shop always full goods
+                inventoryShip.goodsCode = CommonUtils.AddElemToArray(inventoryShip.goodsCode, goodsCodesDeduct[indexTransfer]);
+                inventoryShip.quantity = CommonUtils.AddElemToArray(inventoryShip.quantity, quantity);
+            }
         }
 
-        if (quantityDeduct[indexTransfer] == 0)
-        {
-            // inventoryDeduct.goodsCode[indexTransfer] = null;
-            // inventoryDeduct.quantity = inventoryDeduct.quantity.Where(x => x > 0).ToArray();
-            // inventoryDeduct.goodsCode = inventoryDeduct.goodsCode.Where(x => x != null).ToArray();
-        }
+
 
         //gold account balance
-        if (fromInvIndex == 0)
+        if (isSell)
         {
             //sell 70% price
             GameManager.Instance.AddGold(marketStateToday.GoldReceivedBySell(
                 goodsCodesDeduct[indexTransfer],
                 quantity
             ));
+            if (quantityDeduct[indexTransfer] == 0)
+            {
+                inventoryShip.goodsCode = CommonUtils.RemoveFromArray(inventoryShip.goodsCode, indexTransfer);
+                inventoryShip.quantity = CommonUtils.RemoveFromArray(inventoryShip.quantity, indexTransfer);
+            }
         }
         else
         {
@@ -266,6 +276,7 @@ public class ShipInventoryCtrl : MonoBehaviour
                 marketStateToday.GoldLostByBuy(indexTransfer, quantity)
             );
         }
+
 
         ShowInventoryDetails(
                 panelInventory,
@@ -281,6 +292,11 @@ public class ShipInventoryCtrl : MonoBehaviour
         int fromInvIndex = result[1];
         ShipInventory inventoryDeduct = AvaiableShips[fromInvIndex].inventory;
         ShipInventory inventoryAdd = AvaiableShips[fromInvIndex == FirstIndex ? SecondIndex : FirstIndex].inventory;
+        if (inventoryAdd == null)
+        {
+            inventoryAdd = new ShipInventory();
+            AvaiableShips[fromInvIndex == FirstIndex ? SecondIndex : FirstIndex].inventory = inventoryAdd;
+        }
         inventoryDeduct.quantity[indexTransfer] -= quantity;
         int i = 0;
         for (; i < inventoryAdd.goodsCode.Length; i++)
@@ -294,15 +310,14 @@ public class ShipInventoryCtrl : MonoBehaviour
         Debug.Log("transfer inventory " + i);
         if (i == inventoryAdd.goodsCode.Length)
         {
-            inventoryAdd.goodsCode = inventoryAdd.goodsCode.Concat(new string[] { inventoryDeduct.goodsCode[indexTransfer] }).ToArray();
-            inventoryAdd.quantity = inventoryAdd.quantity.Concat(new int[] { quantity }).ToArray();
+            inventoryAdd.goodsCode = CommonUtils.AddElemToArray(inventoryAdd.goodsCode, inventoryDeduct.goodsCode[indexTransfer]);
+            inventoryAdd.quantity = CommonUtils.AddElemToArray(inventoryAdd.quantity, quantity);
         }
 
         if (inventoryDeduct.quantity[indexTransfer] == 0)
         {
-            inventoryDeduct.goodsCode[indexTransfer] = null;
-            inventoryDeduct.quantity = inventoryDeduct.quantity.Where(x => x > 0).ToArray();
-            inventoryDeduct.goodsCode = inventoryDeduct.goodsCode.Where(x => x != null).ToArray();
+            inventoryDeduct.quantity = CommonUtils.RemoveFromArray(inventoryDeduct.quantity, indexTransfer);
+            inventoryDeduct.goodsCode = CommonUtils.RemoveFromArray(inventoryDeduct.goodsCode, indexTransfer);
         }
 
         ShowInventoryDetails(

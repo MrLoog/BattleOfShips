@@ -34,6 +34,8 @@ public class SeaBattleData : BaseDataEntity
     }
     public ScriptableBattleFlow activeFlow;
 
+    public bool IsBattle = false;
+
     public SeaBattleData()
     {
 

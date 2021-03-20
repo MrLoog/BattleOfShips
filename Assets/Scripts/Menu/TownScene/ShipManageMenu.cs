@@ -190,11 +190,23 @@ public class ShipManageMenu : MonoBehaviour
                     if (i == ModalPopupCtrl.RESULT_POSITIVE)
                     {
                         ShipManageInfo info = focusShip;
+
+                        int focusIndex = focusShip.IndexId - 1;
                         //hide mini menu
                         ShowMiniMenu(null);
                         //destroy ship
                         GameManager.Instance.DeleteShip(info.data);
                         //remove manage
+                        for (int j = focusIndex; j < shipCustoms.Length - 1; j++)
+                        {
+                            // shipCustoms[j] = shipCustoms[j + 1];
+                            // shipInfos[j] = shipInfos[j + 1];
+                            shipInfos[j].IndexId -= 1;
+                        }
+
+                        shipCustoms = CommonUtils.RemoveFromArray(shipCustoms, focusIndex);
+                        shipInfos = CommonUtils.RemoveFromArray(shipInfos, focusIndex);
+
                         info.SelfDestroy();
                         GameManager.Instance.AddGold(price + cargoValue);
                     }
@@ -202,6 +214,7 @@ public class ShipManageMenu : MonoBehaviour
                 );
         }
     }
+
 
     public void PerformTransferCargo()
     {

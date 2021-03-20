@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 472755ab02f002b4fa16ba72071f7544, type: 3}
   m_Name: Test2
   m_EditorClassIdentifier: 
+  active: 1
   description: 
   probability: 50
   goodsCode:
@@ -26,6 +27,7 @@ MonoBehaviour:
   - 10
   - 20
   - 100
+  goodsPriceMod: 0.2
   minRateQty:
   - 1.5
   - 2.5
@@ -36,3 +38,4 @@ MonoBehaviour:
   - 3.5
   basePrice: 
   baseQuantiy: e8030000e8030000e8030000
+  crewMinMaxQtyPrice: ffc99a3bffc99a3b1400000028000000

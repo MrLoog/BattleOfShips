@@ -15,6 +15,9 @@ public class ScriptableMarketState : MScriptableObject
     public string[] goodsCode;
     public float[] minRatePrice;
     public float[] maxRatePrice;
+
+    [Tooltip("if not declare in min,max base price of good will be tunning with this rate +/-")]
+    public float goodsPriceMod = 0f;
     public float[] minRateQty;
     public float[] maxRateQty;
 
@@ -61,6 +64,7 @@ public class MarketStateFactory
 {
     public static MarketStateToday BuildMarketStateToday(ScriptableShipGoods[] allGoods, ScriptableMarketState state)
     {
+        Debug.Log("BuildMarketStateToday");
         MarketStateToday today = new MarketStateToday();
         today.time = DateTime.Now;
         List<string> goodsCodes = new List<string>();
@@ -74,6 +78,7 @@ public class MarketStateFactory
             int baseQuantiy = aGoods.baseQuantiy;
             if (index > -1)
             {
+                //random if config
                 if (state.basePrice.Length > index) basePrice = state.basePrice[index];
                 if (state.baseQuantiy.Length > index) baseQuantiy = state.baseQuantiy[index];
                 prices.Add((int)Random.Range(basePrice * state.minRatePrice[index], basePrice * state.maxRatePrice[index]));
@@ -81,7 +86,8 @@ public class MarketStateFactory
             }
             else
             {
-                prices.Add(basePrice);
+                //else default price
+                prices.Add((int)(basePrice * (1 + Random.Range(-state.goodsPriceMod, state.goodsPriceMod))));
                 quantitys.Add(baseQuantiy);
             }
 

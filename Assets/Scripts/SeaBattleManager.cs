@@ -89,7 +89,17 @@ public class SeaBattleManager : BaseSceneManager
 
     public ModalPopupCtrl PopupCtrl => gameManager.PopupCtrl;
 
-    public bool IsBattle = false;
+    public bool IsBattle
+    {
+        get
+        {
+            return seaBattleData.IsBattle;
+        }
+        set
+        {
+            seaBattleData.IsBattle = value;
+        }
+    }
 
     public float rateCrewConduct = 0.5f;
     public float rangeCloseConduct = 1f;
