@@ -101,6 +101,16 @@ public class GameManager : BaseSceneManager
     {
         // gameData.playerShip.test = new Test() { prop = "Test" };
         // GEventManager.Instance.InvokeEvent(GEventManager.EVENT_CLEAR_LEVEL);
+        // if (!CommonUtils.IsArrayNullEmpty(otherShips))
+        // {
+        //     otherShips.ToList().ForEach(
+        //         x =>
+        //         {
+        //             GameData.otherShips = CommonUtils.AddElemToArray(GameData.otherShips, x.Clone<ScriptableShipCustom>());
+        //         }
+        //     );
+        // }
+
     }
 
 

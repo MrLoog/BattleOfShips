@@ -45,6 +45,7 @@ public class CommonUtils
 
     public static T[] AddElemToArray<T>(T[] arr, T elem)
     {
+        if (elem == null) return arr;
         if (arr == null)
         {
             return new T[] { elem };
@@ -57,6 +58,7 @@ public class CommonUtils
 
     public static T[] AddElemToArray<T>(T[] arr, T[] elems)
     {
+        if (CommonUtils.IsArrayNullEmpty(elems)) return arr;
         if (arr == null)
         {
             return elems;

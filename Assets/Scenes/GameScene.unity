@@ -8106,7 +8106,12 @@ MonoBehaviour:
   startGem: 10
   playerStarterShip: {fileID: 11400000, guid: 361100352b5176d4e95235d5c960d348, type: 2}
   playerStarterShipTest: {fileID: 11400000, guid: 09f8df589a061a047bea1ce000d3edb2, type: 2}
-  otherShips: []
+  otherShips:
+  - {fileID: 11400000, guid: d021399b58f744a41b428b9e04c688ac, type: 2}
+  - {fileID: 11400000, guid: d021399b58f744a41b428b9e04c688ac, type: 2}
+  - {fileID: 11400000, guid: d021399b58f744a41b428b9e04c688ac, type: 2}
+  - {fileID: 11400000, guid: d021399b58f744a41b428b9e04c688ac, type: 2}
+  - {fileID: 11400000, guid: d021399b58f744a41b428b9e04c688ac, type: 2}
   StartShopFactory: {fileID: 11400000, guid: c7a9cdd801438864385f55a5af9d1682, type: 2}
   FinalShopFactory: {fileID: 11400000, guid: 6457eaf55657fa6439bfcea5972ae2e9, type: 2}
   firstBattleFlow: {fileID: 11400000, guid: 30d51b5358af7824ea00157d5ef8d00e, type: 2}

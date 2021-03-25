@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4db686edf1d96c549a6bcc37856c8cd3, type: 3}
   m_Name: RoundShot
   m_EditorClassIdentifier: 
+  active: 1
   prefab: {fileID: 3307599177762406278, guid: ac5e03f0ebad94e4392d1b767ee140e1, type: 3}
   cannonName: Round Shot
   hullDamage: 3

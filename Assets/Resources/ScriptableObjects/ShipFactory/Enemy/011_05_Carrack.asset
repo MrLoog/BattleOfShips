@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c0318ebbd4345b647a9c8a8edfc13e6d, type: 3}
-  m_Name: 011_00_Carrack 5
+  m_Name: 011_05_Carrack
   m_EditorClassIdentifier: 
   active: 1
   shipList:
@@ -20,15 +20,15 @@ MonoBehaviour:
   slotRate: 
   skillList: []
   hullMaterials:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 060f72b22524424479dd517abc76fb5c, type: 2}
   hullMaterialRates: 
   sailMaterials:
-  - {fileID: 0}
+  - {fileID: 11400000, guid: 89039cacce2b70646bf099a0d4fdf27e, type: 2}
   sailMaterialRates: 
   fixedInventory:
     goodsCode:
     - CannonBall
-    quantity: c8000000
+    quantity: 58020000
   goodsCode:
   - Cotton2
   - Iron2
@@ -41,7 +41,7 @@ MonoBehaviour:
   maxWeight: 2500
   reward:
     ships: []
-    gold: 60ea0000
+    gold: f0490200
     exp: 
     gem: 
     goldModRate: 0.25

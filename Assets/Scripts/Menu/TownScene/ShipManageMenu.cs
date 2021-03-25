@@ -90,6 +90,7 @@ public class ShipManageMenu : MonoBehaviour
 
     public void HideManage()
     {
+        ShowMiniMenu(null);
         panel.SetActive(false);
     }
     private ShipManageInfo focusShip;
@@ -201,7 +202,7 @@ public class ShipManageMenu : MonoBehaviour
                         {
                             // shipCustoms[j] = shipCustoms[j + 1];
                             // shipInfos[j] = shipInfos[j + 1];
-                            shipInfos[j].IndexId -= 1;
+                            shipInfos[j + 1].IndexId -= 1;
                         }
 
                         shipCustoms = CommonUtils.RemoveFromArray(shipCustoms, focusIndex);

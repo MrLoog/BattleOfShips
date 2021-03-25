@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6c22b3307d69774fb1e6c6535256ab9, type: 3}
+  m_Name: 006_01
+  m_EditorClassIdentifier: 
+  active: 1
+  nextLevel:
+  - {fileID: 11400000, guid: 98f850235630c354abf2db431e7e7237, type: 2}
+  isMainLevel: 0
+  codeName: 006_01
+  shortName: 6 - 1
+  levelName: 6 - 1
+  description: Battle with Brigantine
+  battleFlow: {fileID: 11400000, guid: fa03e7bd71549a948b6ec70bd0f20ad4, type: 2}
+  groupShips:
+  - shipFactorys:
+    - {fileID: 11400000, guid: ad610f51ef34ec74ca2fcf335e965abb, type: 2}
+  reward:
+    ships: []
+    gold: 
+    exp: 
+    gem: 
+    goldModRate: 0
+    expModRate: 0
+    gemModRate: 0
+    goodsModRate: 0

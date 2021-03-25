@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 472755ab02f002b4fa16ba72071f7544, type: 3}
+  m_Name: SugarDemand
+  m_EditorClassIdentifier: 
+  active: 1
+  inheritMarket: {fileID: 11400000, guid: 052090632e261844ea8f5b44b0c19ebc, type: 2}
+  description: 
+  probability: 20
+  goodsCode:
+  - Sugar
+  - Sugar2
+  basePrice: 
+  baseQuantiy: 
+  minRatePrice:
+  - 2
+  - 2
+  maxRatePrice:
+  - 5
+  - 5
+  priceMod: []
+  otherPriceMod: 0
+  minRateQty: []
+  maxRateQty: []
+  qtyMod: []
+  otherQtyMod: 0
+  crewMinMaxQtyPrice: 

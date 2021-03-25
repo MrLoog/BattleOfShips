@@ -1,0 +1,36 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6c22b3307d69774fb1e6c6535256ab9, type: 3}
+  m_Name: 004_01
+  m_EditorClassIdentifier: 
+  active: 1
+  nextLevel:
+  - {fileID: 11400000, guid: aba62ce9ab2ed4b49b2b233f302a69f0, type: 2}
+  isMainLevel: 0
+  codeName: 004_01
+  shortName: 4 - 1
+  levelName: 4 - 1
+  description: Battle with Sloop and Schooner
+  battleFlow: {fileID: 11400000, guid: fa03e7bd71549a948b6ec70bd0f20ad4, type: 2}
+  groupShips:
+  - shipFactorys:
+    - {fileID: 11400000, guid: b4515d0bac735d343a5e9e7652b9da62, type: 2}
+    - {fileID: 11400000, guid: 37ca7b1421cdf624693a7d02fdcdb5b5, type: 2}
+  reward:
+    ships: []
+    gold: 
+    exp: 
+    gem: 
+    goldModRate: 0
+    expModRate: 0
+    gemModRate: 0
+    goodsModRate: 0

@@ -10,8 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c0318ebbd4345b647a9c8a8edfc13e6d, type: 3}
-  m_Name: FinalMarket
+  m_Name: FinalWorkshop
   m_EditorClassIdentifier: 
+  active: 1
   shipList:
   - {fileID: 11400000, guid: efb7a6ccf5d1ebe4fbeae491fe6cbba7, type: 2}
   - {fileID: 11400000, guid: 4b9db8b092d4503418c63f5f511ebb91, type: 2}
@@ -24,6 +25,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: adcb38d51068aa84084a8b3093b44019, type: 2}
   - {fileID: 11400000, guid: ce93fd651fd874449b1423f6ee8fad71, type: 2}
   - {fileID: 11400000, guid: de3ec8eaf43cd66478ff1ea7a16c8804, type: 2}
+  shipCustomList: []
   shipRates: 
   slotRate: 79030000640000000a00000001000000
   skillList:
@@ -47,3 +49,19 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 6e06ffaa93367d249aeff7c9a25871a2, type: 2}
   - {fileID: 11400000, guid: 89039cacce2b70646bf099a0d4fdf27e, type: 2}
   sailMaterialRates: 2800000019000000140000000a0000000400000001000000
+  fixedInventory:
+    goodsCode: []
+    quantity: 
+  goodsCode: []
+  minQty: 
+  maxQty: 
+  maxWeight: 0
+  reward:
+    ships: []
+    gold: 
+    exp: 
+    gem: 
+    goldModRate: 0
+    expModRate: 0
+    gemModRate: 0
+    goodsModRate: 0

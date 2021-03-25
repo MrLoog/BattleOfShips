@@ -10,10 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c0318ebbd4345b647a9c8a8edfc13e6d, type: 3}
-  m_Name: StarterMarket
+  m_Name: StarterWorkshop
   m_EditorClassIdentifier: 
+  active: 1
   shipList:
   - {fileID: 11400000, guid: de3ec8eaf43cd66478ff1ea7a16c8804, type: 2}
+  shipCustomList: []
   shipRates: 
   slotRate: 
   skillList: []
@@ -23,3 +25,19 @@ MonoBehaviour:
   sailMaterials:
   - {fileID: 11400000, guid: bf188e88cd1a2ad488caca1f6f1efa74, type: 2}
   sailMaterialRates: 28000000
+  fixedInventory:
+    goodsCode: []
+    quantity: 
+  goodsCode: []
+  minQty: 
+  maxQty: 
+  maxWeight: 0
+  reward:
+    ships: []
+    gold: 
+    exp: 
+    gem: 
+    goldModRate: 0
+    expModRate: 0
+    gemModRate: 0
+    goodsModRate: 0

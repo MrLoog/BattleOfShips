@@ -28,7 +28,7 @@ MonoBehaviour:
   fixedInventory:
     goodsCode:
     - CannonBall
-    quantity: 64000000
+    quantity: fa000000
   goodsCode:
   - Cotton
   - Iron

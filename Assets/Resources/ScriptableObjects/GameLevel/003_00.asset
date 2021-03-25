@@ -15,6 +15,7 @@ MonoBehaviour:
   active: 1
   nextLevel:
   - {fileID: 11400000, guid: d7377b131b9b4564bb9a22951f7e52a8, type: 2}
+  - {fileID: 11400000, guid: 855b9affcf2f7f247b32fdf2ebc61d84, type: 2}
   isMainLevel: 1
   codeName: 003_00
   shortName: 3
