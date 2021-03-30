@@ -99,7 +99,7 @@ public class CloseCombatDetech : MonoBehaviour
         if (ships.Count > 0) //only player ship
         {
             Ship player = ships.FirstOrDefault();
-            if (player.curShipData.maxCrew < owner.curShipData.maxCrew)
+            if (!owner.IsDefeated && player.curShipData.maxCrew < owner.curShipData.maxCrew)
             {
                 //sure lose not show
                 Debug.Log("Close combat cant combat sure lost");
@@ -142,6 +142,7 @@ public class CloseCombatDetech : MonoBehaviour
 
     private float CalculateSuccessRate()
     {
+        if (owner.IsDefeated) return 100f;
         float curRate = (float)owner.curShipData.maxCrew / (float)owner.StartShipData.maxCrew;
         float process = (1 - curRate) / (1 - maxRateHealthRate);
         if (process > 1) process = 1;
