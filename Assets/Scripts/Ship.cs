@@ -31,6 +31,7 @@ public class Ship : MonoBehaviour
     public const string EVENT_CANNON_BACK_READY = "CANNON_BACK_READY";
     public const string EVENT_TACKED_OTHER_SHIP = "TACKED_OTHER_SHIP";
     public const string EVENT_SHIP_DEFEATED = "SHIP_DEFEATED";
+    public const string EVENT_CREW_DAMAGED = "CREW_DAMAGED";
     public const string EVENT_HULL_75 = "HULL_75";
     public const string EVENT_HULL_50 = "HULL_50";
     public const string EVENT_HULL_25 = "HULL_25";
@@ -639,6 +640,7 @@ public class Ship : MonoBehaviour
             SpawnHumanFly(source);
             int before = curShipData.maxCrew;
             curShipData.maxCrew -= (int)damage.crewDamage;
+            Events.InvokeOnAction(EVENT_CREW_DAMAGED);
             Debug.Log("Test Damage Inflict Crew Damage " + (int)damage.crewDamage + "=>" + curShipData.maxCrew);
             if (before / (float)startShipData.maxCrew > 0.5f && curShipData.maxCrew / (float)startShipData.maxCrew <= 0.5f)
             {
@@ -1374,6 +1376,7 @@ public class Ship : MonoBehaviour
     {
         if (other.gameObject.tag.Equals(GameSettings.TAG_SHIP))
         {
+            Debug.Log("Close combat collision ship enter");
             LastCollision2D = other;
             Events.InvokeOnAction(EVENT_TACKED_OTHER_SHIP);
         }
@@ -1381,5 +1384,9 @@ public class Ship : MonoBehaviour
 
     void OnCollisionExit2D(Collision2D other)
     {
+        if (other.gameObject.tag.Equals(GameSettings.TAG_SHIP))
+        {
+            Debug.Log("Close combat collision ship exit");
+        }
     }
 }

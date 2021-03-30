@@ -40,6 +40,7 @@ public class GameText
     public const string TOAST_YOU_LOSE_GAME = "toast_inform_lose";
     public const string TOAST_INFORM_LOSE_NEW_SHIP = "toast_inform_new_ship";
     public const string TOAST_CLOSE_COMBAT_OUT_RANGE = "toast_close_combat_out_range";
+    public const string TOAST_CLOSE_COMBAT_FAILED = "toast_close_combat_failed";
     public const string TOAST_CLOSE_COMBAT_AVAIABLE = "toast_close_combat_avaiable";
     public const string TOAST_LOOT_GOLD = "toast_loot_gold";
     public const string CONFIRM_CLOSE_COMBAT_TITLE = "cf_close_combat_tit";
@@ -89,6 +90,7 @@ public class GameText
         {TOAST_YOU_LOSE_GAME,"You lose. Your Ship is taken by enemy."},
         {TOAST_INFORM_LOSE_NEW_SHIP,"But The Chief will give you a new ship for continue. Try your best, Captain!"},
         {TOAST_CLOSE_COMBAT_OUT_RANGE,"Too far to do close combat!"},
+        {TOAST_CLOSE_COMBAT_FAILED,"We failed conduct close combat, Captain!"},
         {TOAST_CLOSE_COMBAT_AVAIABLE,"Captain, We now can do close combat on that ship!"},
         {TOAST_LOOT_GOLD,"Captain! We found {0:N0} gold on Ship.\n+{0:N0}"},
 

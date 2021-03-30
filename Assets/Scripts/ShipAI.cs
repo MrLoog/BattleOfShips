@@ -85,6 +85,9 @@ public class ShipAI : MonoBehaviour
         private float accumWaitTimeShot = 0f;
         private float waitTime = 0f;
 
+        private float delayFindPos = 1f;
+        private float accumFindPos = 0f;
+
         public ShotBehavior()
         {
         }
@@ -112,11 +115,15 @@ public class ShipAI : MonoBehaviour
                 shipAI.FullMove();
             }
             */
-            
-            //calculate good position to fire
-            Vector2 pos = FindPosToShot(shipAI);
-            //command ship move to position
-            shipAI.MoveTo(pos);
+            accumFindPos += Time.deltaTime;
+            if (accumFindPos > delayFindPos)
+            {
+                //calculate good position to fire
+                Vector2 pos = FindPosToShot(shipAI);
+                //command ship move to position
+                shipAI.MoveTo(pos);
+                accumFindPos = 0f;
+            }
         }
 
         public void FixedUpdate()

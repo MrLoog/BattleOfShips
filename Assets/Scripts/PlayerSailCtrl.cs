@@ -113,14 +113,28 @@ public class PlayerSailCtrl : MonoBehaviour
         }
     }
 
-    public void DownSail()
+    public void DownSail(float value = -1)
     {
-        sailSet.value -= (sailSet.value > sailChangeStep ? sailChangeStep : sailSet.value);
+        if (value != -1)
+        {
+            sailSet.value = value;
+        }
+        else
+        {
+            sailSet.value -= (sailSet.value > sailChangeStep ? sailChangeStep : sailSet.value);
+        }
     }
 
-    public void UpSail()
+    public void UpSail(float value = -1)
     {
-        sailSet.value += ((sailSet.maxValue - sailSet.value) > sailChangeStep ? sailChangeStep : (sailSet.maxValue - sailSet.value));
+        if (value != -1)
+        {
+            sailSet.value = value;
+        }
+        else
+        {
+            sailSet.value += ((sailSet.maxValue - sailSet.value) > sailChangeStep ? sailChangeStep : (sailSet.maxValue - sailSet.value));
+        }
     }
 
     public float timeHold = 0.5f;
@@ -169,5 +183,17 @@ public class PlayerSailCtrl : MonoBehaviour
         Debug.Log("DownUpSail UpSailPress");
         holdBtnSailCtrl = 1;
         isHold = true;
+    }
+
+    public void DownSailZeroPress()
+    {
+        Debug.Log("DownUpSail DownSailZeroPress");
+        DownSail(0);
+    }
+
+    public void UpSailFullPress()
+    {
+        Debug.Log("DownUpSail UpSailFullPress");
+        UpSail(1f);
     }
 }

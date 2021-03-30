@@ -411,7 +411,7 @@ public class SeaBattleManager : BaseSceneManager
         cameraFollow.GetComponent<Cinemachine.CinemachineVirtualCamera>().Follow = playerShip.transform;
 
         scriptShip.EnableCannonSight = true;
-        scriptShip.Events.RegisterListener(Ship.EVENT_TACKED_OTHER_SHIP).AddListener(TackedOtherShip);
+        // scriptShip.Events.RegisterListener(Ship.EVENT_TACKED_OTHER_SHIP).AddListener(TackedOtherShip);
         scriptShip.Events.RegisterListener(Ship.EVENT_SHIP_DEFEATED).AddListener(delegate ()
         {
             GEventManager.Instance.InvokeEvent(GEventManager.EVENT_PLAYER_DEFEATED);
@@ -444,14 +444,14 @@ public class SeaBattleManager : BaseSceneManager
             return;
         }
         Debug.Log("Check Conduct " + (target.CurShipData.maxCrew / target.ShipData.maxCrew) + "/" + rateCrewConduct);
-        if (!target.IsDefeated && rateCrewConduct < ((float)target.CurShipData.maxCrew / target.ShipData.maxCrew))
-        {
-            GameManager.Instance.ToastService.ShowMessage(
-                GameText.GetText(GameText.TOAST_CANNOT_CLOSE_COMBAT)
-                , 1f
-            );
-            return;
-        }
+        // if (!target.IsDefeated && rateCrewConduct < ((float)target.CurShipData.maxCrew / target.ShipData.maxCrew))
+        // {
+        //     GameManager.Instance.ToastService.ShowMessage(
+        //         GameText.GetText(GameText.TOAST_CANNOT_CLOSE_COMBAT)
+        //         , 1f
+        //     );
+        //     return;
+        // }
         GameManager.Instance.PauseGamePlay();
 
         PopupCtrl.ShowDialog(
