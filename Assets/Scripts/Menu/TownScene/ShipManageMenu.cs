@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -31,6 +32,12 @@ public class ShipManageMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        MiniMenuCtrl.OnAutoClose += OnMinuMenuAutoClose;
+    }
+
+    private void OnMinuMenuAutoClose()
+    {
+        focusShip = null;
     }
 
     // Update is called once per frame
@@ -42,10 +49,7 @@ public class ShipManageMenu : MonoBehaviour
     public void ShowManage()
     {
 
-        for (int i = shipListContent.transform.childCount; i > 0; i--)
-        {
-            Destroy(shipListContent.transform.GetChild(i - 1).gameObject);
-        }
+        MyGameObjectUtils.ClearAllChilds(shipListContent);
 
         shipCustoms = new ScriptableShipCustom[(GameManager.Instance.GameData.otherShips?.Length ?? 0) + 1];
         shipInfos = null;
@@ -207,6 +211,7 @@ public class ShipManageMenu : MonoBehaviour
 
                         shipCustoms = CommonUtils.RemoveFromArray(shipCustoms, focusIndex);
                         shipInfos = CommonUtils.RemoveFromArray(shipInfos, focusIndex);
+
 
                         info.SelfDestroy();
                         GameManager.Instance.AddGold(price + cargoValue);
