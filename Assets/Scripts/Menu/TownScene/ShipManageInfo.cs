@@ -45,7 +45,7 @@ public class ShipManageInfo : MonoBehaviour
     }
 
 
-    public void ShowData()
+    public virtual void ShowData()
     {
         ClearStats();
 
@@ -110,5 +110,10 @@ public class ShipManageInfo : MonoBehaviour
     public void SelfDestroy()
     {
         Destroy(gameObject);
+    }
+
+    public void ShowPanelDetails()
+    {
+        ShipInfoDetails.Instance.ShowData(data);
     }
 }

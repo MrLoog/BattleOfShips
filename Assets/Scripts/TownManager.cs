@@ -104,6 +104,17 @@ public class TownManager : BaseSceneManager
     }
 
     #region sea battle prepare
+    public void ToggleSelectLevel()
+    {
+        if (panelLevelSelect.activeSelf)
+        {
+            CloseLevelSelect();
+        }
+        else
+        {
+            SetSail();
+        }
+    }
     public void SetSail()
     {
         SaveGame();

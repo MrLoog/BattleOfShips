@@ -74,7 +74,17 @@ public class WorkshopMenu : MonoBehaviour
         PlayerGold.text = string.Format(TEMPLATE_PLAYER_GOLD, GameManager.Instance.GameData.gold);
     }
 
-
+    public void ToggleWorkshop()
+    {
+        if (panel.activeSelf)
+        {
+            HideWorkshop();
+        }
+        else
+        {
+            ShowAllShip();
+        }
+    }
     public void ShowAllShip()
     {
 
@@ -106,7 +116,7 @@ public class WorkshopMenu : MonoBehaviour
         }
         else
         {
-            scriptInfo.SetFuncText(string.Format("Buy({0:N0})", ShipHelper.CalculateShipPrice(scriptInfo.data)));
+            scriptInfo.SetFuncText(string.Format("{0:N0}", ShipHelper.CalculateShipPrice(scriptInfo.data)));
             scriptInfo.OnFuncBtnClick += delegate ()
             {
                 PerfromBuyShip(scriptInfo);
@@ -117,6 +127,7 @@ public class WorkshopMenu : MonoBehaviour
 
     public void HideWorkshop()
     {
+        ShipInfoDetails.Instance.HidePanel();
         panel.SetActive(false);
     }
     private ShipManageInfo focusShip;

@@ -13,7 +13,7 @@ public class ShipInventoryCtrl : MonoBehaviour
         None, View, Transfer, Shop
     }
 
-    private InventoryMode mode = InventoryMode.View;
+    protected InventoryMode mode = InventoryMode.View;
     public InventoryMode Mode
     {
         set
@@ -51,9 +51,9 @@ public class ShipInventoryCtrl : MonoBehaviour
 
 
     public MarketStateToday marketStateToday;
-    private List<ScriptableShipCustom> AvaiableShips = new List<ScriptableShipCustom>();
+    protected List<ScriptableShipCustom> AvaiableShips = new List<ScriptableShipCustom>();
 
-    private int firstIndex;
+    protected int firstIndex;
 
     public int FirstIndex
     {
@@ -69,7 +69,7 @@ public class ShipInventoryCtrl : MonoBehaviour
             return firstIndex;
         }
     }
-    private int secondIndex;
+    protected int secondIndex;
     public int SecondIndex
     {
         set
@@ -103,10 +103,10 @@ public class ShipInventoryCtrl : MonoBehaviour
     public Dropdown ShipSelected1;
     public Dropdown ShipSelected2;
 
-    private List<ShipInventory> inventories = new List<ShipInventory>();
+    protected List<ShipInventory> inventories = new List<ShipInventory>();
     public bool isShow = false;
 
-    private List<ScriptableShipGoods> goods;
+    protected List<ScriptableShipGoods> goods;
 
     List<ScriptableShipGoods> Goods
     {
@@ -132,14 +132,14 @@ public class ShipInventoryCtrl : MonoBehaviour
     public Text CapacityShip2;
 
     public Text PlayerGold;
-    private const string TEMPLATE_CREW_STATUS = "{0:N0}/{1:N0}";
-    private const string TEMPLATE_PLAYER_GOLD = "<color=yellow>Gold: {0:N0}</color>";
-    private const string TEMPLATE_SHIP_CAPACITY = "{0:N0}/{1:N0}";
+    protected const string TEMPLATE_CREW_STATUS = "{0:N0}/{1:N0}";
+    protected const string TEMPLATE_PLAYER_GOLD = "<color=yellow>Gold: {0:N0}</color>";
+    protected const string TEMPLATE_SHIP_CAPACITY = "{0:N0}/{1:N0}";
 
-    public UnityAction OnHideInventory;
+    public UnityEvent EventHideInventory;
 
     // Start is called before the first frame update
-    void Start()
+    protected void Start()
     {
         transferPanel = panelTransferItem.GetComponent<TransferItemCtrl>();
         transferPanel.OnDoneTransfer += TransferItemSelected;
@@ -155,13 +155,13 @@ public class ShipInventoryCtrl : MonoBehaviour
         DisplayPlayerGold();
     }
 
-    private void OnEnable()
+    protected void OnEnable()
     {
         GameManager.Instance.OnGoldAccountChanged += DisplayPlayerGold;
         DisplayPlayerGold();
     }
 
-    private void OnDisable()
+    protected void OnDisable()
     {
         GameManager.Instance.OnGoldAccountChanged -= DisplayPlayerGold;
     }
@@ -186,9 +186,9 @@ public class ShipInventoryCtrl : MonoBehaviour
         }
     }
 
-    private void DisplayPlayerGold(int gold = 0)
+    protected void DisplayPlayerGold(int gold = 0)
     {
-        PlayerGold.text = string.Format(TEMPLATE_PLAYER_GOLD, GameManager.Instance.GameData.gold);
+        // PlayerGold.text = string.Format(TEMPLATE_PLAYER_GOLD, GameManager.Instance.GameData.gold);
     }
 
     public void RegisterAvaiableShip(ScriptableShipCustom[] lstAvaiable, int mainIndex = 0)
@@ -198,7 +198,7 @@ public class ShipInventoryCtrl : MonoBehaviour
         FirstIndex = mainIndex;
     }
 
-    private void TransferItemMarketSelected(int[] result)
+    protected void TransferItemMarketSelected(int[] result)
     {
         int quantity = result[0];
         int fromInvIndex = result[1]; //0 mean sell, 1 mean buy
@@ -286,7 +286,7 @@ public class ShipInventoryCtrl : MonoBehaviour
         DisplayMarket();
     }
 
-    private void TransferItemSelected(int[] result)
+    protected void TransferItemSelected(int[] result)
     {
         int quantity = result[0];
         int fromInvIndex = result[1];
@@ -334,7 +334,7 @@ public class ShipInventoryCtrl : MonoBehaviour
         }
     }
 
-    private void TransferCrewSelected(int[] result)
+    protected void TransferCrewSelected(int[] result)
     {
         int quantity = result[0];
         int fromInvIndex = result[1];
@@ -348,7 +348,7 @@ public class ShipInventoryCtrl : MonoBehaviour
         ShowStatusCrew();
     }
 
-    private void HireCrewSelected(int[] result)
+    protected void HireCrewSelected(int[] result)
     {
         int quantity = result[0];
         int toInvIndex = result[1];
@@ -365,7 +365,7 @@ public class ShipInventoryCtrl : MonoBehaviour
         ShowStatusCrew();
     }
 
-    private void ShowStatusCrew()
+    protected void ShowStatusCrew()
     {
         ShipCrew1.text = string.Format(TEMPLATE_CREW_STATUS,
         AvaiableShips[FirstIndex].curShipData.maxCrew,
@@ -440,7 +440,7 @@ public class ShipInventoryCtrl : MonoBehaviour
     }
 
 
-    private void ClearAllChilds(GameObject obj)
+    protected void ClearAllChilds(GameObject obj)
     {
         for (int i = 0; i < obj.transform.childCount; i++)
         {
@@ -449,7 +449,7 @@ public class ShipInventoryCtrl : MonoBehaviour
     }
 
     public const string TEMPLATE_DROPDOWN_TEXT = "Ship #{0} - {1}";
-    private void DisplayDropdownShip()
+    protected void DisplayDropdownShip()
     {
         List<Dropdown.OptionData> lst1 = new List<Dropdown.OptionData>();
         for (int i = 0; i < AvaiableShips.Count; i++)
@@ -471,7 +471,7 @@ public class ShipInventoryCtrl : MonoBehaviour
         SecondIndex = ShipSelected2.value;
     }
 
-    private void OnSetShipSelected1()
+    protected void OnSetShipSelected1()
     {
         if (FirstIndex >= 0)
         {
@@ -487,7 +487,7 @@ public class ShipInventoryCtrl : MonoBehaviour
         }
     }
 
-    private void OnSetShipSelected2()
+    protected void OnSetShipSelected2()
     {
         if (SecondIndex >= 0)
         {
@@ -503,9 +503,11 @@ public class ShipInventoryCtrl : MonoBehaviour
         }
     }
 
-    private void ShowInventoryDetails(GameObject panel, int indexInv)
+    protected void ShowInventoryDetails(GameObject panel, int indexInv)
     {
-        MyGameObjectUtils.ClearAllChilds(panel);
+        // MyGameObjectUtils.ClearAllChilds(panel);
+        GridAutoItemArrange panelCtrl = panel.GetComponent<GridAutoItemArrange>();
+        panelCtrl.ClearItems();
         ShipInventory inventory = AvaiableShips[indexInv].inventory;
         if (inventory != null && inventory.goodsCode != null)
         {
@@ -514,7 +516,8 @@ public class ShipInventoryCtrl : MonoBehaviour
                 ScriptableShipGoods aGoods = Goods.Where(x => x.codeName.Equals(inventory.goodsCode[i])).FirstOrDefault();
                 if (aGoods != null)
                 {
-                    GameObject item = Instantiate(prefabItem, panel.transform, false);
+                    // GameObject item = Instantiate(prefabItem, panel.transform, false);
+                    GameObject item = panelCtrl.AddItemPrefab(prefabItem);
                     item.GetComponent<Image>().sprite = aGoods.image;
                     item.GetComponentInChildren<Text>().text = inventory.quantity[i].ToString();
                     item.SetActive(true);
@@ -533,10 +536,12 @@ public class ShipInventoryCtrl : MonoBehaviour
         }
         DisplayCapacity();
     }
-    private void DisplayMarket()
+    protected void DisplayMarket()
     {
 
-        MyGameObjectUtils.ClearAllChilds(panelInventoryMarket);
+        // MyGameObjectUtils.ClearAllChilds(panelInventoryMarket);
+        GridAutoItemArrange panelCtrl = panelInventoryMarket.GetComponent<GridAutoItemArrange>();
+        panelCtrl.ClearItems();
 
 
         for (int i = 0; i < marketStateToday.goodsCodes.Length; i++)
@@ -544,7 +549,8 @@ public class ShipInventoryCtrl : MonoBehaviour
             ScriptableShipGoods aGoods = Goods.Where(x => x.codeName.Equals(marketStateToday.goodsCodes[i])).FirstOrDefault();
             if (aGoods != null)
             {
-                GameObject item = Instantiate(prefabItem, panelInventoryMarket.transform, false);
+                // GameObject item = Instantiate(prefabItem, panelInventoryMarket.transform, false);
+                GameObject item = panelCtrl.AddItemPrefab(prefabItem);
                 item.GetComponent<Image>().sprite = aGoods.image;
                 item.GetComponentInChildren<Text>().text = marketStateToday.quantitys[i].ToString();
                 item.SetActive(true);
@@ -562,8 +568,8 @@ public class ShipInventoryCtrl : MonoBehaviour
         }
     }
 
-    private int indexTransfer;
-    private void ShowTransferItem(int indexInv, int index)
+    protected int indexTransfer;
+    protected void ShowTransferItem(int indexInv, int index)
     {
         if (InventoryMode.Shop.Equals(mode))
         {
@@ -597,7 +603,7 @@ public class ShipInventoryCtrl : MonoBehaviour
         }
     }
 
-    private void ShowShopItem(int indexInv, int index)
+    protected void ShowShopItem(int indexInv, int index)
     {
         indexTransfer = index;
         string[] goodsCodes = indexInv == 0 ? AvaiableShips[FirstIndex].inventory.goodsCode : marketStateToday.goodsCodes;
@@ -639,7 +645,8 @@ public class ShipInventoryCtrl : MonoBehaviour
     {
         // panelInventoryOther.SetActive(false);
         InventoryCanvas.SetActive(false);
-        OnHideInventory?.Invoke();
+        // OnHideInventory?.Invoke();
+        EventHideInventory?.Invoke();
         GameManager.Instance.ResumeGamePlay();
     }
 

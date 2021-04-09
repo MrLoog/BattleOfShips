@@ -46,6 +46,17 @@ public class ShipManageMenu : MonoBehaviour
 
     }
 
+    public void ToggleManage()
+    {
+        if (panel.activeSelf)
+        {
+            HideManage();
+        }
+        else
+        {
+            ShowManage();
+        }
+    }
     public void ShowManage()
     {
 
@@ -96,6 +107,7 @@ public class ShipManageMenu : MonoBehaviour
     {
         ShowMiniMenu(null);
         panel.SetActive(false);
+        ShipInfoDetails.Instance.HidePanel();
     }
     private ShipManageInfo focusShip;
     public void ShowMiniMenu(ShipManageInfo shipManageInfo)
@@ -226,14 +238,16 @@ public class ShipManageMenu : MonoBehaviour
     {
         int indexShip = shipCustoms.ToList().IndexOf(focusShip.data);
         GameManager.Instance.ShipInventoryCtrl.RegisterAvaiableShip(shipCustoms, indexShip);
-        GameManager.Instance.ShipInventoryCtrl.OnHideInventory += OnDoneInventory;
+        // GameManager.Instance.ShipInventoryCtrl.OnHideInventory += OnDoneInventory;
+        GameManager.Instance.ShipInventoryCtrl.EventHideInventory.AddListener(OnDoneInventory);
         GameManager.Instance.ShipInventoryCtrl.ShowInventory(ShipInventoryCtrl.InventoryMode.Transfer);
 
     }
 
     private void OnDoneInventory()
     {
-        GameManager.Instance.ShipInventoryCtrl.OnHideInventory -= OnDoneInventory;
+        // GameManager.Instance.ShipInventoryCtrl.OnHideInventory -= OnDoneInventory;
+        GameManager.Instance.ShipInventoryCtrl.EventHideInventory.RemoveListener(OnDoneInventory);
         foreach (var item in shipInfos)
         {
             item.ShowData();
@@ -245,7 +259,8 @@ public class ShipManageMenu : MonoBehaviour
     {
         int indexShip = shipCustoms.ToList().IndexOf(focusShip.data);
         GameManager.Instance.ShipInventoryCtrl.RegisterAvaiableShip(shipCustoms, indexShip);
-        GameManager.Instance.ShipInventoryCtrl.OnHideInventory += OnDoneInventory;
+        // GameManager.Instance.ShipInventoryCtrl.OnHideInventory += OnDoneInventory;
+        GameManager.Instance.ShipInventoryCtrl.EventHideInventory.AddListener(OnDoneInventory);
         GameManager.Instance.ShipInventoryCtrl.ShowInventory(ShipInventoryCtrl.InventoryMode.Shop, indexShip);
     }
 }

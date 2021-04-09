@@ -9,10 +9,10 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{e30d4b2b-6210-493a-da4d-7f177634eebf}</ProjectGuid>
+    <ProjectGuid>{60cf390e-40ca-e5e4-acc9-f59d7588009c}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <AssemblyName>Assembly-CSharp</AssemblyName>
+    <AssemblyName>Nobi.UiRoundedCorners</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <BaseDirectory>.</BaseDirectory>
@@ -36,139 +36,13 @@
     <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
   </PropertyGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\PlayerCtrl.cs" />
-     <Compile Include="Assets\Scripts\Common\Extensions.cs" />
-     <Compile Include="Assets\Scripts\TownManager.cs" />
-     <Compile Include="Assets\Scripts\CannonSight.cs" />
-     <Compile Include="Assets\Scripts\ModalPopupCtrl.cs" />
-     <Compile Include="Assets\Scripts\Scriptable\ScriptableShipMaterial.cs" />
-     <Compile Include="Assets\Scripts\Menu\TownScene\ShipManageInfo.cs" />
-     <Compile Include="Assets\Scripts\Utils\Singleton.cs" />
-     <Compile Include="Assets\Scripts\ShipAI.cs" />
-     <Compile Include="Assets\Scripts\Common\GActionManager.cs" />
-     <Compile Include="Assets\Scripts\PlayerWheelCtrl.cs" />
-     <Compile Include="Assets\Scripts\HumanFly.cs" />
-     <Compile Include="Assets\Scripts\StoreData\IStoreData.cs" />
-     <Compile Include="Assets\Scripts\Common\FrozenRotate.cs" />
-     <Compile Include="Assets\Scripts\StoreData\StoreDataFactory.cs" />
-     <Compile Include="Assets\Scripts\StoreData\BaseDataEntity.cs" />
-     <Compile Include="Assets\Scripts\AlignAuto.cs" />
-     <Compile Include="Assets\Scripts\Common\MScriptableObject.cs" />
-     <Compile Include="Assets\Scripts\WindInfoCtrl.cs" />
-     <Compile Include="Assets\Scripts\Scriptable\ScriptableGameLevel.cs" />
-     <Compile Include="Assets\Scripts\Scriptable\ScriptableShipSkill.cs" />
-     <Compile Include="Assets\Scripts\StoreData\WindowStoreData.cs" />
-     <Compile Include="Assets\Scripts\HealthBarActionUnit.cs" />
-     <Compile Include="Assets\Scripts\PoolManager.cs" />
-     <Compile Include="Assets\Scripts\Common\ShipSkill.cs" />
-     <Compile Include="Assets\Scripts\StoreData\GameData.cs" />
-     <Compile Include="Assets\Scripts\GameManager.cs" />
-     <Compile Include="Assets\Scripts\ShipInventory.cs" />
-     <Compile Include="Assets\Scripts\Common\CommonUtils.cs" />
-     <Compile Include="Assets\Scripts\RoundShot.cs" />
-     <Compile Include="Assets\Scripts\Scriptable\ScriptableCaptain.cs" />
-     <Compile Include="Assets\Scripts\ParticleStopDestroyParent.cs" />
-     <Compile Include="Assets\Scripts\Menu\TownScene\TownSceneMenu.cs" />
-     <Compile Include="Assets\Scripts\Common\GEventManager.cs" />
-     <Compile Include="Assets\Scripts\Ship.cs" />
-     <Compile Include="Assets\Scripts\ShipHealthBar.cs" />
-     <Compile Include="Assets\Scripts\Scriptable\ScriptableShipUpgrade.cs" />
-     <Compile Include="Assets\Scripts\Scriptable\ScriptableBattleFlow.cs" />
-     <Compile Include="Assets\Scripts\WindChangeSkill.cs" />
-     <Compile Include="Assets\Scripts\GameSpeedCtrl.cs" />
-     <Compile Include="Assets\Scripts\CameraCtrl.cs" />
-     <Compile Include="Assets\Scripts\Scriptable\ScriptableShip.cs" />
-     <Compile Include="Assets\Scripts\ShipTackedBattle.cs" />
-     <Compile Include="Assets\Scripts\StoreData\AndroidStoreData.cs" />
-     <Compile Include="Assets\Scripts\LevelSystem.cs" />
-     <Compile Include="Assets\Scripts\TransferItemMarketCtrl.cs" />
-     <Compile Include="Assets\Scripts\MyResourceUtils.cs" />
-     <Compile Include="Assets\Scripts\Rotate.cs" />
-     <Compile Include="Assets\Scripts\Utils\MyGameObjectUtils.cs" />
-     <Compile Include="Assets\Scripts\ShipInventoryCtrl.cs" />
-     <Compile Include="Assets\Scripts\ShipShieldSkill.cs" />
-     <Compile Include="Assets\Scripts\MainSceneMenu.cs" />
-     <Compile Include="Assets\Scripts\PlayerSailCtrl.cs" />
-     <Compile Include="Assets\Scripts\ShipSkillCtrl.cs" />
-     <Compile Include="Assets\Scripts\RightMenuSeaScene.cs" />
-     <Compile Include="Assets\Scripts\TimeTrail.cs" />
-     <Compile Include="Assets\Scripts\CloseCombatDetech.cs" />
-     <Compile Include="Assets\Scripts\Common\EventDict.cs" />
-     <Compile Include="Assets\Scripts\GameText.cs" />
-     <Compile Include="Assets\Scripts\Menu\TownScene\ShipManageMiniMenu.cs" />
-     <Compile Include="Assets\Scripts\GameLevelInfo.cs" />
-     <Compile Include="Assets\Scripts\ToastService.cs" />
-     <Compile Include="Assets\Scripts\MyLocalization.cs" />
-     <Compile Include="Assets\Scripts\Common\Cloneable.cs" />
-     <Compile Include="Assets\Scripts\BaseShot.cs" />
-     <Compile Include="Assets\Scripts\DamageDealShip.cs" />
-     <Compile Include="Assets\Scripts\Common\AutoDestroy.cs" />
-     <Compile Include="Assets\Scripts\ShipWingSkill.cs" />
-     <Compile Include="Assets\Scripts\PlayerCannonCtrl.cs" />
-     <Compile Include="Assets\Scripts\DropdownItemDisabled.cs" />
-     <Compile Include="Assets\Scripts\Scriptable\ScriptableMarketState.cs" />
-     <Compile Include="Assets\Scripts\Scriptable\ScriptableShipFactory.cs" />
-     <Compile Include="Assets\Scripts\Common\DamageAble.cs" />
-     <Compile Include="Assets\Scripts\Common\ScriptableObjectPrefab.cs" />
-     <Compile Include="Assets\Scripts\CannonShot.cs" />
-     <Compile Include="Assets\Scripts\ShipBurstShotSkill.cs" />
-     <Compile Include="Assets\Scripts\ShipInventoryMenu.cs" />
-     <Compile Include="Assets\Scripts\SeaBattleManager.cs" />
-     <Compile Include="Assets\Scripts\Scriptable\ScriptableShipGoods.cs" />
-     <Compile Include="Assets\Scripts\TransferItemCtrl.cs" />
-     <Compile Include="Assets\Scripts\StoreData\BaseStoreData.cs" />
-     <Compile Include="Assets\Scripts\ShipHelper.cs" />
-     <Compile Include="Assets\Scripts\StoreData\BaseSceneManager.cs" />
-     <Compile Include="Assets\Scripts\MapBounds.cs" />
-     <Compile Include="Assets\Scripts\WeatherWindRate.cs" />
-     <Compile Include="Assets\Scripts\BurstShot.cs" />
-     <Compile Include="Assets\Scripts\Scriptable\ScriptableShipCustom.cs" />
-     <Compile Include="Assets\Scripts\Menu\TownScene\ShipManageMenu.cs" />
-     <Compile Include="Assets\Scripts\StoreData\SeaBattleData.cs" />
-     <Compile Include="Assets\Scripts\MarketSystem.cs" />
-     <Compile Include="Assets\Scripts\CartonBoomCallback.cs" />
-     <Compile Include="Assets\Scripts\Common\GameObjectFactory.cs" />
-     <Compile Include="Assets\Scripts\GameSettings.cs" />
-     <Compile Include="Assets\Scripts\Scriptable\ScriptableLevelList.cs" />
-     <Compile Include="Assets\Scripts\Scriptable\ScriptableCannonBall.cs" />
-     <Compile Include="Assets\Scripts\Scriptable\ScriptableAchievement.cs" />
-     <Compile Include="Assets\Scripts\Scriptable\ScriptableStateShip.cs" />
-     <Compile Include="Assets\Scripts\StoreData\TownData.cs" />
-     <Compile Include="Assets\Scripts\GameLevelDisplay.cs" />
-     <Compile Include="Assets\Scripts\Common\VectorUtils.cs" />
-     <Compile Include="Assets\Scripts\VCamCtrl.cs" />
-     <Compile Include="Assets\Scripts\TransferCrewCtrl.cs" />
-     <Compile Include="Assets\Scripts\Utils\MyJsonUtil.cs" />
-     <Compile Include="Assets\Scripts\Menu\TownScene\WorkshopMenu.cs" />
-     <Compile Include="Assets\Scripts\SpawnShipMenu.cs" />
-     <Compile Include="Assets\Scripts\Menu\TownScene\ShipManageInfoUI.cs" />
-     <Compile Include="Assets\Scripts\ShipInfoDetails.cs" />
-     <Compile Include="Assets\Scripts\GridAutoItemArrange.cs" />
-     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
-     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
-     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
-     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
-     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
-     <None Include="Assets\3rd-Party\kenney_piratepack\License.txt" />
-     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
-     <None Include="Assets\3rd-Party\kenney_piratepack\Spritesheet\shipsMiscellaneous_sheet@2.xml" />
-     <None Include="Assets\3rd-Party\kenney_piratepack\Spritesheet\shipsMiscellaneous_sheet.xml" />
-     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
-     <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
-     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
-     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />
-     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
-     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
-     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
-     <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
-     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
-     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
-     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
-     <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
-     <None Include="Assets\3rd-Party\kenney_piratepack\Tilesheet\tilesheets.txt" />
-     <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
-     <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
-     <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
+     <Compile Include="Assets\Unity-UI-Rounded-Corners\UiRoundedCorners\ImageWithIndependentRoundedCorners.cs" />
+     <Compile Include="Assets\Unity-UI-Rounded-Corners\UiRoundedCorners\ImageWithRoundedCorners.cs" />
+     <None Include="Assets\Unity-UI-Rounded-Corners\UiRoundedCorners\SDFUtils.cginc" />
+     <None Include="Assets\Unity-UI-Rounded-Corners\UiRoundedCorners\Nobi.UiRoundedCorners.asmdef" />
+     <None Include="Assets\Unity-UI-Rounded-Corners\UiRoundedCorners\IndependentRoundedCorners.shader" />
+     <None Include="Assets\Unity-UI-Rounded-Corners\UiRoundedCorners\ShaderSetup.cginc" />
+     <None Include="Assets\Unity-UI-Rounded-Corners\UiRoundedCorners\RoundedCorners.shader" />
     <Reference Include="UnityEngine">
         <HintPath>D:/IDE/Unity/2020.1.4f1/Editor/Data/Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>
@@ -348,6 +222,18 @@
     </Reference>
     <Reference Include="UnityEditor">
         <HintPath>D:/IDE/Unity/2020.1.4f1/Editor/Data/Managed/UnityEditor.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.Graphs">
+        <HintPath>D:/IDE/Unity/2020.1.4f1/Editor/Data/Managed/UnityEditor.Graphs.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.Android.Extensions">
+        <HintPath>D:/IDE/Unity/2020.1.4f1/Editor/Data/PlaybackEngines/AndroidPlayer/UnityEditor.Android.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.iOS.Extensions">
+        <HintPath>D:/IDE/Unity/2020.1.4f1/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.WindowsStandalone.Extensions">
+        <HintPath>D:/IDE/Unity/2020.1.4f1/Editor/Data/PlaybackEngines/WindowsStandaloneSupport/UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json">
         <HintPath>D:/Unity/BattleOfShips/Library/PackageCache/jillejr.newtonsoft.json-for-unity@12.0.301/Plugins/Newtonsoft.Json Editor/Newtonsoft.Json.dll</HintPath>
@@ -703,108 +589,14 @@
     <Reference Include="System.Xml.Serialization">
         <HintPath>D:/IDE/Unity/2020.1.4f1/Editor/Data/NetStandard/compat/2.0.0/shims/netfx/System.Xml.Serialization.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Timeline.Editor">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Cinemachine">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Cinemachine.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.2D.Animation.Runtime">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Unity.2D.Animation.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.2D.PixelPerfect.Editor">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Unity.2D.PixelPerfect.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VSCode.Editor">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json.UnityConverters">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Newtonsoft.Json.UnityConverters.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.2D.SpriteShape.Editor">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Unity.2D.SpriteShape.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.TextMeshPro.Editor">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.2D.Path.Editor">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Unity.2D.Path.Editor.dll</HintPath>
+    <Reference Include="UnityEditor.UI">
+        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
         <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Timeline">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.2D.Animation.Triangle.Runtime">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Unity.2D.Animation.Triangle.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="PsdPlugin">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/PsdPlugin.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Rider.Editor">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Mathematics">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Unity.Mathematics.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.2D.Psdimporter.Editor">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Unity.2D.Psdimporter.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.InternalAPIEngineBridge.001">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Unity.InternalAPIEngineBridge.001.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.2D.Sprite.Editor">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Unity.2D.Sprite.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.2D.Common.Runtime">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Unity.2D.Common.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.2D.Tilemap.Editor">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Unity.2D.Tilemap.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.2D.SpriteShape.Runtime">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Unity.2D.SpriteShape.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.2D.PixelPerfect">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Unity.2D.PixelPerfect.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.2D.Animation.Editor">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Unity.2D.Animation.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="com.unity.cinemachine.editor">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/com.unity.cinemachine.editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualStudio.Editor">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Unity.VisualStudio.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Mathematics.Editor">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Unity.Mathematics.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.TextMeshPro">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.2D.Common.Editor">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Unity.2D.Common.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.InternalAPIEditorBridge.001">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/Unity.InternalAPIEditorBridge.001.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEditor.UI">
-        <HintPath>D:/Unity/BattleOfShips/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Unity.2D.Tilemap.Extras.Editor.csproj">
-      <Project>{6a878a38-d46d-5e0e-03be-bf47c39b0ab9}</Project>
-      <Name>Unity.2D.Tilemap.Extras.Editor</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
-    <ProjectReference Include="Unity.2D.Tilemap.Extras.csproj">
-      <Project>{539f5087-7d50-eda8-eb34-18aafc1387b9}</Project>
-      <Name>Unity.2D.Tilemap.Extras</Name>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

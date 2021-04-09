@@ -11,4 +11,12 @@ public class MyGameObjectUtils
             Object.Destroy(gameObject.transform.GetChild(i).gameObject);
         }
     }
+
+    public static void ClearAllChilds(Transform transform)
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            Object.Destroy(transform.GetChild(i).gameObject);
+        }
+    }
 }

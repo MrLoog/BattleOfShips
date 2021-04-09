@@ -30,14 +30,16 @@ public class ShipManageInfoUI : ShipManageInfo
     }
 
 
-    public new void ShowData()
+    public override void ShowData()
     {
         // ClearStats();
 
         ScriptableShip curState = data.curShipData;
         ScriptableShip originState = data.PeakData;
-
-        txtShipName.text = WorkshopMode ? originState.typeName : (data.shipName?.Length > 0) ? data.shipName : "No Name";
+        if (!WorkshopMode)
+        {
+            txtShipName.text = (data.shipName?.Length > 0) ? data.shipName : "No Name";
+        }
         txtShipModel.text = curState.typeName;
 
     }

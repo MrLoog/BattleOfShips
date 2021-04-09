@@ -13,6 +13,7 @@ public class TownSceneMenu : MonoBehaviour
             Instance = this;
 
     }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -27,6 +28,25 @@ public class TownSceneMenu : MonoBehaviour
 
     public void PressShipManage()
     {
-        ShipManageMenu.Instance.ShowManage();
+        WorkshopMenu.Instance.HideWorkshop();
+        TownManager.Instance.CloseLevelSelect();
+
+        ShipManageMenu.Instance.ToggleManage();
+    }
+
+    public void PressWorkshop()
+    {
+        ShipManageMenu.Instance.HideManage();
+        TownManager.Instance.CloseLevelSelect();
+
+        WorkshopMenu.Instance.ToggleWorkshop();
+    }
+
+    public void PressSetSail()
+    {
+        ShipManageMenu.Instance.HideManage();
+        WorkshopMenu.Instance.HideWorkshop();
+
+        TownManager.Instance.ToggleSelectLevel();
     }
 }
