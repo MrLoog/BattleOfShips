@@ -20,8 +20,8 @@ public class GameData : BaseDataEntity
     public ScriptableShipCustom playerShip;
     public ScriptableShipCustom[] otherShips;
 
-    public int gold;
-    public int gem;
+    public long gold;
+    public long gem;
 
     public MarketStateToday market;
 

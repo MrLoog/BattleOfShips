@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4db686edf1d96c549a6bcc37856c8cd3, type: 3}
   m_Name: GrapeShot
   m_EditorClassIdentifier: 
-  prefab: {fileID: 3307599177762406278, guid: ac5e03f0ebad94e4392d1b767ee140e1, type: 3}
+  active: 1
+  prefab: {fileID: 1062158067001741303, guid: ae3552ee23f48e14a87e396f1110eaeb, type: 3}
   cannonName: Grape Shot
+  codeName: Grape
   hullDamage: 2
   sailDamage: 2
   crewDamage: 2

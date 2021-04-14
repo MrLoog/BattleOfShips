@@ -69,7 +69,7 @@ public class WorkshopMenu : MonoBehaviour
 
     }
 
-    private void DisplayPlayerGold(int gold = 0)
+    private void DisplayPlayerGold(long gold = 0)
     {
         PlayerGold.text = string.Format(TEMPLATE_PLAYER_GOLD, GameManager.Instance.GameData.gold);
     }

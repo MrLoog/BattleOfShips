@@ -6,6 +6,7 @@ using UnityEngine;
 public class ScriptableCannonBall : ScriptableObjectPrefab
 {
     public string cannonName;
+    public string codeName;
 
     public float hullDamage;
     public float sailDamage;
@@ -16,4 +17,5 @@ public class ScriptableCannonBall : ScriptableObjectPrefab
     public float speed;
     public float range;
     public Sprite sprite;
+
 }

@@ -13,9 +13,10 @@ public class ShipManageInfoUI : ShipManageInfo
 
     private string templateInfo;
 
+
     private void Awake()
     {
-        templateInfo = statsContent.GetComponent<TextMeshProUGUI>().text;
+        LoadTemplate();
     }
     // Start is called before the first frame update
     void Start()
@@ -41,16 +42,27 @@ public class ShipManageInfoUI : ShipManageInfo
             txtShipName.text = (data.shipName?.Length > 0) ? data.shipName : "No Name";
         }
         txtShipModel.text = curState.typeName;
+        LoadTemplate();
+        statsContent.GetComponent<TextMeshProUGUI>().text = templateInfo
+                .Replace("{cch}", curState.maxCrew.ToString())
+                .Replace("{chh}", curState.hullHealth.ToString())
+                .Replace("{csh}", curState.sailHealth.ToString())
+                .Replace("{pch}", originState.maxCrew.ToString())
+                .Replace("{phh}", originState.hullHealth.ToString())
+                .Replace("{psh}", originState.sailHealth.ToString())
+                ;
+    }
 
+    private void LoadTemplate()
+    {
+        if (templateInfo == null)
+        {
+            templateInfo = statsContent.GetComponent<TextMeshProUGUI>().text;
+        }
     }
 
     private void ClearStats()
     {
-    }
-
-    private void DisplayInfo(string info)
-    {
-
     }
 
 }

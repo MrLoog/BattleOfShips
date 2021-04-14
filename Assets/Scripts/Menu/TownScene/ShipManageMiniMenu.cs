@@ -93,8 +93,8 @@ public class ShipManageMiniMenu : MonoBehaviour
         // btnHireCrew.SetActive(false);
         // btnUpgrade.SetActive(false);
         if (focusShip == null) return;
-        btnMakeMain.SetActive(!focusShip.isMainShip);
-        btnSell.SetActive(!focusShip.isMainShip
+        btnMakeMain.SetActive(!focusShip.IsMainShip);
+        btnSell.SetActive(!focusShip.IsMainShip
         && ShipHelper.IsCanSell(focusShip.data)
         );
         ScriptableShipCustom data = focusShip.data;
@@ -103,7 +103,7 @@ public class ShipManageMiniMenu : MonoBehaviour
         );
         btnTransfer.SetActive(true);
         btnMarket.SetActive(true);
-        btnUpgrade.SetActive(true);
+        // btnUpgrade.SetActive(true);
     }
 
     public void ShowMiniMenu(ShipManageInfo shipManageInfo)

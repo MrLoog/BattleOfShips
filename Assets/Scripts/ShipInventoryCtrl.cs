@@ -186,7 +186,7 @@ public class ShipInventoryCtrl : MonoBehaviour
         }
     }
 
-    protected void DisplayPlayerGold(int gold = 0)
+    protected void DisplayPlayerGold(long gold = 0)
     {
         // PlayerGold.text = string.Format(TEMPLATE_PLAYER_GOLD, GameManager.Instance.GameData.gold);
     }
@@ -677,8 +677,8 @@ public class ShipInventoryCtrl : MonoBehaviour
             else
             {
                 if (marketStateToday.crewAvaiable <= 0) return;
-                int qtyCanBuy = marketStateToday.crewPrice <= 0 ? marketStateToday.crewAvaiable : (GameManager.Instance.GameData.gold / marketStateToday.crewPrice);
-                int qty = Mathf.Min(quantityCanTake, Mathf.Min(qtyCanBuy, marketStateToday.crewAvaiable));
+                long qtyCanBuy = marketStateToday.crewPrice <= 0 ? marketStateToday.crewAvaiable : (GameManager.Instance.GameData.gold / marketStateToday.crewPrice);
+                int qty = (int)Math.Min(quantityCanTake, Math.Min(qtyCanBuy, marketStateToday.crewAvaiable));
                 transferCrewCtrl.ShowHireCrew(
                     qty,
                     FirstIndex,

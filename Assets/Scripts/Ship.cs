@@ -1231,13 +1231,23 @@ public class Ship : MonoBehaviour
             Debug.Log("Random Fire Fire " + thisShots.Length);
             foreach (Vector2 from in thisShots)
             {
-                WrapPool wrapPool = SeaBattleManager.Instance.poolCannon.GetPooledObject();
+                // WrapPool wrapPool = SeaBattleManager.Instance.poolCannon.GetPooledObject();
+                string poolCode = "Round";
+                WrapPool wrapPool = SeaBattleManager.Instance.GetPoolCannon(poolCode).GetPooledObject();
                 Debug.Assert(wrapPool != null, "cannon should avaiable");
                 if (wrapPool != null)
                 {
 
                     DeductCannonBall(1, true);//actual deduct cannon
+                    BaseShot shot = wrapPool.poolObj.GetComponent<BaseShot>();
+                    shot.PrepareFire(this, from, directionFire); //include remove listener
+                    shot.OnEndProjectile.AddListener(delegate ()
+                    {
+                        SeaBattleManager.Instance.GetPoolCannon(poolCode).RePooledObject(wrapPool);
+                    });
+                    shot.Fire();
 
+                    /*
                     GameObject actualCannon = wrapPool.poolObj;
                     CannonShot shot = actualCannon.GetComponent<CannonShot>();
                     shot.ResetTravel();
@@ -1252,6 +1262,7 @@ public class Ship : MonoBehaviour
                     };
                     shot.gameObject.SetActive(true);
                     shot.StartTravel();
+                    */
 
                     // if (deck == 0) Debug.DrawLine(from, shot.Target, Color.red, 3f);
                 }

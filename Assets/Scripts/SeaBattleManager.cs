@@ -35,6 +35,10 @@ public class SeaBattleManager : BaseSceneManager
     public PoolManager<WrapPool> poolCannon;
     public PoolManager<WrapPool> poolHumanFly;
     public GameObject prefabCannon;
+
+    public ScriptableCannonBall[] avaiableCannonBall;
+
+    private Dictionary<string, PoolManager<WrapPool>> dictCannons = new Dictionary<string, PoolManager<WrapPool>>();
     public GameObject prefabHumanFly;
     public GameObject prefabShip;
     public GameObject playerShip;
@@ -139,23 +143,50 @@ public class SeaBattleManager : BaseSceneManager
     {
         StartBattle();
 
-        GameObject newCannon = Instantiate(prefabCannon);
-        newCannon.SetActive(false);
-        newCannon.GetComponent<CannonShot>().Data = ScriptableCannonBalls.Where(x => x.name == "RoundShot").First();
-        // CannonPool cannon = prefabCannon.Find
-        WrapPool cannon = ScriptableObject.CreateInstance<WrapPool>();
-        cannon.poolObj = newCannon;
-        poolCannon = new PoolManager<WrapPool>(cannon);
-        poolCannon.OnCreateNew = delegate ()
+        for (int i = 0; i < avaiableCannonBall.Length; i++)
         {
-            // WrapPool newInstance = poolCannon.pooledObjects.Last();
-            WrapPool newInstance = poolCannon.newInstance;
-            CannonShot cs = newInstance.poolObj.GetComponent<CannonShot>();
-            newInstance.poolObj = Instantiate(prefabCannon);
-            // newInstance.poolObj.GetComponent<CannonShot>().Data = cs.Data.Clone<ScriptableCannonBall>();
-            newInstance.poolObj.GetComponent<CannonShot>().Data = cs.Data;
-            // newInstance.SetActive(false);
-        };
+            ScriptableCannonBall cannonBallData = avaiableCannonBall[i].Clone<ScriptableCannonBall>();
+
+            GameObject newCannon = Instantiate(cannonBallData.prefab);
+            newCannon.SetActive(false);
+
+            newCannon.GetComponent<BaseShot>().Data = cannonBallData;
+            // CannonPool cannon = prefabCannon.Find
+            WrapPool poolItemSeed = ScriptableObject.CreateInstance<WrapPool>();
+            poolItemSeed.poolObj = newCannon;
+            PoolManager<WrapPool> pool = new PoolManager<WrapPool>(poolItemSeed);
+            pool.OnCreateNew = delegate ()
+            {
+                // WrapPool newInstance = poolCannon.pooledObjects.Last();
+                WrapPool newInstance = pool.newInstance;
+                BaseShot cs = newInstance.poolObj.GetComponent<BaseShot>();
+                newInstance.poolObj = Instantiate(cannonBallData.prefab);
+                // newInstance.poolObj.GetComponent<CannonShot>().Data = cs.Data.Clone<ScriptableCannonBall>();
+                newInstance.poolObj.GetComponent<BaseShot>().Data = cs.Data;
+                // newInstance.SetActive(false);
+            };
+            dictCannons.Add(cannonBallData.codeName, pool);
+        }
+
+        /*
+                GameObject newCannon = Instantiate(prefabCannon);
+                newCannon.SetActive(false);
+                newCannon.GetComponent<CannonShot>().Data = ScriptableCannonBalls.Where(x => x.name == "RoundShot").First();
+                // CannonPool cannon = prefabCannon.Find
+                WrapPool cannon = ScriptableObject.CreateInstance<WrapPool>();
+                cannon.poolObj = newCannon;
+                poolCannon = new PoolManager<WrapPool>(cannon);
+                poolCannon.OnCreateNew = delegate ()
+                {
+                    // WrapPool newInstance = poolCannon.pooledObjects.Last();
+                    WrapPool newInstance = poolCannon.newInstance;
+                    CannonShot cs = newInstance.poolObj.GetComponent<CannonShot>();
+                    newInstance.poolObj = Instantiate(prefabCannon);
+                    // newInstance.poolObj.GetComponent<CannonShot>().Data = cs.Data.Clone<ScriptableCannonBall>();
+                    newInstance.poolObj.GetComponent<CannonShot>().Data = cs.Data;
+                    // newInstance.SetActive(false);
+                };
+                */
 
         GameObject seedHUmanFly = Instantiate(prefabHumanFly);
         seedHUmanFly.SetActive(false);
@@ -235,28 +266,6 @@ public class SeaBattleManager : BaseSceneManager
         }
 
 
-    }
-
-    public void FireCannon(Vector2 from, Vector2 to, float speed)
-    {
-        WrapPool wrapPool = poolCannon.GetPooledObject();
-        if (wrapPool != null)
-        {
-            Debug.Log("fire");
-            GameObject actualCannon = wrapPool.poolObj;
-            CannonShot shot = actualCannon.GetComponent<CannonShot>();
-            shot.ResetTravel();
-            actualCannon.transform.position = from;
-            shot.owner = playerShip.GetComponent<Ship>();
-            shot.Target = to;
-            shot.speed = speed;
-            shot.OnImpactTarget = delegate ()
-            {
-                poolCannon.RePooledObject(wrapPool);
-            };
-            shot.gameObject.SetActive(true);
-            shot.StartTravel();
-        }
     }
 
     internal void PlayerFireCannon(CannonDirection direction)
@@ -792,5 +801,10 @@ public class SeaBattleManager : BaseSceneManager
             }
 
         }
+    }
+
+    internal PoolManager<WrapPool> GetPoolCannon(string cannonCodeName)
+    {
+        return dictCannons[cannonCodeName];
     }
 }

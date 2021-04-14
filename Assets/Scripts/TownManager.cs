@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TownManager : BaseSceneManager
 {
@@ -12,6 +14,9 @@ public class TownManager : BaseSceneManager
     public GameObject panelLevelSelect;
 
     public const string INTENT_LOSE_GAME_RETURN = "LOSE_GAME_NEW_SHIP";
+
+    public Text GoldText;
+    public Text GemText;
 
     public TownData townData;
     public TownData TownData
@@ -42,6 +47,44 @@ public class TownManager : BaseSceneManager
     void Start()
     {
         LoadGame();
+        RegisterGoldGemInfo();
+    }
+
+    private void RegisterGoldGemInfo()
+    {
+        GameManager.Instance.OnGoldAccountChanged += delegate
+        {
+            GoldText.text = GetDisplayGoldGem(GameManager.Instance.GameData.gold);
+        };
+        GameManager.Instance.OnGemAccountChanged += delegate
+        {
+            GemText.text = GetDisplayGoldGem(GameManager.Instance.GameData.gem);
+        };
+        GoldText.text = GetDisplayGoldGem(GameManager.Instance.GameData.gold);
+        GemText.text = GetDisplayGoldGem(GameManager.Instance.GameData.gem);
+    }
+
+    private string GetDisplayGoldGem(long amount)
+    {
+        string surfix = "";
+        string displayAmount = amount.ToString();
+        int length = displayAmount.Length;
+        if (length > 12)
+        {
+            displayAmount = displayAmount.Substring(0, displayAmount.Length - 9);
+            surfix = "b";
+        }
+        else if (length > 9)
+        {
+            displayAmount = displayAmount.Substring(0, displayAmount.Length - 6);
+            surfix = "m";
+        }
+        else if (length > 6)
+        {
+            displayAmount = displayAmount.Substring(0, displayAmount.Length - 3);
+            surfix = "k";
+        }
+        return string.Format(CultureInfo.CurrentCulture, "{0:N0}" + surfix, Int64.Parse(displayAmount));
     }
 
     // Update is called once per frame
@@ -131,7 +174,8 @@ public class TownManager : BaseSceneManager
 
     public void CloseLevelSelect()
     {
-        panelLevelSelect?.SetActive(false);
+        panelLevelSelect?.GetComponent<GameLevelDisplay>()?.CloseSelectPanel();
+        // panelLevelSelect?.SetActive(false);
     }
     #endregion
 

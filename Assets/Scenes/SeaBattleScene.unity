@@ -58398,6 +58398,10 @@ MonoBehaviour:
     seedItem: {fileID: 0}
     newInstance: {fileID: 0}
   prefabCannon: {fileID: 1062158067001741303, guid: ae3552ee23f48e14a87e396f1110eaeb, type: 3}
+  avaiableCannonBall:
+  - {fileID: 11400000, guid: 134bf756eecf90c4cb1374ba8a3f4fc9, type: 2}
+  - {fileID: 11400000, guid: 03c90825a6d981942bdaa675db07ac81, type: 2}
+  - {fileID: 11400000, guid: cdfb10d7ad8fde3438fe4ced3e381dbd, type: 2}
   prefabHumanFly: {fileID: 6792330842804313755, guid: 96a1c3f70e56e5c4495bb8ac147d661f, type: 3}
   prefabShip: {fileID: 4168869502622523613, guid: 7bf37724a2bed14418060b0dfc391e4c, type: 3}
   playerShip: {fileID: 0}

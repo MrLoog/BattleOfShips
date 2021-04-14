@@ -12,5 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 102a28436ca37ee4b8f38bcc9160fc5a, type: 3}
   m_Name: WingOfWind
   m_EditorClassIdentifier: 
+  active: 1
   prefab: {fileID: 4934562471184291145, guid: b6c3832a14e47324283de83492c2d97a, type: 3}
-  avatar: {fileID: 21300000, guid: 79fb8cef5fbccc5498afea8760803a8f, type: 3}
+  codeName: WingWind
+  skillName: Wing of Wind
+  description: 

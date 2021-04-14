@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 
@@ -55,7 +56,42 @@ public class ShipInfoDetails : MonoBehaviour
         if (templateInfo == null || templateInfo.Length == 0)
         {
             templateInfo = txtInfo.GetComponent<TextMeshProUGUI>().text;
+            Debug.Log("Template LOAD  " + templateInfo);
         }
-        return templateInfo.Replace("{model}", data.curShipData.typeName);
+
+        ScriptableShip cData = data.curShipData;
+        ScriptableShip pData = data.PeakData;
+
+        string info = templateInfo
+        .Replace("{model}", cData.typeName)
+        .Replace("{cch}", cData.maxCrew.ToString())
+        .Replace("{chh}", cData.hullHealth.ToString())
+        .Replace("{csh}", cData.sailHealth.ToString())
+        .Replace("{pch}", pData.maxCrew.ToString())
+        .Replace("{phh}", pData.hullHealth.ToString())
+        .Replace("{psh}", pData.sailHealth.ToString())
+        .Replace("{oar}", cData.oarsSpeed.ToString())
+        .Replace("{wheel}", cData.MaxDegreeRotate.ToString() + "°")
+        .Replace("{wind}", cData.windConversionRate.ToString())
+        .Replace("{c_cap}", cData.capacity.ToString())
+        .Replace("{p_cap}", pData.capacity.ToString())
+        .Replace("{goods}", cData.capacityWeightRate.ToString())
+        .Replace("{deck}", cData.numberDeck.ToString())
+        .Replace("{cannon}", cData.numberCannons.Sum().ToString())
+        .Replace("{hull_mat}", data.hullMaterial?.itemName ?? "")
+        .Replace("{sail_mat}", data.sailMaterial?.itemName ?? "")
+        ;
+
+        for (int i = 1; i <= 4; i++)
+        {
+            info = info.Replace("{skill" + i + "}",
+            !CommonUtils.IsArrayNullEmpty(data.skills) && data.skills.Length > i ? data.skills[i].skillName : ""
+            );
+        }
+        Debug.Log("Template Origin " + templateInfo);
+        Debug.Log("Template Replace " + info);
+        return info;
     }
+
+
 }

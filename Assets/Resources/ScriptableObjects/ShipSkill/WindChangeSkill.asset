@@ -12,4 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 102a28436ca37ee4b8f38bcc9160fc5a, type: 3}
   m_Name: WindChangeSkill
   m_EditorClassIdentifier: 
+  active: 1
   prefab: {fileID: 6933590092258078538, guid: 8c8810f17e39aa84781c87365cf59a30, type: 3}
+  codeName: WindChange
+  skillName: Wind Change
+  description: 

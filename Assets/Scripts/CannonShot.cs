@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CannonShot : MonoBehaviour
+public class CannonShot : BaseShot
 {
     public Transform model;
     public GameObject Explosion;
@@ -15,47 +15,57 @@ public class CannonShot : MonoBehaviour
 
     private float trailTime;
 
-    private ScriptableCannonBall data;
-    public ScriptableCannonBall Data
-    {
-        set
-        {
-            foreach (Transform child in model)
-            {
-                GameObject.Destroy(child.gameObject);
-            }
-            data = value;
-            InitModel();
-        }
-        get
-        {
-            return data;
-        }
-    }
 
-    public void InitModel()
-    {
-        Instantiate(data.prefab, model, false);
-        trailTime = GetComponentInChildren<TrailRenderer>().time;
-    }
 
     public Vector2 Target { get; internal set; }
     public Vector2 LastPos;
-    public Action OnImpactTarget { get; internal set; }
 
     private Rigidbody2D _rigidbody2D;
-    internal Ship owner;
-    internal Vector2 fireDirection;
 
     private void Awake()
     {
         _rigidbody2D = GetComponent<Rigidbody2D>();
+        trailTime = GetComponentInChildren<TrailRenderer>().time;
     }
     // Start is called before the first frame update
     void Start()
     {
         LastPos = (Vector2)transform.position;
     }
+    public override void PrepareFire(Ship owner, Vector2 startPos, Vector2 fireDirection)
+    {
+        base.PrepareFire(owner, startPos, fireDirection);
+        ResetTravel();
+        transform.position = startPos;
+    }
+    public override void Fire()
+    {
+        base.Fire();
+        StartTravel();
+    }
+
+    public override void EndProjectile()
+    {
+        base.EndProjectile();
+    }
+
+    internal override void MakeBlocked()
+    {
+        base.MakeBlocked();
+        PerformExplosion();
+    }
+
+    internal override void EndProjectileByBlocked()
+    {
+        base.EndProjectileByBlocked();
+        EndTravel(false);
+    }
+
+
+
+    // Update is called once per frame
+
+
 
     // Update is called once per frame
     void Update()
@@ -95,20 +105,8 @@ public class CannonShot : MonoBehaviour
     {
         Instantiate(Explosion, transform.position, Quaternion.Euler(0, 0, 0));
     }
-    public float GetDamage()
-    {
-        return data.damage;
-    }
 
-    public DamageDealShip GetShipDamage()
-    {
-        return new DamageDealShip()
-        {
-            hullDamage = data.hullDamage,
-            sailDamage = data.sailDamage,
-            crewDamage = data.crewDamage
-        };
-    }
+    
 
     public void EndTravel(bool onSea = true)
     {
@@ -132,6 +130,7 @@ public class CannonShot : MonoBehaviour
         maxTime = data.range / speed;
         travelTime = 0;
         enableTravel = true;
+        gameObject.SetActive(true);
         // Debug.Log("Fire " + speed + "/" + maxTime);
         GetComponentInChildren<BaseShot>().ShotImg.SetActive(true);
     }
@@ -140,7 +139,7 @@ public class CannonShot : MonoBehaviour
     {
         yield return new WaitForSeconds(delay);
         gameObject.SetActive(false);
-        OnImpactTarget.Invoke();
+        EndProjectile();
         yield return null;
     }
 

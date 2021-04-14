@@ -7,5 +7,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "ScriptableShipSkill", menuName = "BoS/Ship Skill", order = 4)]
 public class ScriptableShipSkill : ScriptableObjectPrefab
 {
-    
+    public string codeName;
+    public string skillName;
+    [TextArea(3, 10)]
+    public string description;
 }
