@@ -19,7 +19,7 @@ public class ShipInventoryCtrl : MonoBehaviour
         set
         {
             mode = value;
-
+            
             if (InventoryMode.Transfer.Equals(value))
             {
                 panelGroup2.SetActive(true);

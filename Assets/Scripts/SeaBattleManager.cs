@@ -581,6 +581,22 @@ public class SeaBattleManager : BaseSceneManager
         transferCtrl.ShowInventory(ShipInventoryCtrl.InventoryMode.Transfer);
     }
 
+    public void ToggleInventory()
+    {
+        ShipInventoryCtrl transferCtrl = GameManager.Instance.ShipInventoryCtrl;
+        if (transferCtrl.isShow)
+        {
+            transferCtrl.HideInventory();
+        }
+        else
+        {
+            List<ScriptableShipCustom> shipCustoms = new List<ScriptableShipCustom>();
+            shipCustoms.Add(playerShip.GetComponent<Ship>().CustomData);
+            transferCtrl.RegisterAvaiableShip(shipCustoms.ToArray(), 0);
+            transferCtrl.ShowInventory(ShipInventoryCtrl.InventoryMode.View);
+        }
+    }
+
     private ShipTackedBattle CalculateTacked2Ship(Ship ship1, Ship ship2)
     {
         ShipTackedBattle battle = new ShipTackedBattle(ship1, ship2);

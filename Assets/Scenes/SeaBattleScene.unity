@@ -29705,9 +29705,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1846966813}
-        m_TargetAssemblyTypeName: ShipInventoryMenu, Assembly-CSharp
-        m_MethodName: ToggerInventory
+      - m_Target: {fileID: 843383368}
+        m_TargetAssemblyTypeName: SeaBattleManager, Assembly-CSharp
+        m_MethodName: ToggleInventory
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -60076,7 +60076,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: cf4c122f18ed0ab459046a2ce3c75236, type: 2}
   - {fileID: 11400000, guid: df0c374e5feb9a84384818491670be08, type: 2}
   - {fileID: 11400000, guid: e0cc5a4323279084bac42443d45e001e, type: 2}
-  GoodsCannonBallCode: CannonBall
   rateCrewConduct: 0.5
   rangeCloseConduct: 1.5
 --- !u!4 &843383369

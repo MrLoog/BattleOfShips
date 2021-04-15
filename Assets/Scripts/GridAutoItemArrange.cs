@@ -17,6 +17,8 @@ public class GridAutoItemArrange : MonoBehaviour
     private int cellsInRow = 0;
     private float cellWidth = 0f;
     private bool isInitBackground = false;
+
+    private float lastWidth = -1f;
     private GameObject tempHolder;
 
     private void Awake()
@@ -38,31 +40,24 @@ public class GridAutoItemArrange : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (panelBounds.GetComponent<RectTransform>().rect.width != lastWidth)
+        {
+            CalculateBackgroundRequired();
+            AdjustMatchItems();
+        }
     }
 
     public void DisplayBackgroundCell()
     {
         if (layout != null)
         {
-            float width = panelBounds.GetComponent<RectTransform>().rect.width - layout.padding.left - layout.padding.right;
-            float height = panelBounds.GetComponent<RectTransform>().rect.height - layout.padding.top - layout.padding.bottom;
-            int numberItemRow = (int)(width / minWidthCell);
-            if (numberItemRow <= 0) return;
-            Debug.Log("calculate grid layout " + width + "/" + minWidthCell + "/" + numberItemRow);
-            float expectWidth = width / numberItemRow;
-            int numberRow = Mathf.CeilToInt(height / expectWidth);
-            numberRow++;
-            //save calculate
-            cellWidth = expectWidth;
-            minNumRows = numberRow;
-            cellsInRow = numberItemRow;
+            CalculateBackgroundRequired();
 
-            layout.cellSize = new Vector2(expectWidth, expectWidth);
+            layout.cellSize = new Vector2(cellWidth, cellWidth);
 
-            for (int r = 0; r < numberRow; r++)
+            for (int r = 0; r < minNumRows; r++)
             {
-                for (int i = 0; i < numberItemRow; i++)
+                for (int i = 0; i < cellsInRow; i++)
                 {
                     GameObject newCell = Instantiate(backgroundItemPrefab, transform, false);
                 }
@@ -86,10 +81,36 @@ public class GridAutoItemArrange : MonoBehaviour
 
     private void OnEnable()
     {
-        if (!isInitBackground)
+
+        if (!isInitBackground || lastWidth == -1)
         {
             Prepare();
         }
+
+
+    }
+
+    private void OnWillRenderObject()
+    {
+
+    }
+
+    private void CalculateBackgroundRequired()
+    {
+        lastWidth = panelBounds.GetComponent<RectTransform>().rect.width;
+
+        float width = panelBounds.GetComponent<RectTransform>().rect.width - layout.padding.left - layout.padding.right;
+        float height = panelBounds.GetComponent<RectTransform>().rect.height - layout.padding.top - layout.padding.bottom;
+        int numberItemRow = (int)(width / minWidthCell);
+        if (numberItemRow <= 0) return;
+        float expectWidth = width / numberItemRow;
+        int numberRow = Mathf.CeilToInt(height / expectWidth);
+        Debug.Log("calculate grid layout " + width + "/" + minWidthCell + "/" + numberItemRow + "/" + numberRow);
+        numberRow++;
+        //save calculate
+        cellWidth = expectWidth;
+        minNumRows = numberRow;
+        cellsInRow = numberItemRow;
     }
 
     private int GetCurrentTotalChild()
@@ -107,19 +128,17 @@ public class GridAutoItemArrange : MonoBehaviour
         rowForItem = rowForItem > minNumRows ? rowForItem : minNumRows;
 
         int changeRow = rowForItem - totalRows;
+        int changeCell = rowForItem * cellsInRow - GetCurrentTotalChild();
         Debug.Log("AdjustMatchItems changeRow " + changeRow + "/" + GetCurrentTotalChild() + "/" + transform.childCount);
 
-        if (changeRow > 0)
+        if (changeCell > 0)
         {
-            for (int r = 0; r < changeRow; r++)
+            for (int r = 0; r < changeCell; r++)
             {
-                for (int i = 0; i < cellsInRow; i++)
-                {
-                    GameObject newCell = Instantiate(backgroundItemPrefab, transform, false);
-                }
+                GameObject newCell = Instantiate(backgroundItemPrefab, transform, false);
             }
         }
-        else if (changeRow < 0)
+        else if (changeCell < 0)
         {
 
             Debug.Log("destroy row");
