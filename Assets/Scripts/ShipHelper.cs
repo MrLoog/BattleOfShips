@@ -187,4 +187,21 @@ public class ShipHelper
     {
         return SeaBattleManager.Instance.avaiableCannonBall.Where(x => x.codeName == cannonTypeCode).FirstOrDefault().range;
     }
+
+    internal static int DirectionToIndex(SeaBattleManager.CannonDirection direction)
+    {
+        switch (direction)
+        {
+            case SeaBattleManager.CannonDirection.Front: return 0;
+            case SeaBattleManager.CannonDirection.Right: return 1;
+            case SeaBattleManager.CannonDirection.Left: return 2;
+            case SeaBattleManager.CannonDirection.Back: return 3;
+            default: return -1;
+        }
+    }
+
+    internal static string GetBallType(string cannonType)
+    {
+        return SeaBattleManager.Instance.avaiableCannonBall.Where(x => x.codeName == cannonType).FirstOrDefault()?.goodsCodeCost ?? "";
+    }
 }

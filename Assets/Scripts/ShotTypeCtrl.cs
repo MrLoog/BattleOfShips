@@ -76,8 +76,11 @@ public class ShotTypeCtrl : MonoBehaviour
             if (CannonTypeSelect.options[i].text == typeShot)
             {
                 Debug.Log("Shot Type Ctrl ShowCurrent");
-                // skipReflectChange = true;
-                CannonTypeSelect.value = i;
+                if (CannonTypeSelect.value != i)
+                {
+                    skipReflectChange = true;
+                    CannonTypeSelect.value = i;
+                }
                 break;
             }
         }

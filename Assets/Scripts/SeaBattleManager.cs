@@ -89,7 +89,6 @@ public class SeaBattleManager : BaseSceneManager
 
     public ScriptableStateShip[] ImgShipGroups;
 
-    public string GoodsCannonBallCode = "CannonBall";
 
     public ModalPopupCtrl PopupCtrl => gameManager.PopupCtrl;
 
