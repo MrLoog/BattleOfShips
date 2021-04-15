@@ -65,7 +65,6 @@
      <Compile Include="Assets\Scripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\ShipInventory.cs" />
      <Compile Include="Assets\Scripts\Common\CommonUtils.cs" />
-     <Compile Include="Assets\Scripts\RoundShot.cs" />
      <Compile Include="Assets\Scripts\Scriptable\ScriptableCaptain.cs" />
      <Compile Include="Assets\Scripts\ParticleStopDestroyParent.cs" />
      <Compile Include="Assets\Scripts\Menu\TownScene\TownSceneMenu.cs" />
@@ -110,7 +109,7 @@
      <Compile Include="Assets\Scripts\Scriptable\ScriptableShipFactory.cs" />
      <Compile Include="Assets\Scripts\Common\DamageAble.cs" />
      <Compile Include="Assets\Scripts\Common\ScriptableObjectPrefab.cs" />
-     <Compile Include="Assets\Scripts\CannonShot.cs" />
+     <Compile Include="Assets\Scripts\RoundShot.cs" />
      <Compile Include="Assets\Scripts\ShipBurstShotSkill.cs" />
      <Compile Include="Assets\Scripts\ShipInventoryMenu.cs" />
      <Compile Include="Assets\Scripts\SeaBattleManager.cs" />
@@ -144,6 +143,7 @@
      <Compile Include="Assets\Scripts\Menu\TownScene\ShipManageInfoUI.cs" />
      <Compile Include="Assets\Scripts\ShipInfoDetails.cs" />
      <Compile Include="Assets\Scripts\GridAutoItemArrange.cs" />
+     <Compile Include="Assets\Scripts\ShotTypeCtrl.cs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />

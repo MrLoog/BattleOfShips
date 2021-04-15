@@ -17,5 +17,5 @@ public class ScriptableCannonBall : ScriptableObjectPrefab
     public float speed;
     public float range;
     public Sprite sprite;
-
+    public string goodsCodeCost;
 }

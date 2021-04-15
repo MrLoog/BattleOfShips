@@ -20,6 +20,19 @@ public class CannonSight : MonoBehaviour
 
     Mesh mesh;
 
+    public float ToDistance
+    {
+        get
+        {
+            return toDistance;
+        }
+        set
+        {
+            toDistance = value;
+            DrawDirection(Vector2.zero, direction, fov, fromDistance, toDistance);
+        }
+    }
+
     private void Awake()
     {
 
@@ -29,6 +42,7 @@ public class CannonSight : MonoBehaviour
         collider2D = GetComponent<PolygonCollider2D>();
         DrawDirection(Vector2.zero, direction, fov, fromDistance, toDistance);
     }
+
 
     // Start is called before the first frame update
     void Start()

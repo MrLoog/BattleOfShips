@@ -52,16 +52,27 @@ public class TownManager : BaseSceneManager
 
     private void RegisterGoldGemInfo()
     {
-        GameManager.Instance.OnGoldAccountChanged += delegate
-        {
-            GoldText.text = GetDisplayGoldGem(GameManager.Instance.GameData.gold);
-        };
-        GameManager.Instance.OnGemAccountChanged += delegate
-        {
-            GemText.text = GetDisplayGoldGem(GameManager.Instance.GameData.gem);
-        };
+        GameManager.Instance.OnGoldAccountChanged += DisplayGoldInfo;
+        GameManager.Instance.OnGemAccountChanged += DisplayGemInfo;
+        DisplayGoldInfo(0);
+        DisplayGemInfo(0);
+    }
+
+    private void OnDestroy()
+    {
+        GameManager.Instance.OnGoldAccountChanged -= DisplayGoldInfo;
+        GameManager.Instance.OnGemAccountChanged -= DisplayGemInfo;
+    }
+
+    private void DisplayGoldInfo(long amout)
+    {
         GoldText.text = GetDisplayGoldGem(GameManager.Instance.GameData.gold);
+    }
+
+    private void DisplayGemInfo(long amout)
+    {
         GemText.text = GetDisplayGoldGem(GameManager.Instance.GameData.gem);
+
     }
 
     private string GetDisplayGoldGem(long amount)

@@ -38,7 +38,7 @@ public class SeaBattleManager : BaseSceneManager
 
     public ScriptableCannonBall[] avaiableCannonBall;
 
-    private Dictionary<string, PoolManager<WrapPool>> dictCannons = new Dictionary<string, PoolManager<WrapPool>>();
+    public Dictionary<string, PoolManager<WrapPool>> dictCannons = new Dictionary<string, PoolManager<WrapPool>>();
     public GameObject prefabHumanFly;
     public GameObject prefabShip;
     public GameObject playerShip;

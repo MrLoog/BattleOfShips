@@ -32,6 +32,11 @@ public class Ship : MonoBehaviour
     public const string EVENT_TACKED_OTHER_SHIP = "TACKED_OTHER_SHIP";
     public const string EVENT_SHIP_DEFEATED = "SHIP_DEFEATED";
     public const string EVENT_CREW_DAMAGED = "CREW_DAMAGED";
+    public const string EVENT_SHOT_TYPE_CHANGED = "SHOT_TYPE_CHANGED";
+    public const string EVENT_SHOT_TYPE_FRONT_CHANGED = "SHOT_TYPE_FRONT";
+    public const string EVENT_SHOT_TYPE_RIGHT_CHANGED = "SHOT_TYPE_RIGHT";
+    public const string EVENT_SHOT_TYPE_LEFT_CHANGED = "SHOT_TYPE_LEFT";
+    public const string EVENT_SHOT_TYPE_BACK_CHANGED = "SHOT_TYPE_BACK";
     public const string EVENT_HULL_75 = "HULL_75";
     public const string EVENT_HULL_50 = "HULL_50";
     public const string EVENT_HULL_25 = "HULL_25";
@@ -252,6 +257,9 @@ public class Ship : MonoBehaviour
     public float[] cooldownCannons;
     public float[] timeReloadCannons;
 
+    public string[] shotTypeCode = new string[4];
+    public string[] avaiableShotType;
+
     public bool isStuned = false;
     public float accumStunTime = 0f;
 
@@ -311,24 +319,63 @@ public class Ship : MonoBehaviour
                 if (cannonSight == null)
                 {
                     cannonSight = Instantiate(prefabCannonSight, transform, false);
-                    CannonSight[] sights = cannonSight.GetComponentsInChildren<CannonSight>();
-                    foreach (CannonSight s in sights)
-                    {
-                        s.shipOwner = this;
-                    }
                 }
                 else
                 {
                     cannonSight.SetActive(true);
                 }
+                ValidCannonSight();
+                Events.RegisterListener(EVENT_SHOT_TYPE_CHANGED).AddListener(ValidCannonSight);
             }
             else
             {
                 cannonSight?.SetActive(false);
+                Events.RegisterListener(EVENT_SHOT_TYPE_CHANGED).RemoveListener(ValidCannonSight);
             }
+
             enableCannonSight = value;
         }
     }
+
+    private void ValidCannonSight()
+    {
+        CannonSight[] sights = cannonSight.GetComponentsInChildren<CannonSight>();
+        for (int i = 0; i < sights.Length; i++)
+        {
+            if (!CommonUtils.IsArrayNullEmpty(shotTypeCode))
+            {
+                sights[i].ToDistance = ShipHelper.GetRangeCannonType(shotTypeCode[i]);
+            }
+            sights[i].shipOwner = this;
+        }
+    }
+
+    public bool ChangeShotType(CannonDirection direction, string typeCode)
+    {
+        switch (direction)
+        {
+            case CannonDirection.Front:
+                shotTypeCode[0] = typeCode;
+                Events.InvokeOnAction(EVENT_SHOT_TYPE_FRONT_CHANGED);
+                break;
+            case CannonDirection.Right:
+                shotTypeCode[1] = typeCode;
+                Events.InvokeOnAction(EVENT_SHOT_TYPE_RIGHT_CHANGED);
+                break;
+            case CannonDirection.Left:
+                shotTypeCode[2] = typeCode;
+                Events.InvokeOnAction(EVENT_SHOT_TYPE_LEFT_CHANGED);
+                break;
+            case CannonDirection.Back:
+                shotTypeCode[3] = typeCode;
+                Events.InvokeOnAction(EVENT_SHOT_TYPE_BACK_CHANGED);
+                break;
+            default: break;
+        }
+        Events.InvokeOnAction(EVENT_SHOT_TYPE_CHANGED);
+        return true;
+    }
+
 
     private Rigidbody2D rigidBody2d;
 
@@ -562,6 +609,7 @@ public class Ship : MonoBehaviour
 
 
         customData = playerStartShipCustom;
+        DetermineAvaiableShotType();
         ShipData = playerStartShipCustom.baseShipData;
 
         if (!(customData.unions != null && customData.unions.Length > 0))
@@ -587,6 +635,25 @@ public class Ship : MonoBehaviour
             {
                 RegisterShipSkill(skill);
             }
+        }
+    }
+
+    public void DetermineAvaiableShotType()
+    {
+        avaiableShotType = ShipHelper.GetAvaiableShotType(Inventory);
+        if (!CommonUtils.IsArrayNullEmpty(avaiableShotType))
+        {
+            // string shotTypeSelect = avaiableShotType[0];
+            string shotTypeSelect = "Grape";
+            // for (int i = 0; i < shotTypeCode.Length; i++)
+            // {
+            //     //first shot type make default
+            //     shotTypeCode[i] = avaiableShotType[0];
+            // }
+            ChangeShotType(CannonDirection.Front, shotTypeSelect);
+            ChangeShotType(CannonDirection.Right, shotTypeSelect);
+            ChangeShotType(CannonDirection.Left, shotTypeSelect);
+            ChangeShotType(CannonDirection.Back, shotTypeSelect);
         }
     }
 
@@ -1232,7 +1299,7 @@ public class Ship : MonoBehaviour
             foreach (Vector2 from in thisShots)
             {
                 // WrapPool wrapPool = SeaBattleManager.Instance.poolCannon.GetPooledObject();
-                string poolCode = "Round";
+                string poolCode = "Grape";
                 WrapPool wrapPool = SeaBattleManager.Instance.GetPoolCannon(poolCode).GetPooledObject();
                 Debug.Assert(wrapPool != null, "cannon should avaiable");
                 if (wrapPool != null)

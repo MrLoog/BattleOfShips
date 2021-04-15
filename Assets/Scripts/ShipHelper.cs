@@ -160,4 +160,31 @@ public class ShipHelper
 
         return peakState;
     }
+
+    internal static string[] GetAvaiableShotType(ShipInventory inventory)
+    {
+        if (inventory == null || CommonUtils.IsArrayNullEmpty(inventory.goodsCode)) return null;
+        List<string> avaiableShot = new List<string>();
+        ScriptableCannonBall[] avaiableCannonBall = SeaBattleManager.Instance.avaiableCannonBall;
+        for (int i = 0; i < avaiableCannonBall.Length; i++)
+        {
+            for (int j = 0; j < inventory.goodsCode.Length; j++)
+            {
+                if (inventory.goodsCode[j].Equals(avaiableCannonBall[i].goodsCodeCost))
+                {
+                    if (inventory.quantity[j] > 0)
+                    {
+                        avaiableShot.Add(avaiableCannonBall[i].codeName);
+                    }
+                    break;
+                }
+            }
+        }
+        return avaiableShot.ToArray();
+    }
+
+    internal static float GetRangeCannonType(string cannonTypeCode)
+    {
+        return SeaBattleManager.Instance.avaiableCannonBall.Where(x => x.codeName == cannonTypeCode).FirstOrDefault().range;
+    }
 }
