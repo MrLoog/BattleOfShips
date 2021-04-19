@@ -685,8 +685,6 @@ public class Ship : MonoBehaviour
 
     internal void InitFromCustomData(ScriptableShipCustom playerStartShipCustom)
     {
-
-
         customData = playerStartShipCustom;
         ShipData = playerStartShipCustom.baseShipData;
 
@@ -713,6 +711,11 @@ public class Ship : MonoBehaviour
             {
                 RegisterShipSkill(skill);
             }
+        }
+
+        if (customData.AIMemory != null)
+        {
+            GetComponent<ShipAI>().enabled = true; //enable after init will restore from memory
         }
     }
 
@@ -761,6 +764,7 @@ public class Ship : MonoBehaviour
         }
         result.curShipData = curShipData;
         result.group = Group;
+        result.AIMemory = GetComponent<ShipAI>()?.MemoryAI;
         return result;
     }
 
@@ -1186,7 +1190,6 @@ public class Ship : MonoBehaviour
         float angel = Vector2.Angle(toTarget, flag);
 
         Vector2 crossDir = VectorUtils.Rotate(ShipDirection, -90, true).normalized;
-        CapsuleCollider2D col = ShipCollider;
         Vector2 pA = (Vector2)transform.position + ShipDirection.normalized * ActualSizeY / 2
         + crossDir * ActualSizeX / 2;
         Vector2 pB = (Vector2)transform.position + ShipDirection.normalized * ActualSizeY / 2

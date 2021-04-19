@@ -161,6 +161,7 @@ public class GActionManager : Singleton<GActionManager>
         string index = args[1];
         Ship shipCommand = SeaBattleManager.Instance.AllShip.FirstOrDefault(x => x.BattleId == (type + index));
         shipCommand.gameObject.GetComponent<ShipAI>().enabled = true;
+        shipCommand.gameObject.GetComponent<ShipAI>().CommandAttack(SeaBattleManager.PLAYER_SHIP_BATTLE_ID);
     }
     public void RestartGame(params string[] args)
     {
@@ -310,7 +311,13 @@ public class GActionManager : Singleton<GActionManager>
                     delegate (string group, string index)
                     {
                         SeaBattleManager.Instance.AllShip.Where(x => ScriptableGameLevel.IsBattleIdMatch(x.BattleId, group, index)
-        ).ToList().ForEach(x => x.gameObject.GetComponent<ShipAI>().enabled = true);
+        ).ToList().ForEach(x =>
+        {
+            x.gameObject.GetComponent<ShipAI>().enabled = true;
+
+            x.gameObject.GetComponent<ShipAI>().CommandAttack(SeaBattleManager.PLAYER_SHIP_BATTLE_ID);
+        }
+        );
                     }
                     , args);
 

@@ -51,4 +51,6 @@ public class ScriptableShipCustom : MScriptableObject
 
     public RewardBattle reward;
 
+    public Dictionary<string, object> AIMemory;
+
 }

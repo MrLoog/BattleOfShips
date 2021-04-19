@@ -116,6 +116,7 @@ public class SeaBattleManager : BaseSceneManager
     public const string INTENT_RESUME = "RESUME";
     public const string INTENT_BATTLE_LEVEL = "BATTLE_LEVEL";
     public const string INTENT_FIRST_BATTLE = "FIRST_BATTLE";
+    public const string PLAYER_SHIP_BATTLE_ID = "0";
 
     public override void Awake()
     {
@@ -206,6 +207,11 @@ public class SeaBattleManager : BaseSceneManager
             newInstance.poolObj = Instantiate(prefabHumanFly);
             // newInstance.SetActive(false);
         };
+    }
+
+    internal Ship FindShipByBattleId(string battleId)
+    {
+        return AllShip.FirstOrDefault(x => x.BattleId == battleId);
     }
 
     public void StartBattle()
@@ -423,6 +429,7 @@ public class SeaBattleManager : BaseSceneManager
 
         Ship scriptShip = newShip.GetComponent<Ship>();
         customData.unions = new ScriptableShipCustom.Union[1] { ScriptableShipCustom.Union.Pirate };
+        customData.battleId = PLAYER_SHIP_BATTLE_ID;
         scriptShip.InitFromCustomData(customData);
 
         scriptShip.Group = 0;
@@ -651,9 +658,9 @@ public class SeaBattleManager : BaseSceneManager
     {
         Debug.Log("Spawn Ship");
         GameObject newShip = Instantiate(prefabShip, ShipManager.transform, false);
-        newShip.GetComponent<ShipAI>().enabled = true;
         Ship scriptShip = newShip.GetComponent<Ship>();
         scriptShip.InitFromCustomData(customData);
+
         scriptShip.shipId = ships.Count + 1;
         scriptShip.Events.RegisterListener(Ship.EVENT_SHIP_DEFEATED).AddListener(delegate ()
         {

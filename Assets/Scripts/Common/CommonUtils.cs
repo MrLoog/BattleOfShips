@@ -92,4 +92,9 @@ public class CommonUtils
         toList.RemoveAt(indexRemove);
         return toList.ToArray();
     }
+
+    public static T CastToEnum<T>(object value)
+    {
+        return (T)System.Enum.ToObject(typeof(T), value);
+    }
 }

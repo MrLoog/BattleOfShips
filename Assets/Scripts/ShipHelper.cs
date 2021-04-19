@@ -185,7 +185,8 @@ public class ShipHelper
 
     internal static float GetRangeCannonType(string cannonTypeCode)
     {
-        return SeaBattleManager.Instance.avaiableCannonBall.Where(x => x.codeName == cannonTypeCode).FirstOrDefault().range;
+        Debug.Log("cannon type " + cannonTypeCode);
+        return SeaBattleManager.Instance.avaiableCannonBall.Where(x => x.codeName == cannonTypeCode).FirstOrDefault()?.range ?? 0;
     }
 
     internal static int DirectionToIndex(SeaBattleManager.CannonDirection direction)

@@ -1,26 +1,91 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using static SeaBattleManager;
 
 public class ShipAI : MonoBehaviour
 {
-    [System.Flags]
-    public enum ShipIntent
+    public enum MoveBehavior
     {
-        None = 0, Travel = 1, Flee = 2, Shot = 4, Loot = 8
+        Travel, KeepDistance
     }
 
-    public ShipIntent CurIntent = ShipIntent.None;
-    public ActionShipBehavior CurActionBehavior;
+    public enum AttackBehavior
+    {
+        Cannon
+    }
+    public const string EVENT_CHANGE_ATTACK_TARGET = "CHANGE_ATTACK_TARGET";
+    public const string EVENT_CHANGE_ATTACK_TARGET_GROUP = "CHANGE_ATTACK_TARGET_GROUP";
+    public const string MEMORY_KEY_TARGET_ATTACK = "TARGET_ATTACK";
+    public const string MEMORY_KEY_TARGET_ATTACK_GROUP = "TARGET_ATTACK_GROUP";
+    public const string MEMORY_KEY_TARGET_MOVE = "TARGET_MOVE";
+    public const string MEMORY_KEY_FIRE_BEHAVIOR = "FIRE_BEHAVIOR";
+    public const string MEMORY_KEY_MOVE_BEHAVIOR = "MOVE_BEHAVIOR";
+    public const string MEMORY_KEY_SIZE_X = "SIZE_X";
+    public const string MEMORY_KEY_SIZE_Y = "SIZE_Y";
+    public ShipMoveBehavior moveBehavior;
+    public ShipFireBehavior fireBehavior;
+    public ShipSkillBehavior[] skillBehavior;
     public Ship target;
     private Ship ship;
+
+    private Dictionary<string, object> memoryAI;
+    public Dictionary<string, object> MemoryAI
+    {
+        get
+        {
+            return memoryAI;
+        }
+    }
+    private EventDict _events;
+    public EventDict Events
+    {
+        get
+        {
+            if (_events == null) _events = new EventDict();
+            return _events;
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {
+    }
+
+    private void OnEnable()
+    {
+        Debug.Log("Ship AI onenable");
         ship = GetComponent<Ship>();
-        CurActionBehavior = new ActionShipBehavior();
-        DetermineIntent();
+        if (memoryAI == null)
+        {
+            Debug.Log("Ship AI memory null");
+            if (ship.customData?.AIMemory != null)
+            {
+                Debug.Log("Ship AI memory restore");
+                memoryAI = ship.customData?.AIMemory;
+                RestoreFromMemory();
+            }
+            else
+            {
+                Debug.Log("Ship AI memory new");
+                memoryAI = new Dictionary<string, object>();
+                DetermineBehavior();
+            }
+        }
+    }
+
+    private void RestoreFromMemory()
+    {
+        Debug.Log("Shoudl Restore memory");
+        if (fireBehavior == null && memoryAI.ContainsKey(MEMORY_KEY_FIRE_BEHAVIOR))
+        {
+            ChangeFireBehavior(CommonUtils.CastToEnum<AttackBehavior>(memoryAI[MEMORY_KEY_FIRE_BEHAVIOR]));
+        }
+        if (moveBehavior == null && memoryAI.ContainsKey(MEMORY_KEY_MOVE_BEHAVIOR))
+        {
+            ChangeMoveBehavior(CommonUtils.CastToEnum<MoveBehavior>(memoryAI[MEMORY_KEY_MOVE_BEHAVIOR]));
+        }
     }
 
     private void OnDrawGizmos()
@@ -31,22 +96,106 @@ public class ShipAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        moveBehavior?.Update();
+        fireBehavior?.Update();
+        if (!CommonUtils.IsArrayNullEmpty(skillBehavior))
+        {
+            for (int i = 0; i < skillBehavior.Length; i++)
+            {
+                skillBehavior[i].Update();
+            }
+        }
     }
 
     void FixedUpdate()
     {
-        CurActionBehavior.Update(this);
     }
-    public void DetermineIntent()
+
+    public bool Memoriez(string key, object value)
     {
-        CurIntent = ShipIntent.Shot;
-        ShotBehavior behavior = new ShotBehavior();
-        target = SeaBattleManager.Instance.playerShip.GetComponent<Ship>();
-        behavior.target = target;
-        CurActionBehavior = behavior;
+        if (memoryAI == null) return false;
+        if (memoryAI.ContainsKey(key))
+        {
+            memoryAI[key] = value;
+        }
+        else
+        {
+            memoryAI.Add(key, value);
+        }
+        return true;
     }
 
 
+    private void DetermineBehavior()
+    {
+        if (fireBehavior == null)
+        {
+            ChangeFireBehavior(AttackBehavior.Cannon);
+        }
+        if (moveBehavior == null)
+        {
+            ChangeMoveBehavior(MoveBehavior.KeepDistance);
+        }
+    }
+
+    private void ChangeFireBehavior(AttackBehavior behavior)
+    {
+        if (!behavior.Equals(fireBehavior))
+        {
+            Debug.Log("Shoudl Restore memory ChangeFireBehavior");
+            fireBehavior?.Disable();
+            Memoriez(MEMORY_KEY_FIRE_BEHAVIOR, (int)behavior);
+            fireBehavior = new ShotCannonBehavior(this);
+            fireBehavior.Enable();
+        }
+    }
+
+    private void ChangeMoveBehavior(MoveBehavior behavior)
+    {
+        if (!behavior.Equals(moveBehavior))
+        {
+            Debug.Log("Shoudl Restore memory ChangeMoveBehavior");
+            moveBehavior?.Disable();
+            Memoriez(MEMORY_KEY_MOVE_BEHAVIOR, (int)behavior);
+            switch (behavior)
+            {
+                case MoveBehavior.KeepDistance:
+                    moveBehavior = new KeepDistanceBehavior(this);
+                    break;
+                default: break;
+            }
+            moveBehavior?.Enable();
+        }
+    }
+
+    public void CommandAttack(string shipBattleId)
+    {
+        Memoriez(MEMORY_KEY_TARGET_ATTACK, shipBattleId);
+        Events.InvokeOnAction(EVENT_CHANGE_ATTACK_TARGET);
+    }
+    public void CommandAttackGroup(string group)
+    {
+        Memoriez(MEMORY_KEY_TARGET_ATTACK_GROUP, group);
+        Events.InvokeOnAction(EVENT_CHANGE_ATTACK_TARGET_GROUP);
+    }
+
+    public void CommandMove(Vector2 pos)
+    {
+        Memoriez(MEMORY_KEY_TARGET_MOVE, pos.x + "," + pos.y);
+        Vector2 move = pos - (Vector2)ship.transform.position;
+        float angel = Vector2.Angle(ship.ShipDirection, move);
+        // Debug.Log(angel);
+        // Debug.DrawLine(ship.transform.position, ship.transform.position + (Vector3)move, Color.red, 3f);
+        // Debug.DrawLine(ship.transform.position, ship.transform.position + (Vector3)ship.ShipDirection, Color.blue, 3f);
+        if (angel > 1f || angel < -1f)
+        {
+            ship.CalculateRotateVector((VectorUtils.IsRightSide(ship.ShipDirection, move) ? -1 : 1) * ship.curShipData.MaxDegreeRotate);
+        }
+        else
+        {
+            ship.CalculateRotateVector(0f);
+        }
+    }
     public void KeepPosition()
     {
         if (ship.sailSet != 0f)
@@ -60,81 +209,125 @@ public class ShipAI : MonoBehaviour
         if (ship.sailSet != 1f)
             ship.SetSail(1f);
     }
-    public class ActionShipBehavior
+
+    public void Fire(CannonDirection direction)
     {
-        public virtual void Update(ShipAI shipAI)
+        ship.FireCannon(direction);
+    }
+
+    private float FireIfInRange()
+    {
+        if (target != null)
+        {
+            Vector2 vTarget = ship.transform.position - target.transform.position;
+            float distance = vTarget.sqrMagnitude;
+            // Debug.Log("distance" + distance);
+            if (distance <= 25f)
+            {
+                return ship.FireTarget(target.transform.position);
+            }
+            return 0f;
+        }
+        return 0f;
+    }
+
+    public abstract class ShipActionBehavior
+    {
+        public ShipAI AIControl;
+        public ShipActionBehavior(ShipAI ai)
+        {
+            this.AIControl = ai;
+        }
+        public abstract void Update();
+        public abstract void Enable();
+        public abstract void Disable();
+    }
+
+    public abstract class ShipMoveBehavior : ShipActionBehavior
+    {
+        public ShipMoveBehavior(ShipAI ai) : base(ai)
         {
 
         }
-
+        public override abstract void Update();
+        public override abstract void Enable();
+        public override abstract void Disable();
     }
 
-    public class TravelBehavior : ActionShipBehavior
+    public abstract class ShipFireBehavior : ShipActionBehavior
     {
+        public ShipFireBehavior(ShipAI ai) : base(ai)
+        {
 
+        }
+        public override abstract void Update();
+        public override abstract void Enable();
+        public override abstract void Disable();
     }
 
-    public class FleeBehavior : ActionShipBehavior
+    public abstract class ShipSkillBehavior : ShipActionBehavior
     {
+        public ShipSkillBehavior(ShipAI ai) : base(ai)
+        {
 
+        }
+        public override abstract void Update();
+        public override abstract void Enable();
+        public override abstract void Disable();
     }
 
-    public class ShotBehavior : ActionShipBehavior
+    public class KeepDistanceBehavior : ShipMoveBehavior
     {
-        public Ship target;
-        private float accumWaitTimeShot = 0f;
-        private float waitTime = 0f;
-
         private float delayFindPos = 1f;
         private float accumFindPos = 0f;
 
-        public ShotBehavior()
+        private Ship target;
+
+        public KeepDistanceBehavior(ShipAI ai) : base(ai)
         {
+
+        }
+        public override void Disable()
+        {
+            AIControl.Events.RegisterListener(ShipAI.EVENT_CHANGE_ATTACK_TARGET).RemoveListener(FocusTarget);
         }
 
-        public override void Update(ShipAI shipAI)
+        public override void Enable()
         {
-            shipAI.FireIfInRange();
+            AIControl.Events.RegisterListener(ShipAI.EVENT_CHANGE_ATTACK_TARGET).AddListener(FocusTarget);
+            FocusTarget();
+            Debug.Log("KeepDistanceBehavior enable " + target?.BattleId);
+        }
 
-            /* try stop after fire
-            //if target in range => command ship fire
-            accumWaitTimeShot += Time.deltaTime;
-            if (accumWaitTimeShot > waitTime)
+        private void FocusTarget()
+        {
+            if (AIControl.MemoryAI.ContainsKey(ShipAI.MEMORY_KEY_TARGET_ATTACK))
             {
-                waitTime = shipAI.FireIfInRange();
-                accumWaitTimeShot = 0f;
+                target = SeaBattleManager.Instance.FindShipByBattleId(AIControl.MemoryAI[ShipAI.MEMORY_KEY_TARGET_ATTACK].ToString());
+                Debug.Log("KeepDistanceBehavior focustarger " + target?.BattleId ?? "empty");
             }
-            if (waitTime > 0)
-            {
-                shipAI.KeepPosition();
-                Debug.Log("Ship AI Keep position");
-            }
-            else
-            {
-                Debug.Log("Ship AI moving");
-                shipAI.FullMove();
-            }
-            */
+        }
+
+        public override void Update()
+        {
+            if (target == null) return;
             accumFindPos += Time.deltaTime;
+            Debug.Log("KeepDistanceBehavior update ");
             if (accumFindPos > delayFindPos)
             {
                 //calculate good position to fire
-                Vector2 pos = FindPosToShot(shipAI);
+                Vector2 pos = FindPosToShot();
+                Debug.Log("KeepDistanceBehavior update " + pos);
                 //command ship move to position
-                shipAI.MoveTo(pos);
+                AIControl.CommandMove(pos);
                 accumFindPos = 0f;
             }
         }
 
-        public void FixedUpdate()
-        {
-
-        }
-
-        public Vector2 FindPosToShot(ShipAI shipAI)
+        public Vector2 FindPosToShot()
         {
             Vector2 targetPos = target.transform.position;
-            Vector2 shipPos = shipAI.ship.transform.position;
+            Vector2 shipPos = AIControl.ship.transform.position;
             Vector2 line = shipPos - targetPos;
             float rangeAttack = 5f;
             /*scenario 1
@@ -149,7 +342,7 @@ public class ShipAI : MonoBehaviour
             else
             {
                 float rad2 = rangeAttack - line.magnitude + rangeAttack / 5f;
-                return FindCircleCircleInsideIntersections(targetPos, rangeAttack, shipPos, rad2, shipAI.ship.ShipDirection);
+                return FindCircleCircleInsideIntersections(targetPos, rangeAttack, shipPos, rad2, AIControl.ship.ShipDirection);
             }
             /*scenario 2
             check if distance between ship and target <= range attack 
@@ -202,44 +395,165 @@ public class ShipAI : MonoBehaviour
 
 
         }
-
     }
 
-    private float FireIfInRange()
+    public class ShotCannonBehavior : ShipFireBehavior
     {
-        if (target != null)
+        private float accumWaitTimeShot = 0f;
+        private float waitTime = 0f;
+
+        private float[] cannonRanges;
+        private float maxRange = -1f;
+        private List<Ship> ships = new List<Ship>();
+
+        private float ShipSizeX = 0f;
+        private float ShipSizeY = 0f;
+
+        public ShotCannonBehavior(ShipAI ai) : base(ai)
         {
-            Vector2 vTarget = ship.transform.position - target.transform.position;
-            float distance = vTarget.sqrMagnitude;
-            // Debug.Log("distance" + distance);
-            if (distance <= 25f)
+        }
+
+        public override void Update()
+        {
+            if (ships == null || ships.Count == 0) return;
+            CannonDirection fire = CannonDirection.None;
+            for (int i = 0; i < ships.Count; i++)
             {
-                return ship.FireTarget(target.transform.position);
+                fire = fire | CanShotTarget(ships[i]);
             }
-            return 0f;
+            if (!CannonDirection.None.Equals(fire))
+            {
+                AIControl.Fire(fire);
+            }
         }
-        return 0f;
-    }
 
-    private void MoveTo(Vector2 pos)
-    {
-        Vector2 move = pos - (Vector2)ship.transform.position;
-        float angel = Vector2.Angle(ship.ShipDirection, move);
-        // Debug.Log(angel);
-        // Debug.DrawLine(ship.transform.position, ship.transform.position + (Vector3)move, Color.red, 3f);
-        // Debug.DrawLine(ship.transform.position, ship.transform.position + (Vector3)ship.ShipDirection, Color.blue, 3f);
-        if (angel > 1f || angel < -1f)
+        private CannonDirection CanShotTarget(Ship shipTarget)
         {
-            ship.CalculateRotateVector((VectorUtils.IsRightSide(ship.ShipDirection, move) ? -1 : 1) * ship.curShipData.MaxDegreeRotate);
+            Vector2 myDirection = AIControl.ship.ShipDirection;
+            Vector2 target = shipTarget.transform.position;
+            Vector2 shipPos = AIControl.ship.transform.position;
+
+            Vector2 toTarget = (Vector2)shipTarget.transform.position - (Vector2)AIControl.ship.transform.position;
+
+            if (CommonUtils.IsArrayNullEmpty(cannonRanges)) return CannonDirection.None;
+            if (Mathf.Pow(maxRange, 2) < toTarget.sqrMagnitude) return CannonDirection.None;
+
+            Vector2 flag = VectorUtils.Rotate(myDirection, 45, true);
+            float angel = Vector2.Angle(toTarget, flag);
+
+            Vector2 crossDir = VectorUtils.Rotate(myDirection, -90, true).normalized;
+
+            Vector2 pA = (Vector2)shipPos + myDirection.normalized * ShipSizeY / 2
+            + crossDir * ShipSizeY / 2;
+            Vector2 pB = (Vector2)shipPos + myDirection.normalized * ShipSizeY / 2
+            + new Vector2(-crossDir.x, -crossDir.y) * ShipSizeY / 2;
+            Vector2 pC = (Vector2)shipPos + new Vector2(-myDirection.x, -myDirection.y).normalized * ShipSizeY / 2
+            + new Vector2(-crossDir.x, -crossDir.y) * ShipSizeY / 2;
+            Vector2 pD = (Vector2)shipPos + new Vector2(-myDirection.x, -myDirection.y).normalized * ShipSizeY / 2
+             + crossDir * ShipSizeY / 2;
+
+            float range = cannonRanges[0];
+            if (range > 0 && VectorUtils.IsPointInRectangle(target,
+                pA, pB, pB + myDirection.normalized * range, pA + myDirection.normalized * range
+                ))
+            {
+                return CannonDirection.Front;
+            }
+
+
+            range = cannonRanges[1];
+            if (range > 0 && VectorUtils.IsPointInRectangle(target,
+                pA, pD, pD + crossDir.normalized * range, pA + crossDir.normalized * range
+                ))
+            {
+                return CannonDirection.Right;
+            }
+
+            range = cannonRanges[2];
+            if (range > 0 && VectorUtils.IsPointInRectangle(target,
+                pB, pC, pC + VectorUtils.Reverse(crossDir).normalized * range, pB + VectorUtils.Reverse(crossDir).normalized * range
+                ))
+            {
+                return CannonDirection.Left;
+            }
+
+            range = cannonRanges[3];
+            if (range > 0 && VectorUtils.IsPointInRectangle(target,
+                pC, pD, pD + VectorUtils.Reverse(myDirection).normalized * range, pC + VectorUtils.Reverse(myDirection).normalized * range
+                ))
+            {
+                return CannonDirection.Back;
+            }
+
+            return CannonDirection.None;
         }
-        else
+
+        public void FixedUpdate()
         {
-            ship.CalculateRotateVector(0f);
+
         }
-    }
 
-    public class LootBehavior : ActionShipBehavior
-    {
+        public override void Enable()
+        {
+            if (ShipSizeX == 0)
+            {
+                if (AIControl.MemoryAI.ContainsKey(ShipAI.MEMORY_KEY_SIZE_X))
+                {
+                    ShipSizeX = Convert.ToSingle(AIControl.MemoryAI[ShipAI.MEMORY_KEY_SIZE_X]);
+                }
+                else
+                {
+                    ShipSizeX = AIControl.ship.ActualSizeX;
+                    AIControl.Memoriez(ShipAI.MEMORY_KEY_SIZE_X, ShipSizeX);
+                }
+            }
+            if (ShipSizeY == 0)
+            {
+                if (AIControl.MemoryAI.ContainsKey(ShipAI.MEMORY_KEY_SIZE_Y))
+                {
+                    ShipSizeY = Convert.ToSingle(AIControl.MemoryAI[ShipAI.MEMORY_KEY_SIZE_Y]);
+                }
+                else
+                {
+                    ShipSizeY = AIControl.ship.ActualSizeY;
+                    AIControl.Memoriez(ShipAI.MEMORY_KEY_SIZE_Y, ShipSizeY);
+                }
+            }
+            LoadRangeCannon();
+            AIControl.ship.Events.RegisterListener(Ship.EVENT_SHOT_TYPE_CHANGED).AddListener(LoadRangeCannon);
 
+
+            AIControl.Events.RegisterListener(EVENT_CHANGE_ATTACK_TARGET).AddListener(FocusTarget);
+            FocusTarget();
+
+        }
+
+        private void FocusTarget()
+        {
+            if (AIControl.MemoryAI.ContainsKey(ShipAI.MEMORY_KEY_TARGET_ATTACK))
+            {
+                ships.Clear();
+                Ship target = SeaBattleManager.Instance.FindShipByBattleId(AIControl.MemoryAI[ShipAI.MEMORY_KEY_TARGET_ATTACK].ToString());
+                if (target != null && ships.Where(x => x.BattleId == target.BattleId).FirstOrDefault() == null)
+                {
+                    ships.Add(target);
+                }
+            }
+        }
+        public void LoadRangeCannon()
+        {
+            cannonRanges = new float[4];
+            for (int i = 0; i < AIControl.ship.shotTypeCode.Length; i++)
+            {
+                cannonRanges[i] = ShipHelper.GetRangeCannonType(AIControl.ship.shotTypeCode[i]);
+            }
+            maxRange = cannonRanges.Max();
+        }
+
+        public override void Disable()
+        {
+            AIControl.ship.Events.RegisterListener(Ship.EVENT_SHOT_TYPE_CHANGED).RemoveListener(LoadRangeCannon);
+            AIControl.Events.RegisterListener(EVENT_CHANGE_ATTACK_TARGET).RemoveListener(FocusTarget);
+        }
     }
 }
