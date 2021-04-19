@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   active: 1
   inheritMarket: {fileID: 11400000, guid: 052090632e261844ea8f5b44b0c19ebc, type: 2}
-  description: 
+  description: Today Iron can sell high price, Captain!
   probability: 20
   goodsCode:
   - Iron

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -19,7 +20,16 @@ public class ShipInventoryCtrl : MonoBehaviour
         set
         {
             mode = value;
-            
+
+            if (InventoryMode.View.Equals(value))
+            {
+                ShipCrew1Btn.gameObject.SetActive(false);
+            }
+            else
+            {
+                ShipCrew1Btn.gameObject.SetActive(true);
+            }
+
             if (InventoryMode.Transfer.Equals(value))
             {
                 panelGroup2.SetActive(true);
@@ -102,6 +112,9 @@ public class ShipInventoryCtrl : MonoBehaviour
 
     public Dropdown ShipSelected1;
     public Dropdown ShipSelected2;
+
+    public TextMeshProUGUI marketDescription;
+    public Text timeRefreshShow;
 
     protected List<ShipInventory> inventories = new List<ShipInventory>();
     public bool isShow = false;
@@ -385,7 +398,26 @@ public class ShipInventoryCtrl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (InventoryMode.Shop.Equals(mode))
+        {
+
+            if (GameManager.Instance.GameData?.market?.time != null)
+            {
+                TimeSpan timeLeft = DateTime.Now.Subtract(GameManager.Instance.GameData.market.time);
+                if (timeLeft.TotalHours < GameManager.Instance.hourRefreshMarket)
+                {
+                    timeRefreshShow.text = TimeSpan.FromHours(GameManager.Instance.hourRefreshMarket - timeLeft.TotalHours).ToString(@"hh\:mm\:ss");
+                }
+                else
+                {
+                    RefreshMarket();
+                }
+            }
+        }
+
     }
+
+
 
     public void ToggerInventory()
     {
@@ -536,6 +568,12 @@ public class ShipInventoryCtrl : MonoBehaviour
         }
         DisplayCapacity();
     }
+
+    private void RefreshMarket()
+    {
+        marketStateToday = GameManager.Instance.GetMarketStateToday(true);
+        DisplayMarket();
+    }
     protected void DisplayMarket()
     {
 
@@ -566,7 +604,11 @@ public class ShipInventoryCtrl : MonoBehaviour
                 Debug.Log("Item " + marketStateToday.goodsCodes[i]);
             }
         }
+
+        marketDescription.text = marketStateToday.description != "" ? marketStateToday.description : "Have a good day, Captain!";
     }
+
+
 
     protected int indexTransfer;
     protected void ShowTransferItem(int indexInv, int index)

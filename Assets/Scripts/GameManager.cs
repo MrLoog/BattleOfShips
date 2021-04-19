@@ -78,6 +78,8 @@ public class GameManager : BaseSceneManager
     public string battleSceneName = "SeaBattleScene";
     public string townSceneName = "TownScene";
 
+    public float hourRefreshMarket = 1f;
+
     #region toggle for test
 
     public bool forceRefreshMarket = false;
@@ -316,12 +318,15 @@ public class GameManager : BaseSceneManager
             Time.timeScale = prevSpeed > 0f ? prevSpeed : 1;
         }
     }
-    public MarketStateToday GetMarketStateToday()
+    public MarketStateToday GetMarketStateToday(bool refresh = false)
     {
+
         if (GameData.market == null
         || GameData.market.time == null
-        || GameData.market.time.ToString("yyyy-MM-dd") != DateTime.Now.ToString("yyyy-MM-dd")
+        || DateTime.Now.Subtract(GameData.market.time).TotalHours > hourRefreshMarket
+        // || GameData.market.time.ToString("yyyy-MM-dd hh") != DateTime.Now.ToString("yyyy-MM-dd hh")
         || forceRefreshMarket
+        || refresh
         )
         {
             GameData.market = MarketStateFactory.BuildMarketStateToday(MyResourceUtils.ResourcesLoadAll<ScriptableShipGoods>(

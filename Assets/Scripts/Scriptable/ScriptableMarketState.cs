@@ -150,6 +150,8 @@ public class MarketStateToday
     public int crewAvaiable;
     public int crewPrice;
 
+    public string description;
+
     public int GoldReceivedBySell(int indexGoods, int quantity)
     {
         return (int)(prices[indexGoods] * 0.7 * quantity);
@@ -179,7 +181,7 @@ public class MarketStateFactory
         Debug.Log("BuildMarketStateToday");
         MarketStateToday today = state.CalculateStateWithInherit();
         today.time = DateTime.Now;
-
+        today.description = state.description;
 
         foreach (var aGoods in allGoods)
         {
@@ -208,6 +210,7 @@ public class MarketStateFactory
         Debug.Log("BuildMarketStateToday");
         MarketStateToday today = new MarketStateToday();
         today.time = DateTime.Now;
+        today.description = state.description;
         List<string> goodsCodes = new List<string>();
         List<int> prices = new List<int>();
         List<int> quantitys = new List<int>();

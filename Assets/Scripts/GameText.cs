@@ -78,7 +78,7 @@ public class GameText
         {TOAST_NOT_ENOUGH_GOLD,"Not Enough Gold"},
         {TOAST_NOT_ENOUGH_GEM,"Not Enough Gem"},
         {CONFIRM_RETURN_TOWN_RUN_TITLE,"Run from Battle?"},
-        {CONFIRM_RETURN_TOWN_RUN_CONTENT,"All thing you took from battle will lost.\nAre you sure, you want to run from battle return to Town?"},
+        {CONFIRM_RETURN_TOWN_RUN_CONTENT,"Are you sure, you want to run from battle return to Town?"},
         {TOAST_CANNOT_CLOSE_COMBAT,"We need to halve the enemy crew health in order to close combat, Captain!"},
         {CONFIRM_CLOSE_COMBAT_TITLE,"Perform close combat?"},
         {CONFIRM_CLOSE_COMBAT_CONTENT,"Close combat will be auto calculate, are you sure?"},

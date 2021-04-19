@@ -17,7 +17,7 @@ public class ShipSkillCtrl : MonoBehaviour
     public Ship ship;
     public bool isSync = false;
 
-    public Sprite[] avatarSkills = new Sprite[3];
+    public Sprite[] avatarSkills = new Sprite[4];
     public GameObject[] buttonSkill;
     public Image[] imgSKill;
     // Start is called before the first frame update

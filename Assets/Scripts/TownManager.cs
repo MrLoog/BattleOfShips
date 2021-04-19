@@ -18,6 +18,8 @@ public class TownManager : BaseSceneManager
     public Text GoldText;
     public Text GemText;
 
+    public float hourRefreshShop = 1f;
+
     public TownData townData;
     public TownData TownData
     {
@@ -107,8 +109,14 @@ public class TownManager : BaseSceneManager
 
     public Workshop GetWorkshopData()
     {
-        if (TownData.workshop == null || TownData.workshop.timeRefresh == null || TownData.workshop.forceReload || TownData.workshop.timeRefresh.ToString("yyyy-MM-dd") != DateTime.Now.ToString("yyyy-MM-dd"))
+
+        if (TownData.workshop == null || TownData.workshop.timeRefresh == null
+        || TownData.workshop.forceReload
+        // || TownData.workshop.timeRefresh.ToString("yyyy-MM-dd") != DateTime.Now.ToString("yyyy-MM-dd")
+        || DateTime.Now.Subtract(TownData.workshop.timeRefresh).TotalHours > hourRefreshShop
+        )
         {
+
             RefreshWorkshop();
         }
         return TownData.workshop;
@@ -125,6 +133,7 @@ public class TownManager : BaseSceneManager
         result.soldStatus = Enumerable.Repeat(false, quantity).ToArray();
         result.forceReload = false;
         TownData.workshop = result;
+
         return result;
     }
 

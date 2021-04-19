@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class SeaBattleManager : BaseSceneManager
@@ -51,12 +52,17 @@ public class SeaBattleManager : BaseSceneManager
 
 
     public Vector2 windForce;
+
+
+    public float[] windChangeRandomTime;
     public float intervalWindChange = 30f;
 
 
     public float accumWindChangeInterval = 0f;
 
     public UnityEvent OnWindChange;
+
+    public Text WindTimeRemain;
 
     List<ScriptableCannonBall> ScriptableCannonBalls;
 
@@ -261,8 +267,10 @@ public class SeaBattleManager : BaseSceneManager
         if (accumWindChangeInterval >= intervalWindChange)
         {
             RandomWindForce();
-            accumWindChangeInterval = 0f;
         }
+        //display wind reset time
+        TimeSpan time = TimeSpan.FromSeconds(intervalWindChange - accumWindChangeInterval);
+        WindTimeRemain.text = time.ToString(@"mm\:ss");
 
 
     }
@@ -290,6 +298,12 @@ public class SeaBattleManager : BaseSceneManager
         {
             s.ApplyWindForce(windForce);
         }
+
+        if (!CommonUtils.IsArrayNullEmpty(windChangeRandomTime) && windChangeRandomTime.Length == 2)
+        {
+            intervalWindChange = Random.Range(windChangeRandomTime[0], windChangeRandomTime[1]);
+        }
+        accumWindChangeInterval = 0f;
     }
 
     public float RandomWindByConfig()
