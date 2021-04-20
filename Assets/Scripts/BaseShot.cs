@@ -50,7 +50,7 @@ public abstract class BaseShot : MonoBehaviour
 
     internal virtual float GetDamageBlocked()
     {
-        return data.damage;
+        return data.hullDamage;
     }
 
     internal virtual void EndProjectileByBlocked()

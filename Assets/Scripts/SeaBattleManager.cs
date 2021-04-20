@@ -51,7 +51,8 @@ public class SeaBattleManager : BaseSceneManager
 
 
 
-    public Vector2 windForce;
+    public Vector2 wind;
+    public float windPower;
 
 
     public float[] windChangeRandomTime;
@@ -295,14 +296,15 @@ public class SeaBattleManager : BaseSceneManager
     {
         // float force = (float)Math.Round(Random.Range(0.1f, 3f), 1);
         float force = RandomWindByConfig();
+        windPower = force;
         Debug.Log("force " + force);
         float direction = Random.Range(-180, 180);
 
-        windForce = VectorUtils.Rotate(Vector2.up, direction, true).normalized * force;
+        wind = VectorUtils.Rotate(Vector2.up, direction, true).normalized * force;
         OnWindChange.Invoke();
         foreach (Ship s in ships)
         {
-            s.ApplyWindForce(windForce);
+            s.ApplyWindForce(wind);
         }
 
         if (!CommonUtils.IsArrayNullEmpty(windChangeRandomTime) && windChangeRandomTime.Length == 2)
@@ -414,7 +416,7 @@ public class SeaBattleManager : BaseSceneManager
             }
             else
             {
-                s.ApplyWindForce(windForce);
+                s.ApplyWindForce(wind);
             }
             // s.ApplyWindForce(windForce);
             // s.RevalidMovement();
@@ -445,7 +447,7 @@ public class SeaBattleManager : BaseSceneManager
         {
             GEventManager.Instance.InvokeEvent(GEventManager.EVENT_PLAYER_DEFEATED);
         });
-        scriptShip.ApplyWindForce(windForce);
+        scriptShip.ApplyWindForce(wind);
 
 
         PlayerSailCtrl.Instance.StartSync();
@@ -666,7 +668,7 @@ public class SeaBattleManager : BaseSceneManager
         {
             GEventManager.Instance.InvokeEvent(GEventManager.EVENT_SHIP_DEFEAT);
         });
-        scriptShip.ApplyWindForce(windForce);
+        scriptShip.ApplyWindForce(wind);
         ships.Add(scriptShip);
         return newShip;
     }
@@ -752,7 +754,7 @@ public class SeaBattleManager : BaseSceneManager
         if (SeaBattleData == null)
             SeaBattleData = new SeaBattleData();
         SeaBattleData.SetShipData(ships.Select(x => x.GetComponent<Ship>()).ToArray());
-        SeaBattleData.SetWindData(windForce, accumWindChangeInterval);
+        SeaBattleData.SetWindData(wind, windPower, accumWindChangeInterval);
     }
 
     public void UpdateGameData()
@@ -791,7 +793,8 @@ public class SeaBattleManager : BaseSceneManager
     {
         if (SeaBattleData != null)
         {
-            windForce = JsonUtility.FromJson<Vector2>(SeaBattleData.windDataJson);
+            wind = JsonUtility.FromJson<Vector2>(SeaBattleData.windDataJson);
+            windPower = SeaBattleData.windPower == 0 ? wind.magnitude : SeaBattleData.windPower;
             OnWindChange.Invoke();
             accumWindChangeInterval = SeaBattleData.windAccumTime;
 
@@ -827,7 +830,7 @@ public class SeaBattleManager : BaseSceneManager
                     0,
                     SeaBattleData.transRotJsons[i]
                 );
-                newShip.GetComponent<Ship>().ApplyWindForce(windForce);
+                newShip.GetComponent<Ship>().ApplyWindForce(wind);
                 if (!donePlayerShip)
                 {
                     //init player ship first

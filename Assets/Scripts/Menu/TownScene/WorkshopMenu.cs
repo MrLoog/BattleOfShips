@@ -78,6 +78,7 @@ public class WorkshopMenu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!panel.activeSelf) return;
         if (TownManager.Instance.TownData?.workshop?.timeRefresh != null)
         {
             TimeSpan timeLeft = DateTime.Now.Subtract(TownManager.Instance.TownData.workshop.timeRefresh);
@@ -189,7 +190,10 @@ public class WorkshopMenu : MonoBehaviour
     {
         TownManager.Instance.RefreshWorkshop();
         RequestWorkshopInfo();
-        ShowAllShip();
+        if (panel.activeSelf)
+        {
+            ShowAllShip();
+        }
     }
     public void RefreshShop()
     {

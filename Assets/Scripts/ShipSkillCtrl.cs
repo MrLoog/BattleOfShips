@@ -51,7 +51,22 @@ public class ShipSkillCtrl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetKeyUp(KeyCode.Alpha1))
+        {
+            ActiveSkill(0);
+        }
+        if (Input.GetKeyUp(KeyCode.Alpha2))
+        {
+            ActiveSkill(1);
+        }
+        if (Input.GetKeyUp(KeyCode.Alpha3))
+        {
+            ActiveSkill(2);
+        }
+        if (Input.GetKeyUp(KeyCode.Alpha4))
+        {
+            ActiveSkill(3);
+        }
     }
 
     public void ActiveSkill(int i)

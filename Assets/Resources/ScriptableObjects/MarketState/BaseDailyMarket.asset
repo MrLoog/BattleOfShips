@@ -22,14 +22,8 @@ MonoBehaviour:
   - GrapeShot
   basePrice: 
   baseQuantiy: e8030000e8030000e8030000
-  minRatePrice:
-  - 3
-  - 5
-  - 7
-  maxRatePrice:
-  - 10
-  - 20
-  - 100
+  minRatePrice: []
+  maxRatePrice: []
   priceMod: []
   otherPriceMod: 0
   minRateQty:

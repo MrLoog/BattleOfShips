@@ -23,6 +23,8 @@ public class GameData : BaseDataEntity
     public long gold;
     public long gem;
 
+    public int workshopSlot = -1;
+
     public MarketStateToday market;
 
     public ScriptableShipFactory shipShopFactory;

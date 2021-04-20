@@ -14,6 +14,7 @@ public class SeaBattleData : BaseDataEntity
     public int playerShipIndex;
 
     public string windDataJson;
+    public float windPower;
     public float windAccumTime;
 
     public ScriptableShipCustom[] levelShipDatas;
@@ -62,9 +63,10 @@ public class SeaBattleData : BaseDataEntity
 
 
 
-    public void SetWindData(Vector2 wind, float accumTime)
+    public void SetWindData(Vector2 wind, float windPower, float accumTime)
     {
         windDataJson = JsonUtility.ToJson(wind);
+        this.windPower = windPower;
         windAccumTime = accumTime;
     }
 

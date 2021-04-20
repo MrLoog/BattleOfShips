@@ -32,6 +32,9 @@ public class GActionManager : Singleton<GActionManager>
     public void UnlockShopShip(params string[] args)
     {
         string typeNameShip = args[0];
+        string mesSuccess = args.Length > 1 ? args[1] : "";
+        bool successUnlock = false;
+
         ScriptableShipFactory curShipShop = GameManager.Instance.GameData?.shipShopFactory;
         Debug.Assert(curShipShop != null, "Should have data");
         if (curShipShop == null) return;
@@ -44,6 +47,12 @@ public class GActionManager : Singleton<GActionManager>
             Debug.Assert(shipUnlock != null, "Should have data");
             if (shipUnlock == null) return;
             curShipShop.shipList = CommonUtils.AddElemToArray<ScriptableShip>(curShipShop.shipList, shipUnlock);
+            successUnlock = true;
+        }
+
+        if (successUnlock && mesSuccess.Length > 0)
+        {
+            ToastService.Instance.ShowMessage(mesSuccess);
         }
     }
 
@@ -53,6 +62,9 @@ public class GActionManager : Singleton<GActionManager>
         {
             string level = args[0];
             int index = Int16.Parse(level);
+            string mesSuccess = args.Length > 1 ? args[1] : "";
+            bool successUnlock = false;
+
             ScriptableShipFactory curShipShop = GameManager.Instance.GameData?.shipShopFactory;
             Debug.Assert(curShipShop != null, "Should have data");
             if (curShipShop == null) return;
@@ -70,6 +82,7 @@ public class GActionManager : Singleton<GActionManager>
                     if (hullRate != null)
                     {
                         curShipShop.hullMaterialRates = CommonUtils.AddElemToArray(curShipShop.hullMaterialRates, (int)hullRate);
+                        successUnlock = true;
                     }
                 }
             }
@@ -84,16 +97,41 @@ public class GActionManager : Singleton<GActionManager>
                     if (sailRate != null)
                     {
                         curShipShop.sailMaterialRates = CommonUtils.AddElemToArray(curShipShop.sailMaterialRates, (int)sailRate);
+                        successUnlock = true;
                     }
                 }
             }
-
-
+            if (successUnlock && mesSuccess.Length > 0)
+            {
+                ToastService.Instance.ShowMessage(mesSuccess);
+            }
 
         }
         catch (Exception)
         {
             Debug.Log("Error UnlockShopMaterial");
+        }
+    }
+
+
+    public void UnlockSlotWorkshop(params string[] args)
+    {
+        try
+        {
+            int slot = Int16.Parse(args[0]);
+            string mesSuccess = args.Length > 1 ? args[1] : "";
+            if (slot > GameManager.Instance.GameData.workshopSlot)
+            {
+                GameManager.Instance.GameData.workshopSlot = slot;
+                if (mesSuccess.Length > 0)
+                {
+                    ToastService.Instance.ShowMessage(mesSuccess);
+                }
+            }
+        }
+        catch (Exception)
+        {
+
         }
     }
 
@@ -334,6 +372,7 @@ public class GActionManager : Singleton<GActionManager>
             SeaBattleManager.Instance.SeaBattleData.Reward.Union(SeaBattleManager.Instance.SeaBattleData.activeFlow.reward);
         }
     }
+
 
     #endregion
 

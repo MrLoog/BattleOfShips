@@ -42,14 +42,14 @@ public class WindInfoCtrl : MonoBehaviour
     }
     public void UpdateWindForceInfo()
     {
-        Vector2 windForce = SeaBattleManager.Instance.windForce;
-        WindForce.text = string.Format((windForce.magnitude * 10).ToString());
+        Vector2 wind = SeaBattleManager.Instance.wind;
+        WindForce.text = string.Format((SeaBattleManager.Instance.windPower * 10).ToString());
 
         Vector2 realCtrlDirection = VectorUtils.Rotate(Vector2.up, DefaultRotate, true);
-        float angel = Vector2.Angle(realCtrlDirection, windForce);
-        Vector3 cross = Vector3.Cross(realCtrlDirection, windForce);
+        float angel = Vector2.Angle(realCtrlDirection, wind);
+        Vector3 cross = Vector3.Cross(realCtrlDirection, wind);
         int sign = cross.z > 0 ? 1 : -1;
-        
+
         // Debug.Log("wind force " + windForce + "/" + realCtrlDirection + "/" + sign * angel + "/" + DefaultRotate);
         StartAnimate(Quaternion.Euler(0, 0, sign * angel));
     }

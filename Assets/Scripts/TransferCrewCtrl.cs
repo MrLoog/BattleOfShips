@@ -11,11 +11,14 @@ public class TransferCrewCtrl : MonoBehaviour
     public Image crewImage;
     public Text crewName;
     public Slider crewQuantitySlider;
+    public Text txtExtraInfo;
     public Text crewMaxQuanity;
 
     public Text playerGold;
     public Text crewShipTo;
     public Text crewShipFrom;
+
+    public Image imgTransfer;
     public InputField inputQuantity;
 
     public System.Func<int[], bool> OnBeforeDoneTransfer;
@@ -48,12 +51,29 @@ public class TransferCrewCtrl : MonoBehaviour
     // public const string TEMPLATE_GOLD_AMOUNT_SELL = "Gold: <color=blue>+{0:N0}</color>";
     public const string TEMPLATE_GOLD_AMOUNT_BUY = "Gold: <color=red>-{0:N0}</color>";
     private const string TEMPLATE_SHIP_CREW = "Ship {0}({1}):{2:N0}/{3:N0}";
+    private string template_extra_info = "";
+    private string template_ship_from = "";
+    private string template_ship_to = "";
+    private string template_market = "";
 
 
     // Start is called before the first frame update
     void Start()
     {
 
+    }
+
+    private void OnEnable()
+    {
+        LoadTemplate();
+    }
+
+    private void LoadTemplate()
+    {
+        if (template_extra_info == "") template_extra_info = txtExtraInfo.text;
+        if (template_ship_to == "") template_ship_to = crewShipTo.text;
+        if (template_ship_from == "") template_ship_from = crewShipFrom.text;
+        if (template_market == "") template_market = playerGold.text;
     }
 
     // Update is called once per frame
@@ -64,28 +84,54 @@ public class TransferCrewCtrl : MonoBehaviour
 
     public void ShowShipCrewStatus()
     {
+        int value = (int)crewQuantitySlider.value;
+
+
         if (!IsShopMode)
         {
-            crewShipFrom.text = string.Format(TEMPLATE_SHIP_CREW,
-            fromInvIndex + 1,
-            fromShipData.shipName,
-            fromShipData.curShipData.maxCrew - (int)crewQuantitySlider.value,
-            fromShipData.PeakData.maxCrew
-            );
+            crewShipFrom.text = template_ship_from
+                .Replace("{code}", (fromInvIndex + 1).ToString())
+                .Replace("{name}", fromShipData.shipName?.Length > 0 ? fromShipData.shipName : "No Name")
+                .Replace("{value}", CommonUtils.FormatNumber(value))
+                .Replace("{curCrew}", CommonUtils.FormatNumber(fromShipData.curShipData.maxCrew - value))
+                .Replace("{maxCrew}", CommonUtils.FormatNumber(fromShipData.PeakData.maxCrew));
+
+            // crewShipFrom.text = string.Format(TEMPLATE_SHIP_CREW,
+            // fromInvIndex + 1,
+            // fromShipData.shipName,
+            // fromShipData.curShipData.maxCrew - (int)crewQuantitySlider.value,
+            // fromShipData.PeakData.maxCrew
+            // );
         }
-        crewShipTo.text = string.Format(TEMPLATE_SHIP_CREW,
-        toInvIndex + 1,
-        toShipData.shipName,
-        toShipData.curShipData.maxCrew + (int)crewQuantitySlider.value,
-        toShipData.PeakData.maxCrew
-        );
+
+        crewShipTo.text = template_ship_to
+                .Replace("{code}", (toInvIndex + 1).ToString())
+                .Replace("{name}", toShipData.shipName?.Length > 0 ? toShipData.shipName : "No Name")
+                .Replace("{value}", CommonUtils.FormatNumber(value))
+                .Replace("{curCrew}", CommonUtils.FormatNumber(toShipData.curShipData.maxCrew + value))
+                .Replace("{maxCrew}", CommonUtils.FormatNumber(toShipData.PeakData.maxCrew));
+
+        // crewShipTo.text = string.Format(TEMPLATE_SHIP_CREW,
+        // toInvIndex + 1,
+        // toShipData.shipName,
+        // toShipData.curShipData.maxCrew + (int)crewQuantitySlider.value,
+        // toShipData.PeakData.maxCrew
+        // );
     }
     public void ShowGoldAmount()
     {
         if (!IsShopMode) return;
-        playerGold.text = string.Format(TEMPLATE_GOLD_AMOUNT_BUY,
-        marketState.crewPrice * (int)crewQuantitySlider.value
-        );
+        int crew = (int)crewQuantitySlider.value;
+
+        playerGold.text = template_market
+                .Replace("{gold}", CommonUtils.FormatNumber(marketState.crewPrice * (int)crewQuantitySlider.value))
+                .Replace("{crew}", CommonUtils.FormatNumber(crew))
+                .Replace("{curCrew}", CommonUtils.FormatNumber(marketState.crewAvaiable - crew))
+                .Replace("{maxCrew}", CommonUtils.FormatNumber(marketState.crewAvaiable));
+
+        // playerGold.text = string.Format(TEMPLATE_GOLD_AMOUNT_BUY,
+        // marketState.crewPrice * (int)crewQuantitySlider.value
+        // );
     }
     public void ShowTransferCrew(int quanity, int fromInvIndex, Ship from, Ship to)
     {
@@ -113,6 +159,10 @@ public class TransferCrewCtrl : MonoBehaviour
         crewName.text = CrewText;
         crewQuantitySlider.maxValue = quanity;
         crewQuantitySlider.value = quanity;
+
+        txtExtraInfo.gameObject.SetActive(false);
+        imgTransfer.gameObject.SetActive(true);
+
         UpdateSelectedValue();
     }
 
@@ -128,6 +178,14 @@ public class TransferCrewCtrl : MonoBehaviour
         crewName.text = CrewText;
         crewQuantitySlider.maxValue = quanity;
         crewQuantitySlider.value = quanity;
+
+        imgTransfer.gameObject.SetActive(false);
+        txtExtraInfo.gameObject.SetActive(true);
+        txtExtraInfo.text = template_extra_info.Replace(
+            "{price}",
+            CommonUtils.FormatNumber(marketState.crewPrice)
+        );
+
         UpdateSelectedValue();
     }
 

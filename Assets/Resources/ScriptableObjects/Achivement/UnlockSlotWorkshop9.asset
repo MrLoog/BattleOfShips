@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a9df192e153bca841bf04ad625502905, type: 3}
-  m_Name: UnlockShipBrigantine
+  m_Name: UnlockSlotWorkshop9
   m_EditorClassIdentifier: 
   active: 1
-  codeName: UnlockBrigantine
+  codeName: UnlockSlotWorkshop9
   eventTriggers:
   - CLEAR_LEVEL
   actionCheck:
@@ -22,8 +22,8 @@ MonoBehaviour:
     - ^005_00$
     expectResult: 
   actionResult:
-  - actionName: UnlockShopShip
+  - actionName: UnlockSlotWorkshop
     actionParams:
-    - Brigantine
-    - You now can buy Brigantine at Shop.
+    - 9
+    - Workshop slot now will be 9
     expectResult: 

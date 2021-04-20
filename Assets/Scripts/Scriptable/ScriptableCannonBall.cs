@@ -11,9 +11,6 @@ public class ScriptableCannonBall : ScriptableObjectPrefab
     public float hullDamage;
     public float sailDamage;
     public float crewDamage;
-
-    [Tooltip("damage when get blocked")]
-    public float damage;
     public float speed;
     public float range;
     public Sprite sprite;

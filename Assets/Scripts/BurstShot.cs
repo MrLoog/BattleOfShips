@@ -21,6 +21,12 @@ public class BurstShot : MonoBehaviour
     public float maxDamage = 200f;
 
     public float damage = 0f;
+
+    public float hullDamageRate = 0.5f;
+    public float sailDamageRate = 0.2f;
+    public float crewDamageRate = 0.3f;
+
+    public float modifyDamageRate = 0f;
     public float charge = 0f;
 
     [Tooltip("Damage Decrease per second")]
@@ -149,6 +155,12 @@ public class BurstShot : MonoBehaviour
         if (isShot && other.tag == GameSettings.TAG_SHIP && !owner.IsSameShip(other.GetComponent<Ship>()))
         {
             Instantiate(ExplosionEffect, transform.position, Quaternion.Euler(0, 0, 0));
+            other.GetComponent<Ship>().TakeDamage(new DamageDealShip()
+            {
+                hullDamage = CommonUtils.ModifyDamage(damage * hullDamageRate, modifyDamageRate),
+                sailDamage = CommonUtils.ModifyDamage(damage * sailDamageRate, modifyDamageRate),
+                crewDamage = CommonUtils.ModifyDamage(damage * crewDamageRate, modifyDamageRate)
+            }, null);
             EndTravel();
         }
     }

@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using static SeaBattleManager;
@@ -723,13 +724,18 @@ public class Ship : MonoBehaviour
     {
         avaiableShotType = ShipHelper.GetAvaiableShotType(Inventory);
         dictLoadedCannon = new Dictionary<string, int>();
+        int indexDefault = 0; //default load first or shot highest range
         for (int i = 0; i < avaiableShotType.Length; i++)
         {
             dictLoadedCannon.Add(ShipHelper.GetBallType(avaiableShotType[i]), 0);
+            if (ShipHelper.GetRangeCannonType(avaiableShotType[i]) > ShipHelper.GetRangeCannonType(avaiableShotType[indexDefault]))
+            {
+                indexDefault = i;
+            }
         }
         if (!CommonUtils.IsArrayNullEmpty(avaiableShotType))
         {
-            string shotTypeSelect = avaiableShotType[0];
+            string shotTypeSelect = avaiableShotType[indexDefault];
             // string shotTypeSelect = "Grape";
             // for (int i = 0; i < shotTypeCode.Length; i++)
             // {
@@ -923,7 +929,7 @@ public class Ship : MonoBehaviour
         {
             AI.enabled = true;
         }
-        ApplyWindForce(SeaBattleManager.Instance.windForce);
+        ApplyWindForce(SeaBattleManager.Instance.wind);
     }
 
     public void MakeDeathShip()

@@ -12,6 +12,7 @@ public class TransferItemCtrl : MonoBehaviour
     public Slider itemQuantitySlider;
     public Text itemMaxQuanity;
 
+    public Text txtExtraInfo;
     public Text weightShipFrom;
     public Text weightShipTo;
 
@@ -29,6 +30,9 @@ public class TransferItemCtrl : MonoBehaviour
     public ScriptableShipCustom toShipData;
 
     private const string TEMPLATE_SHIP_WEIGHT = "Ship {0}({1}):{2:N0}/{3:N0}";
+    private string template_extra_info = "";
+    private string template_ship_from = "";
+    private string template_ship_to = "";
 
 
     // Start is called before the first frame update
@@ -37,20 +41,48 @@ public class TransferItemCtrl : MonoBehaviour
 
     }
 
+    private void OnEnable()
+    {
+        LoadTemplate();
+    }
+
+    private void LoadTemplate()
+    {
+        if (template_extra_info == "") template_extra_info = txtExtraInfo.text;
+        if (template_ship_from == "") template_ship_from = weightShipFrom.text;
+        if (template_ship_to == "") template_ship_to = weightShipTo.text;
+    }
+
     public void ShowShipWeightStatus()
     {
-        weightShipFrom.text = string.Format(TEMPLATE_SHIP_WEIGHT,
-        fromInvIndex + 1,
-        fromShipData.shipName,
-        ShipHelper.CalculateAllCargoWeight(fromShipData) - (int)itemQuantitySlider.value * transferGoods.weight,
-        fromShipData.PeakData.capacity
-        );
-        weightShipTo.text = string.Format(TEMPLATE_SHIP_WEIGHT,
-        toInvIndex + 1,
-        toShipData.shipName,
-        ShipHelper.CalculateAllCargoWeight(toShipData) + (int)itemQuantitySlider.value * transferGoods.weight,
-        toShipData.PeakData.capacity
-        );
+        float value = (int)itemQuantitySlider.value * transferGoods.weight;
+
+        weightShipFrom.text = template_ship_from
+        .Replace("{code}", (fromInvIndex + 1).ToString())
+        .Replace("{name}", fromShipData.shipName?.Length > 0 ? fromShipData.shipName : "No Name")
+        .Replace("{value}", CommonUtils.FormatNumber(value))
+        .Replace("{curWeight}", CommonUtils.FormatNumber(ShipHelper.CalculateAllCargoWeight(fromShipData) - value))
+        .Replace("{totalWeight}", CommonUtils.FormatNumber(fromShipData.PeakData.capacity));
+
+        weightShipTo.text = template_ship_to
+        .Replace("{code}", (toInvIndex + 1).ToString())
+        .Replace("{name}", toShipData.shipName?.Length > 0 ? toShipData.shipName : "No Name")
+        .Replace("{value}", CommonUtils.FormatNumber(value))
+        .Replace("{curWeight}", CommonUtils.FormatNumber(ShipHelper.CalculateAllCargoWeight(toShipData) + value))
+        .Replace("{totalWeight}", CommonUtils.FormatNumber(toShipData.PeakData.capacity));
+
+        // weightShipFrom.text = string.Format(TEMPLATE_SHIP_WEIGHT,
+        // fromInvIndex + 1,
+        // fromShipData.shipName,
+        // ShipHelper.CalculateAllCargoWeight(fromShipData) - (int)itemQuantitySlider.value * transferGoods.weight,
+        // fromShipData.PeakData.capacity
+        // );
+        // weightShipTo.text = string.Format(TEMPLATE_SHIP_WEIGHT,
+        // toInvIndex + 1,
+        // toShipData.shipName,
+        // ShipHelper.CalculateAllCargoWeight(toShipData) + (int)itemQuantitySlider.value * transferGoods.weight,
+        // toShipData.PeakData.capacity
+        // );
     }
 
     // Update is called once per frame
@@ -71,6 +103,8 @@ public class TransferItemCtrl : MonoBehaviour
         itemName.text = goods.itemName;
         itemQuantitySlider.maxValue = quanity;
         itemQuantitySlider.value = quanity;
+        txtExtraInfo.text = template_extra_info.Replace("{weight}",
+            CommonUtils.FormatNumber(goods.weight));
         UpdateSelectedValue();
     }
 
@@ -87,6 +121,8 @@ public class TransferItemCtrl : MonoBehaviour
         itemName.text = goods.itemName;
         itemQuantitySlider.maxValue = quanity;
         itemQuantitySlider.value = quanity;
+        txtExtraInfo.text = template_extra_info.Replace("{weight}",
+            CommonUtils.FormatNumber(goods.weight));
         UpdateSelectedValue();
     }
 

@@ -129,6 +129,10 @@ public class TownManager : BaseSceneManager
         Workshop result = TownData.workshop ?? (new Workshop());
         result.timeRefresh = DateTime.Now;
         int quantity = result.slot;
+        if (GameManager.Instance.GameData.workshopSlot > quantity)
+        {
+            quantity = GameManager.Instance.GameData.workshopSlot;
+        }
         result.workshopShips = factory.GetRandomShip(quantity, true);
         result.soldStatus = Enumerable.Repeat(false, quantity).ToArray();
         result.forceReload = false;

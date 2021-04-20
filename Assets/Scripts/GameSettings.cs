@@ -10,4 +10,6 @@ public class GameSettings : MonoBehaviour
 
     public const string TAG_BOUNDS = "OceanBounds";
     public const string LAYER_OCEAN_BOUNDS = "OceanBounds";
+
+    public const string COMMON_FORMAT_NUMBER = "N0";
 }
