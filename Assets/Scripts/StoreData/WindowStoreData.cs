@@ -25,7 +25,7 @@ public class WindowStoreData : BaseStoreData
         }
     }
 
-    public override bool SaveData(string key, BaseDataEntity data)
+    public override bool SaveData(string key, object data)
     {
         return true;
     }

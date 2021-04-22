@@ -6,6 +6,8 @@ using UnityEngine;
 
 public class ShipHelper
 {
+    public const float SHIP_TECH_VALUE_RATE = 0.9f;
+    public const float SHIP_WORK_VALUE_RATE = 0.1f;
     public static bool IsNeedRepair(ScriptableShip currentState, ScriptableShip originState)
     {
         if (IsBrokenShip(currentState, originState))
@@ -58,11 +60,9 @@ public class ShipHelper
 
     internal static int CalculateRepairCost(ScriptableShipCustom data)
     {
-
         int cost = CalculateShipPrice(data, false, false, false) //exclude upgrade, exclude skill, full health
         - CalculateShipPrice(data, false, false, true); //exclude upgrade, exclude skill, current health
-        cost = (int)(cost * 0.4f); // estimate 0.6 rate technology and 0.4 for work value, this remove 0.4 in case repair
-        return cost;
+        return cost > 10 ? cost : 10;  //min value 
     }
 
     internal static int CalculateSellPrice(ScriptableShipCustom data)
@@ -80,20 +80,22 @@ public class ShipHelper
     internal static int CalculateShipPrice(ScriptableShipCustom data, bool upgradeApply = true, bool skillApply = true, bool stateHealth = true)
     {
         int basePrice = data.baseShipData.basePrice;
-        if (basePrice <= 0)
-        {
-            ScriptableShip template = MyResourceUtils.ResourcesLoadAll<ScriptableShip>(MyResourceUtils.RESOURCES_PATH_SCRIPTABLE_OBJECTS).Where(x => x.name == data.baseShipData.name).FirstOrDefault();
-            if (template != null)
-            {
-                basePrice = template.basePrice;
-                data.baseShipData.basePrice = basePrice;
-            }
-        }
+        // if (basePrice <= 0)
+        // {
+        //     //update base
+        //     ScriptableShip template = MyResourceUtils.ResourcesLoadAll<ScriptableShip>(MyResourceUtils.RESOURCES_PATH_SCRIPTABLE_OBJECTS).Where(x => x.name == data.baseShipData.name).FirstOrDefault();
+        //     if (template != null)
+        //     {
+        //         basePrice = template.basePrice;
+        //         data.baseShipData.basePrice = basePrice;
+        //     }
+        // }
         int numberSlotSkill = GetNumberSkillSlot(data);
         int price = (int)(
-            (upgradeApply ? CalculateUpgradeValue(data) : 0)
+        (upgradeApply ? CalculateUpgradeValue(data) : 0)
         + (skillApply ? Mathf.Pow(3, numberSlotSkill) : 1)
-            * basePrice * (stateHealth ? CalculateStateHealth(data) : 1)
+        + basePrice //giá trị công nghệ cố định
+        + (basePrice * ((1 - SHIP_TECH_VALUE_RATE) / SHIP_TECH_VALUE_RATE)) * (stateHealth ? CalculateStateHealth(data) : 1) //base price is technology
             );
         return price;
     }

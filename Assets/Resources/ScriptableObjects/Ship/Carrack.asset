@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 462f49c6bff21c245ad5b420d2271bc2, type: 3}
   m_Name: Carrack
   m_EditorClassIdentifier: 
+  active: 1
   typeName: Carrack
   type: 8
   maxCrew: 200
@@ -22,8 +23,8 @@ MonoBehaviour:
   windConversionRate: 0.58
   capacity: 3500
   capacityWeightRate: 0.4
-  sizeRateWidth: 1
-  sizeRateLength: 1
+  sizeRateWidth: 1.1
+  sizeRateLength: 1.1
   numberDeck: 2
   numberCannons: 0100000000000000040000000400000004000000040000000200000002000000
   MaxHitToStun: 5

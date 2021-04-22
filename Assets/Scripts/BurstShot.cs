@@ -157,9 +157,9 @@ public class BurstShot : MonoBehaviour
             Instantiate(ExplosionEffect, transform.position, Quaternion.Euler(0, 0, 0));
             other.GetComponent<Ship>().TakeDamage(new DamageDealShip()
             {
-                hullDamage = CommonUtils.ModifyDamage(damage * hullDamageRate, modifyDamageRate),
-                sailDamage = CommonUtils.ModifyDamage(damage * sailDamageRate, modifyDamageRate),
-                crewDamage = CommonUtils.ModifyDamage(damage * crewDamageRate, modifyDamageRate)
+                hullDamage = (int)CommonUtils.ModifyDamage(damage * hullDamageRate, modifyDamageRate),
+                sailDamage = (int)CommonUtils.ModifyDamage(damage * sailDamageRate, modifyDamageRate),
+                crewDamage = (int)CommonUtils.ModifyDamage(damage * crewDamageRate, modifyDamageRate)
             }, null);
             EndTravel();
         }
