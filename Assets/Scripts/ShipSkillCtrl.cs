@@ -17,7 +17,7 @@ public class ShipSkillCtrl : MonoBehaviour
     public Ship ship;
     public bool isSync = false;
 
-    public Sprite[] avatarSkills = new Sprite[4];
+    public Sprite[] avatarSkills = new Sprite[ShipHelper.MAX_SHIP_SKILL];
     public GameObject[] buttonSkill;
     public Image[] imgSKill;
     // Start is called before the first frame update
@@ -29,22 +29,31 @@ public class ShipSkillCtrl : MonoBehaviour
     public void StartSync()
     {
         isSync = false;
+        gameObject.SetActive(false);
         if (SeaBattleManager.Instance.playerShip != null)
         {
             ship = SeaBattleManager.Instance.playerShip.GetComponent<Ship>();
+            isSync = true;
+            if (ship.shipSkills == null || ship.shipSkills.Count == 0)
+            {
+                return;
+            }
+            gameObject.SetActive(true);
             for (int i = 0; i < ship.shipSkills.Count; i++)
             {
                 avatarSkills[i] = ship.shipSkills[i].avatar;
                 imgSKill[i].sprite = avatarSkills[i];
                 buttonSkill[i].SetActive(true);
             }
-            for (int i = ship.shipSkills.Count; i < 3; i++)
+            for (int i = ship.shipSkills.Count; i < ShipHelper.MAX_SHIP_SKILL; i++)
             {
+                //if not full 4 skill, clear slot remain
                 avatarSkills[i] = null;
                 imgSKill[i].sprite = null;
                 buttonSkill[i].SetActive(false);
             }
-            isSync = true;
+            gameObject.SetActive(true);
+
         }
     }
 

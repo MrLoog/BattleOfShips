@@ -8,6 +8,8 @@ public class ShipHelper
 {
     public const float SHIP_TECH_VALUE_RATE = 0.9f;
     public const float SHIP_WORK_VALUE_RATE = 0.1f;
+
+    public const int MAX_SHIP_SKILL = 4;
     public static bool IsNeedRepair(ScriptableShip currentState, ScriptableShip originState)
     {
         if (IsBrokenShip(currentState, originState))
