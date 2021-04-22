@@ -122,7 +122,20 @@ public class ShipHelper
 
     internal static int CalculateAllCargoValue(ScriptableShipCustom data)
     {
-        return 0;
+        if (data.inventory == null || data.inventory.goodsCode == null || data.inventory.goodsCode.Length == 0)
+        {
+            return 0;
+        }
+        List<ScriptableShipGoods> allGoods = MyResourceUtils.ResourcesLoadAll<ScriptableShipGoods>(MyResourceUtils.RESOURCES_PATH_SCRIPTABLE_OBJECTS_GOODS).ToList();
+        int gold = 0;
+
+        MarketStateToday todayMarket = GameManager.Instance.GetMarketStateToday();
+
+        for (int i = 0; i < data.inventory.goodsCode.Length; i++)
+        {
+            gold += todayMarket.GoldReceivedBySell(data.inventory.goodsCode[i], data.inventory.quantity[i]);
+        }
+        return gold;
     }
 
     internal static float CalculateAllCargoWeight(ScriptableShipCustom data)

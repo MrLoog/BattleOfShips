@@ -25,7 +25,6 @@ public class WorkshopMenu : MonoBehaviour
     public GameObject prefabInfoRow;
 
     public GameObject buttonRefresh;
-    public Text PlayerGold;
     public Text CountdownRefresh;
 
 
@@ -64,16 +63,6 @@ public class WorkshopMenu : MonoBehaviour
 
     }
 
-    private void OnEnable()
-    {
-        GameManager.Instance.OnGoldAccountChanged += DisplayPlayerGold;
-        DisplayPlayerGold();
-    }
-
-    private void OnDisable()
-    {
-        GameManager.Instance.OnGoldAccountChanged -= DisplayPlayerGold;
-    }
 
     // Update is called once per frame
     void Update()
@@ -91,11 +80,6 @@ public class WorkshopMenu : MonoBehaviour
                 DoRefreshWorkshop();
             }
         }
-    }
-
-    private void DisplayPlayerGold(long gold = 0)
-    {
-        PlayerGold.text = string.Format(TEMPLATE_PLAYER_GOLD, GameManager.Instance.GameData.gold);
     }
 
     public void ToggleWorkshop()

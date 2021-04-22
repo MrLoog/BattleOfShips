@@ -94,7 +94,12 @@ public class BaseStoreData : IStoreData
         AddSettings(SYSTEM_SETTINGS_KEY_VERSION, version); //done update save new version
     }
 
-    public virtual T LoadData<T>(string key, bool ignoreCheckInit = false)
+    public virtual T LoadData<T>(string key)
+    {
+        return LoadData<T>(key, false);
+    }
+
+    protected virtual T LoadData<T>(string key, bool ignoreCheckInit = false)
     {
         if (!isInit && !ignoreCheckInit)
         {
