@@ -74,6 +74,7 @@ public class ShipBurstShotSkill : ShipSkill
         {
             CannonBallShot = null;
             accumCooltime = 0f;
+            isActiveSkill = false;
         }
     }
 

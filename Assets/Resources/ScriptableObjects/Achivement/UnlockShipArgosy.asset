@@ -25,8 +25,5 @@ MonoBehaviour:
   - actionName: UnlockShopShip
     actionParams:
     - Argosy
-    expectResult: 
-  - actionName: ShowToast
-    actionParams:
     - You now can buy Argosy at Shop.
     expectResult: 

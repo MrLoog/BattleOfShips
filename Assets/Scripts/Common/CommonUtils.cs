@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using System.Linq;
+using System.Globalization;
 
 public class CommonUtils
 {
@@ -28,6 +29,10 @@ public class CommonUtils
         return -1;
     }
 
+    public static float ModifyDamage(float damage, float modifyRate)
+    {
+        return Random.Range(damage * (1 - modifyRate), damage * (1 + modifyRate));
+    }
     public static bool IsArrayNullEmpty<T>(T[] arr)
     {
         if (arr == null || arr.Length == 0)
@@ -91,5 +96,17 @@ public class CommonUtils
         List<T> toList = array.ToList();
         toList.RemoveAt(indexRemove);
         return toList.ToArray();
+    }
+
+    public static T CastToEnum<T>(object value)
+    {
+        return (T)System.Enum.ToObject(typeof(T), value);
+    }
+
+    public static string FormatNumber(object value)
+    {
+        var nfi = (NumberFormatInfo)CultureInfo.InvariantCulture.NumberFormat.Clone();
+        nfi.NumberGroupSeparator = " ";
+        return string.Format(nfi, "{0:N0}", value);
     }
 }

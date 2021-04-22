@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -31,6 +32,12 @@ public class ShipManageMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        MiniMenuCtrl.OnAutoClose += OnMinuMenuAutoClose;
+    }
+
+    private void OnMinuMenuAutoClose()
+    {
+        focusShip = null;
     }
 
     // Update is called once per frame
@@ -39,13 +46,21 @@ public class ShipManageMenu : MonoBehaviour
 
     }
 
+    public void ToggleManage()
+    {
+        if (panel.activeSelf)
+        {
+            HideManage();
+        }
+        else
+        {
+            ShowManage();
+        }
+    }
     public void ShowManage()
     {
 
-        for (int i = shipListContent.transform.childCount; i > 0; i--)
-        {
-            Destroy(shipListContent.transform.GetChild(i - 1).gameObject);
-        }
+        MyGameObjectUtils.ClearAllChilds(shipListContent);
 
         shipCustoms = new ScriptableShipCustom[(GameManager.Instance.GameData.otherShips?.Length ?? 0) + 1];
         shipInfos = null;
@@ -79,7 +94,7 @@ public class ShipManageMenu : MonoBehaviour
         ShipManageInfo scriptInfo = newShipInfo.GetComponent<ShipManageInfo>();
         shipInfos = CommonUtils.AddElemToArray(shipInfos, scriptInfo);
         scriptInfo.IndexId = shipInfos.Length;
-        if (isMain) scriptInfo.isMainShip = true;
+        if (isMain) scriptInfo.IsMainShip = true;
         scriptInfo.SetShipData(data, prefabInfoRow);
         scriptInfo.OnFuncBtnClick += delegate ()
         {
@@ -92,6 +107,7 @@ public class ShipManageMenu : MonoBehaviour
     {
         ShowMiniMenu(null);
         panel.SetActive(false);
+        ShipInfoDetails.Instance.HidePanel();
     }
     private ShipManageInfo focusShip;
     public void ShowMiniMenu(ShipManageInfo shipManageInfo)
@@ -118,12 +134,12 @@ public class ShipManageMenu : MonoBehaviour
             shipCustoms[0] = shipCustoms[focusIndex];
             shipInfos[0] = shipInfos[focusIndex];
             shipInfos[0].IndexId = 1;
-            shipInfos[0].isMainShip = true;
+            shipInfos[0].IsMainShip = true;
 
             shipCustoms[focusIndex] = curMain;
             shipInfos[focusIndex] = curMainInfo;
             shipInfos[focusIndex].IndexId = focusIndex + 1;
-            shipInfos[focusIndex].isMainShip = false;
+            shipInfos[focusIndex].IsMainShip = false;
 
             GameManager.Instance.GameData.playerShip = shipCustoms[0];
             GameManager.Instance.GameData.otherShips[focusIndex - 1] = curMain;
@@ -208,6 +224,7 @@ public class ShipManageMenu : MonoBehaviour
                         shipCustoms = CommonUtils.RemoveFromArray(shipCustoms, focusIndex);
                         shipInfos = CommonUtils.RemoveFromArray(shipInfos, focusIndex);
 
+
                         info.SelfDestroy();
                         GameManager.Instance.AddGold(price + cargoValue);
                     }
@@ -221,14 +238,14 @@ public class ShipManageMenu : MonoBehaviour
     {
         int indexShip = shipCustoms.ToList().IndexOf(focusShip.data);
         GameManager.Instance.ShipInventoryCtrl.RegisterAvaiableShip(shipCustoms, indexShip);
-        GameManager.Instance.ShipInventoryCtrl.OnHideInventory += OnDoneInventory;
+        GameManager.Instance.ShipInventoryCtrl.EventHideInventory.AddListener(OnDoneInventory);
         GameManager.Instance.ShipInventoryCtrl.ShowInventory(ShipInventoryCtrl.InventoryMode.Transfer);
 
     }
 
     private void OnDoneInventory()
     {
-        GameManager.Instance.ShipInventoryCtrl.OnHideInventory -= OnDoneInventory;
+        GameManager.Instance.ShipInventoryCtrl.EventHideInventory.RemoveListener(OnDoneInventory);
         foreach (var item in shipInfos)
         {
             item.ShowData();
@@ -240,7 +257,7 @@ public class ShipManageMenu : MonoBehaviour
     {
         int indexShip = shipCustoms.ToList().IndexOf(focusShip.data);
         GameManager.Instance.ShipInventoryCtrl.RegisterAvaiableShip(shipCustoms, indexShip);
-        GameManager.Instance.ShipInventoryCtrl.OnHideInventory += OnDoneInventory;
+        GameManager.Instance.ShipInventoryCtrl.EventHideInventory.AddListener(OnDoneInventory);
         GameManager.Instance.ShipInventoryCtrl.ShowInventory(ShipInventoryCtrl.InventoryMode.Shop, indexShip);
     }
 }

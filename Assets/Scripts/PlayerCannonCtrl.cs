@@ -48,11 +48,20 @@ public class PlayerCannonCtrl : MonoBehaviour
             {
                 ShowCooldownDirection(CannonDirection.Front);
             });
+            playerShip.Events.RegisterListener(Ship.EVENT_CANNON_FRONT_UNLOAD).AddListener(delegate ()
+            {
+                ShowCooldownDirection(CannonDirection.Front);
+            });
             playerShip.Events.RegisterListener(Ship.EVENT_CANNON_FRONT_READY).AddListener(delegate ()
             {
                 ShowReadyDirection(CannonDirection.Front);
             });
+
             playerShip.Events.RegisterListener(Ship.EVENT_CANNON_RIGHT_FIRE).AddListener(delegate ()
+            {
+                ShowCooldownDirection(CannonDirection.Right);
+            });
+            playerShip.Events.RegisterListener(Ship.EVENT_CANNON_RIGHT_UNLOAD).AddListener(delegate ()
             {
                 ShowCooldownDirection(CannonDirection.Right);
             });
@@ -60,7 +69,12 @@ public class PlayerCannonCtrl : MonoBehaviour
             {
                 ShowReadyDirection(CannonDirection.Right);
             });
+
             playerShip.Events.RegisterListener(Ship.EVENT_CANNON_LEFT_FIRE).AddListener(delegate ()
+            {
+                ShowCooldownDirection(CannonDirection.Left);
+            });
+            playerShip.Events.RegisterListener(Ship.EVENT_CANNON_LEFT_UNLOAD).AddListener(delegate ()
             {
                 ShowCooldownDirection(CannonDirection.Left);
             });
@@ -68,7 +82,12 @@ public class PlayerCannonCtrl : MonoBehaviour
             {
                 ShowReadyDirection(CannonDirection.Left);
             });
+
             playerShip.Events.RegisterListener(Ship.EVENT_CANNON_BACK_FIRE).AddListener(delegate ()
+            {
+                ShowCooldownDirection(CannonDirection.Back);
+            });
+            playerShip.Events.RegisterListener(Ship.EVENT_CANNON_BACK_UNLOAD).AddListener(delegate ()
             {
                 ShowCooldownDirection(CannonDirection.Back);
             });

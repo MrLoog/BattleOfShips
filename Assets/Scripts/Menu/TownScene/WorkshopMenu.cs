@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
@@ -24,9 +26,12 @@ public class WorkshopMenu : MonoBehaviour
 
     public GameObject buttonRefresh;
     public Text PlayerGold;
+    public Text CountdownRefresh;
+
 
     private int costRefresh = 3;
     private const string TEMPLATE_REFRESH_BTN = "Refresh({0:N0} gem)";
+    private string template_refresh_btn = "";
     private const string TEMPLATE_PLAYER_GOLD = "<color=yellow>Gold: {0:N0}</color>";
 
     private Workshop workshop;
@@ -47,8 +52,15 @@ public class WorkshopMenu : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        buttonRefresh.GetComponentInChildren<Text>().text = string.Format(TEMPLATE_REFRESH_BTN, costRefresh);
-
+        // buttonRefresh.GetComponentInChildren<Text>().text = string.Format(TEMPLATE_REFRESH_BTN, costRefresh);
+        if (template_refresh_btn == "")
+        {
+            template_refresh_btn = buttonRefresh.GetComponentInChildren<TextMeshProUGUI>().text;
+        }
+        buttonRefresh.GetComponentInChildren<TextMeshProUGUI>().text =
+        template_refresh_btn.Replace("{0}",
+        string.Format("{0:N0}", costRefresh)
+        );
 
     }
 
@@ -66,15 +78,37 @@ public class WorkshopMenu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (!panel.activeSelf) return;
+        if (TownManager.Instance.TownData?.workshop?.timeRefresh != null)
+        {
+            TimeSpan timeLeft = DateTime.Now.Subtract(TownManager.Instance.TownData.workshop.timeRefresh);
+            if (timeLeft.TotalHours < TownManager.Instance.hourRefreshShop)
+            {
+                CountdownRefresh.text = TimeSpan.FromHours(TownManager.Instance.hourRefreshShop - timeLeft.TotalHours).ToString(@"hh\:mm\:ss");
+            }
+            else
+            {
+                DoRefreshWorkshop();
+            }
+        }
     }
 
-    private void DisplayPlayerGold(int gold = 0)
+    private void DisplayPlayerGold(long gold = 0)
     {
         PlayerGold.text = string.Format(TEMPLATE_PLAYER_GOLD, GameManager.Instance.GameData.gold);
     }
 
-
+    public void ToggleWorkshop()
+    {
+        if (panel.activeSelf)
+        {
+            HideWorkshop();
+        }
+        else
+        {
+            ShowAllShip();
+        }
+    }
     public void ShowAllShip()
     {
 
@@ -106,7 +140,7 @@ public class WorkshopMenu : MonoBehaviour
         }
         else
         {
-            scriptInfo.SetFuncText(string.Format("Buy({0:N0})", ShipHelper.CalculateShipPrice(scriptInfo.data)));
+            scriptInfo.SetFuncText(string.Format("{0:N0}", ShipHelper.CalculateShipPrice(scriptInfo.data)));
             scriptInfo.OnFuncBtnClick += delegate ()
             {
                 PerfromBuyShip(scriptInfo);
@@ -117,6 +151,7 @@ public class WorkshopMenu : MonoBehaviour
 
     public void HideWorkshop()
     {
+        ShipInfoDetails.Instance.HidePanel();
         panel.SetActive(false);
     }
     private ShipManageInfo focusShip;
@@ -150,6 +185,16 @@ public class WorkshopMenu : MonoBehaviour
             );
         }
     }
+
+    public void DoRefreshWorkshop()
+    {
+        TownManager.Instance.RefreshWorkshop();
+        RequestWorkshopInfo();
+        if (panel.activeSelf)
+        {
+            ShowAllShip();
+        }
+    }
     public void RefreshShop()
     {
         if (GameManager.Instance.IsEnoughGem(costRefresh))
@@ -163,9 +208,7 @@ public class WorkshopMenu : MonoBehaviour
                   {
                       if (choice == ModalPopupCtrl.RESULT_POSITIVE)
                       {
-                          TownManager.Instance.RefreshWorkshop();
-                          RequestWorkshopInfo();
-                          ShowAllShip();
+                          DoRefreshWorkshop();
                           GameManager.Instance.DeductGem(costRefresh);
                       }
                   }

@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: RoundShot
   m_EditorClassIdentifier: 
   active: 1
-  prefab: {fileID: 3307599177762406278, guid: ac5e03f0ebad94e4392d1b767ee140e1, type: 3}
+  prefab: {fileID: 1062158067001741303, guid: ae3552ee23f48e14a87e396f1110eaeb, type: 3}
   cannonName: Round Shot
+  codeName: Round
   hullDamage: 3
   sailDamage: 1
   crewDamage: 1
@@ -22,3 +23,4 @@ MonoBehaviour:
   speed: 5
   range: 5
   sprite: {fileID: 21300000, guid: 0f15a42c16d62f541b774105e3b27059, type: 3}
+  goodsCodeCost: CannonBall

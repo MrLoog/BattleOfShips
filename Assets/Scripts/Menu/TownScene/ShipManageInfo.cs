@@ -9,6 +9,30 @@ using UnityEngine.UI;
 public class ShipManageInfo : MonoBehaviour
 {
     public bool isMainShip = false;
+
+    public bool IsMainShip
+    {
+        get
+        {
+            return isMainShip;
+        }
+        set
+        {
+            isMainShip = value;
+            if (isMainShip)
+            {
+                ImageMainSign.color = mainColor;
+            }
+            else
+            {
+                ImageMainSign.color = originColor;
+            }
+        }
+    }
+    public Color originColor;
+    public Color mainColor;
+
+    public Image ImageMainSign;
     public Text txtShipName;
     public GameObject statsContent;
 
@@ -45,7 +69,7 @@ public class ShipManageInfo : MonoBehaviour
     }
 
 
-    public void ShowData()
+    public virtual void ShowData()
     {
         ClearStats();
 
@@ -110,5 +134,10 @@ public class ShipManageInfo : MonoBehaviour
     public void SelfDestroy()
     {
         Destroy(gameObject);
+    }
+
+    public void ShowPanelDetails()
+    {
+        ShipInfoDetails.Instance.ShowData(data);
     }
 }

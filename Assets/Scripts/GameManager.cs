@@ -19,8 +19,8 @@ public class GameManager : BaseSceneManager
 
     public ShipInventoryCtrl ShipInventoryCtrl => ShipInventoryCanvas.GetComponentInChildren<ShipInventoryCtrl>();
 
-    public UnityAction<int> OnGoldAccountChanged;
-    public UnityAction<int> OnGemAccountChanged;
+    public UnityAction<long> OnGoldAccountChanged;
+    public UnityAction<long> OnGemAccountChanged;
     public IStoreData database;
 
     public string MessageIntent;
@@ -77,6 +77,8 @@ public class GameManager : BaseSceneManager
     public string mainSceneName = "GameScene";
     public string battleSceneName = "SeaBattleScene";
     public string townSceneName = "TownScene";
+
+    public float hourRefreshMarket = 1f;
 
     #region toggle for test
 
@@ -224,12 +226,12 @@ public class GameManager : BaseSceneManager
     #endregion store data
 
     #region gold account
-    public bool IsEnoughGold(int amount)
+    public bool IsEnoughGold(long amount)
     {
         return GameData.gold >= amount;
     }
 
-    public int DeductGold(int amount)
+    public long DeductGold(long amount)
     {
         if (!IsEnoughGold(amount)) return -1;
         GameData.gold -= amount;
@@ -237,19 +239,19 @@ public class GameManager : BaseSceneManager
         return GameData.gold;
     }
 
-    public int AddGold(int amount)
+    public long AddGold(long amount)
     {
         GameData.gold += amount;
         OnGoldAccountChanged?.Invoke(amount);
         return GameData.gold;
     }
 
-    public bool IsEnoughGem(int amount)
+    public bool IsEnoughGem(long amount)
     {
         return GameData.gem >= amount;
     }
 
-    public int DeductGem(int amount)
+    public long DeductGem(long amount)
     {
         if (!IsEnoughGem(amount)) return -1;
         GameData.gem -= amount;
@@ -257,7 +259,7 @@ public class GameManager : BaseSceneManager
         return GameData.gem;
     }
 
-    public int AddGem(int amount)
+    public long AddGem(long amount)
     {
         GameData.gem += amount;
         OnGemAccountChanged?.Invoke(amount);
@@ -316,12 +318,15 @@ public class GameManager : BaseSceneManager
             Time.timeScale = prevSpeed > 0f ? prevSpeed : 1;
         }
     }
-    public MarketStateToday GetMarketStateToday()
+    public MarketStateToday GetMarketStateToday(bool refresh = false)
     {
+
         if (GameData.market == null
         || GameData.market.time == null
-        || GameData.market.time.ToString("yyyy-MM-dd") != DateTime.Now.ToString("yyyy-MM-dd")
+        || DateTime.Now.Subtract(GameData.market.time).TotalHours > hourRefreshMarket
+        // || GameData.market.time.ToString("yyyy-MM-dd hh") != DateTime.Now.ToString("yyyy-MM-dd hh")
         || forceRefreshMarket
+        || refresh
         )
         {
             GameData.market = MarketStateFactory.BuildMarketStateToday(MyResourceUtils.ResourcesLoadAll<ScriptableShipGoods>(

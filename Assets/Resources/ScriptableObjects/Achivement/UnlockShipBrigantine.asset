@@ -25,8 +25,5 @@ MonoBehaviour:
   - actionName: UnlockShopShip
     actionParams:
     - Brigantine
-    expectResult: 
-  - actionName: ShowToast
-    actionParams:
     - You now can buy Brigantine at Shop.
     expectResult: 

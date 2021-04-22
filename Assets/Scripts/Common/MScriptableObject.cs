@@ -60,7 +60,7 @@ public abstract class MScriptableObject : ScriptableObject
 
     private void DeepOverrideFields(object target, object source)
     {
-        Debug.Log("DeepOverride 0");
+        // Debug.Log("DeepOverride 0");
         var props = target.GetType().GetProperties();
         var fields = target.GetType().GetFields().ToList();
         var field2s = target.GetType().BaseType?.GetFields();
@@ -76,22 +76,22 @@ public abstract class MScriptableObject : ScriptableObject
         {
             object value1 = prop.GetValue(target);
             object value2 = prop.GetValue(source);
-            Debug.Log("DeepOverride 1" + prop.Name + " " + prop.FieldType + ":" + value1 + "/" + value2);
+            // Debug.Log("DeepOverride 1" + prop.Name + " " + prop.FieldType + ":" + value1 + "/" + value2);
             // Debug.Log("DeepOverride " + prop.FieldType.IsValueType);
 
             if ((prop.FieldType.IsSubclassOf(typeof(GameObject))
             || prop.FieldType == typeof(GameObject) || prop.FieldType.Namespace == "UnityEngine")
             && !prop.FieldType.IsSubclassOf(typeof(ScriptableObject)))
             {
-                Debug.Log("DeepOverride 1" + prop.Name);
+                // Debug.Log("DeepOverride 1" + prop.Name);
                 continue;
             }
             else if (prop.FieldType.IsSubclassOf(typeof(MScriptableObject)))
             {
-                Debug.Log("DeepOverride 11" + prop.Name);
+                // Debug.Log("DeepOverride 11" + prop.Name);
                 if (value1 != null)
                 {
-                    Debug.Log("DeepOverride 111" + prop.Name);
+                    // Debug.Log("DeepOverride 111" + prop.Name);
                     MScriptableObject cloneValue = (MScriptableObject)value1.GetType()
                     .GetMethod("Clone")
                     .MakeGenericMethod(prop.FieldType)
@@ -101,7 +101,7 @@ public abstract class MScriptableObject : ScriptableObject
                 }
                 else
                 {
-                    Debug.Log("DeepOverride 112" + prop.Name);
+                    // Debug.Log("DeepOverride 112" + prop.Name);
                     prop.SetValue(target, value2);
                     continue;
                 }
@@ -112,26 +112,26 @@ public abstract class MScriptableObject : ScriptableObject
             && prop.FieldType.Namespace != "System"
             && (prop.FieldType.IsSubclassOf(typeof(object)) || prop.FieldType == typeof(object)))
             {
-                Debug.Log("DeepOverride 2" + prop.Name);
+                // Debug.Log("DeepOverride 2" + prop.Name);
                 if (value1 == null)
                 {
-                    Debug.Log("DeepOverride 21" + prop.Name);
+                    // Debug.Log("DeepOverride 21" + prop.Name);
                     prop.SetValue(target, value2);
                 }
                 else if (value2 == null)
                 {
-                    Debug.Log("DeepOverride 22" + prop.Name);
+                    // Debug.Log("DeepOverride 22" + prop.Name);
                     prop.SetValue(target, null);
                 }
                 else
                 {
-                    Debug.Log("DeepOverride 23" + prop.Name);
+                    // Debug.Log("DeepOverride 23" + prop.Name);
                     DeepOverrideFields(value1, value2);
                 }
             }
             else if (prop.FieldType.IsArray)
             {
-                Debug.Log("DeepOverride 3" + prop.Name);
+                // Debug.Log("DeepOverride 3" + prop.Name);
                 //if array game object keep as origin
                 //else array value take from source
                 Array arr1 = (Array)value1;
@@ -153,10 +153,10 @@ public abstract class MScriptableObject : ScriptableObject
                 }
                 if (isCopy)
                 {
-                    Debug.Log("DeepOverride 41" + prop.Name);
+                    // Debug.Log("DeepOverride 41" + prop.Name);
                     if (arr2 != null && arr2.Length > 0 && arr2.GetValue(0).GetType().IsSubclassOf(typeof(MScriptableObject)))
                     {
-                        Debug.Log("DeepOverride 42" + prop.Name);
+                        // Debug.Log("DeepOverride 42" + prop.Name);
                         for (int e = 0; e < arr2.Length; e++)
                         {
                             Type typeArr2 = arr2.GetValue(e).GetType();
@@ -173,7 +173,7 @@ public abstract class MScriptableObject : ScriptableObject
             }
             else
             {
-                Debug.Log("DeepOverride 5" + prop.Name);
+                // Debug.Log("DeepOverride 5" + prop.Name);
                 prop.SetValue(target, value2);
             }
 

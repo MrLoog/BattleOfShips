@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 using static SeaBattleManager;
@@ -29,9 +30,18 @@ public class Ship : MonoBehaviour
     public const string EVENT_CANNON_LEFT_READY = "CANNON_LEFT_READY";
     public const string EVENT_CANNON_BACK_FIRE = "CANNON_BACK_FIRE";
     public const string EVENT_CANNON_BACK_READY = "CANNON_BACK_READY";
+    public const string EVENT_CANNON_FRONT_UNLOAD = "CANNON_FRONT_UNLOAD";
+    public const string EVENT_CANNON_RIGHT_UNLOAD = "CANNON_RIGHT_UNLOAD";
+    public const string EVENT_CANNON_LEFT_UNLOAD = "CANNON_LEFT_UNLOAD";
+    public const string EVENT_CANNON_BACK_UNLOAD = "CANNON_BACK_UNLOAD";
     public const string EVENT_TACKED_OTHER_SHIP = "TACKED_OTHER_SHIP";
     public const string EVENT_SHIP_DEFEATED = "SHIP_DEFEATED";
     public const string EVENT_CREW_DAMAGED = "CREW_DAMAGED";
+    public const string EVENT_SHOT_TYPE_CHANGED = "SHOT_TYPE_CHANGED";
+    public const string EVENT_SHOT_TYPE_FRONT_CHANGED = "SHOT_TYPE_FRONT";
+    public const string EVENT_SHOT_TYPE_RIGHT_CHANGED = "SHOT_TYPE_RIGHT";
+    public const string EVENT_SHOT_TYPE_LEFT_CHANGED = "SHOT_TYPE_LEFT";
+    public const string EVENT_SHOT_TYPE_BACK_CHANGED = "SHOT_TYPE_BACK";
     public const string EVENT_HULL_75 = "HULL_75";
     public const string EVENT_HULL_50 = "HULL_50";
     public const string EVENT_HULL_25 = "HULL_25";
@@ -105,6 +115,8 @@ public class Ship : MonoBehaviour
                 cooldownCannons[i] = 0f;
                 timeReloadCannons[i] = GetReloadCannonTimeDirection(GetDirectionByIndexCannon(i));
             }
+
+            DetermineAvaiableShotType(); //after CurShipData for get current deck
 
             ValidState();
         }
@@ -252,6 +264,9 @@ public class Ship : MonoBehaviour
     public float[] cooldownCannons;
     public float[] timeReloadCannons;
 
+    public string[] shotTypeCode = new string[4];
+    public string[] avaiableShotType;
+
     public bool isStuned = false;
     public float accumStunTime = 0f;
 
@@ -311,24 +326,65 @@ public class Ship : MonoBehaviour
                 if (cannonSight == null)
                 {
                     cannonSight = Instantiate(prefabCannonSight, transform, false);
-                    CannonSight[] sights = cannonSight.GetComponentsInChildren<CannonSight>();
-                    foreach (CannonSight s in sights)
-                    {
-                        s.shipOwner = this;
-                    }
                 }
                 else
                 {
                     cannonSight.SetActive(true);
                 }
+                ValidCannonSight();
+                Events.RegisterListener(EVENT_SHOT_TYPE_CHANGED).AddListener(ValidCannonSight);
             }
             else
             {
                 cannonSight?.SetActive(false);
+                Events.RegisterListener(EVENT_SHOT_TYPE_CHANGED).RemoveListener(ValidCannonSight);
             }
+
             enableCannonSight = value;
         }
     }
+
+    private void ValidCannonSight()
+    {
+        CannonSight[] sights = cannonSight.GetComponentsInChildren<CannonSight>();
+        for (int i = 0; i < sights.Length; i++)
+        {
+            if (!CommonUtils.IsArrayNullEmpty(shotTypeCode))
+            {
+                sights[i].ToDistance = ShipHelper.GetRangeCannonType(shotTypeCode[i]);
+            }
+            sights[i].shipOwner = this;
+        }
+    }
+
+    public bool ChangeShotType(CannonDirection direction, string typeCode)
+    {
+        UnloadCannon(direction);
+        switch (direction)
+        {
+            case CannonDirection.Front:
+                shotTypeCode[0] = typeCode;
+                Events.InvokeOnAction(EVENT_SHOT_TYPE_FRONT_CHANGED);
+                break;
+            case CannonDirection.Right:
+                shotTypeCode[1] = typeCode;
+                Events.InvokeOnAction(EVENT_SHOT_TYPE_RIGHT_CHANGED);
+                break;
+            case CannonDirection.Left:
+                shotTypeCode[2] = typeCode;
+                Events.InvokeOnAction(EVENT_SHOT_TYPE_LEFT_CHANGED);
+                break;
+            case CannonDirection.Back:
+                shotTypeCode[3] = typeCode;
+                Events.InvokeOnAction(EVENT_SHOT_TYPE_BACK_CHANGED);
+                break;
+            default: break;
+        }
+        isReloadingCannon = true; //cause reload cannon
+        Events.InvokeOnAction(EVENT_SHOT_TYPE_CHANGED);
+        return true;
+    }
+
 
     private Rigidbody2D rigidBody2d;
 
@@ -391,31 +447,31 @@ public class Ship : MonoBehaviour
 
     }
 
-    public int GetCannonBallInShip()
+    public int GetCannonBallInShip(string ballType)
     {
         if (Inventory == null || Inventory.goodsCode == null) return 0;
         for (int i = 0; i < Inventory.goodsCode.Length; i++)
         {
-            if (Inventory.goodsCode[i] == SeaBattleManager.Instance.GoodsCannonBallCode)
+            if (Inventory.goodsCode[i] == ballType)
             {
-                return Inventory.quantity[i] - loadedCannon;
+                return Inventory.quantity[i] - dictLoadedCannon[ballType];
             }
         }
         return 0;
     }
 
-    public int loadedCannon = 0;
+    public Dictionary<string, int> dictLoadedCannon;
 
-    public void DeductCannonBall(int quantity = 1, bool fire = false)
+    public void DeductCannonBall(string ballType, int quantity = 1, bool fire = false)
     {
         if (Inventory == null || Inventory.goodsCode == null) return;
         if (fire)
         {
             for (int i = 0; i < Inventory.goodsCode.Length; i++)
             {
-                if (Inventory.goodsCode[i] == SeaBattleManager.Instance.GoodsCannonBallCode)
+                if (Inventory.goodsCode[i] == ballType)
                 {
-                    loadedCannon -= quantity;
+                    dictLoadedCannon[ballType] -= quantity;
                     Inventory.quantity[i] -= quantity;
                     return;
                 }
@@ -423,7 +479,8 @@ public class Ship : MonoBehaviour
         }
         else
         {
-            loadedCannon += quantity;
+            //positive load, negative unload 
+            dictLoadedCannon[ballType] += quantity;
         }
     }
 
@@ -446,6 +503,75 @@ public class Ship : MonoBehaviour
         }
     }
 
+    private void UnloadCannonDirection(CannonDirection direction)
+    {
+        int indexDirection = 0;
+        switch (direction)
+        {
+            case CannonDirection.Front:
+                indexDirection = 0;
+                break;
+            case CannonDirection.Right:
+                indexDirection = 1;
+                break;
+            case CannonDirection.Left:
+                indexDirection = 2;
+                break;
+            case CannonDirection.Back:
+                indexDirection = 3;
+                break;
+            default:
+                break;
+        }
+        for (int c = 0; c < curShipData.numberDeck; c++)
+        {
+            int indexCannon = indexDirection * curShipData.numberDeck + c;
+            if (numberCannon[indexCannon] == 0) continue;
+
+            if (cooldownCannons[indexCannon] > 0f)
+            {
+                //already cannon load need unload
+                if (Inventory != null)
+                {
+                    int cannonBallRequired = numberCannon[indexCannon];
+                    DeductCannonBall(ShipHelper.GetBallType(shotTypeCode[indexDirection]), -cannonBallRequired); //unload cannon
+                }
+            }
+            cooldownCannons[indexCannon] = 0f; //reset cool down
+
+            // if (c < (curShipData.numberDeck - 1)) continue;
+            if (c > 0) continue; //only first deck raise event
+            switch (indexDirection)
+            {
+                case 0: Events.InvokeOnAction(EVENT_CANNON_FRONT_UNLOAD); break;
+                case 1: Events.InvokeOnAction(EVENT_CANNON_RIGHT_UNLOAD); break;
+                case 2: Events.InvokeOnAction(EVENT_CANNON_LEFT_UNLOAD); break;
+                case 3: Events.InvokeOnAction(EVENT_CANNON_BACK_UNLOAD); break;
+                default: break;
+            }
+        }
+    }
+    private void UnloadCannon(CannonDirection direction = CannonDirection.None)
+    {
+        if (CannonDirection.None.Equals(direction)) return;
+        if ((direction & CannonDirection.Front) > 0)
+        {
+            UnloadCannonDirection(CannonDirection.Front);
+        }
+        if ((direction & CannonDirection.Right) > 0)
+        {
+            UnloadCannonDirection(CannonDirection.Right);
+        }
+        if ((direction & CannonDirection.Left) > 0)
+        {
+            UnloadCannonDirection(CannonDirection.Left);
+        }
+        if ((direction & CannonDirection.Back) > 0)
+        {
+            UnloadCannonDirection(CannonDirection.Back);
+        }
+    }
+
     private void ReloadCannons()
     {
         if (!isReloadingCannon) return;
@@ -455,6 +581,7 @@ public class Ship : MonoBehaviour
         // }
         for (int i = 0; i < 4; i++)
         {
+            string cannonCode = shotTypeCode[i];
             for (int c = 0; c < curShipData.numberDeck; c++)
             {
                 int indexCannon = i * curShipData.numberDeck + c;
@@ -467,12 +594,12 @@ public class Ship : MonoBehaviour
                         if (Inventory != null)
                         {
                             int cannonBallRequired = numberCannon[indexCannon];
-                            if (GetCannonBallInShip() < cannonBallRequired)
+                            if (GetCannonBallInShip(ShipHelper.GetBallType(shotTypeCode[i])) < cannonBallRequired)
                             {
                                 ValidReloadingCannon();
                                 return;
                             }
-                            DeductCannonBall(cannonBallRequired);
+                            DeductCannonBall(ShipHelper.GetBallType(shotTypeCode[i]), cannonBallRequired);
                         }
                     }
                     cooldownCannons[indexCannon] += Time.deltaTime;
@@ -559,8 +686,6 @@ public class Ship : MonoBehaviour
 
     internal void InitFromCustomData(ScriptableShipCustom playerStartShipCustom)
     {
-
-
         customData = playerStartShipCustom;
         ShipData = playerStartShipCustom.baseShipData;
 
@@ -588,6 +713,40 @@ public class Ship : MonoBehaviour
                 RegisterShipSkill(skill);
             }
         }
+
+        if (customData.AIMemory != null)
+        {
+            GetComponent<ShipAI>().enabled = true; //enable after init will restore from memory
+        }
+    }
+
+    public void DetermineAvaiableShotType()
+    {
+        avaiableShotType = ShipHelper.GetAvaiableShotType(Inventory);
+        dictLoadedCannon = new Dictionary<string, int>();
+        int indexDefault = 0; //default load first or shot highest range
+        for (int i = 0; i < avaiableShotType.Length; i++)
+        {
+            dictLoadedCannon.Add(ShipHelper.GetBallType(avaiableShotType[i]), 0);
+            if (ShipHelper.GetRangeCannonType(avaiableShotType[i]) > ShipHelper.GetRangeCannonType(avaiableShotType[indexDefault]))
+            {
+                indexDefault = i;
+            }
+        }
+        if (!CommonUtils.IsArrayNullEmpty(avaiableShotType))
+        {
+            string shotTypeSelect = avaiableShotType[indexDefault];
+            // string shotTypeSelect = "Grape";
+            // for (int i = 0; i < shotTypeCode.Length; i++)
+            // {
+            //     //first shot type make default
+            //     shotTypeCode[i] = avaiableShotType[0];
+            // }
+            ChangeShotType(CannonDirection.Front, shotTypeSelect);
+            ChangeShotType(CannonDirection.Right, shotTypeSelect);
+            ChangeShotType(CannonDirection.Left, shotTypeSelect);
+            ChangeShotType(CannonDirection.Back, shotTypeSelect);
+        }
     }
 
 
@@ -611,6 +770,7 @@ public class Ship : MonoBehaviour
         }
         result.curShipData = curShipData;
         result.group = Group;
+        result.AIMemory = GetComponent<ShipAI>()?.MemoryAI;
         return result;
     }
 
@@ -769,7 +929,7 @@ public class Ship : MonoBehaviour
         {
             AI.enabled = true;
         }
-        ApplyWindForce(SeaBattleManager.Instance.windForce);
+        ApplyWindForce(SeaBattleManager.Instance.wind);
     }
 
     public void MakeDeathShip()
@@ -1036,7 +1196,6 @@ public class Ship : MonoBehaviour
         float angel = Vector2.Angle(toTarget, flag);
 
         Vector2 crossDir = VectorUtils.Rotate(ShipDirection, -90, true).normalized;
-        CapsuleCollider2D col = ShipCollider;
         Vector2 pA = (Vector2)transform.position + ShipDirection.normalized * ActualSizeY / 2
         + crossDir * ActualSizeX / 2;
         Vector2 pB = (Vector2)transform.position + ShipDirection.normalized * ActualSizeY / 2
@@ -1215,8 +1374,11 @@ public class Ship : MonoBehaviour
         }
     }
 
-    public IEnumerator RandomFire(List<Vector2> fromList, Vector2 directionFire)
+    public IEnumerator RandomFire(CannonDirection direction, List<Vector2> fromList, Vector2 directionFire)
     {
+        int indexDirection = ShipHelper.DirectionToIndex(direction);
+        string cannonType = shotTypeCode[indexDirection];
+        string ballType = ShipHelper.GetBallType(cannonType);
         int thisWaveShot = 0;
         Vector2[] thisShots = null;
         float delayWave = 0;
@@ -1231,13 +1393,23 @@ public class Ship : MonoBehaviour
             Debug.Log("Random Fire Fire " + thisShots.Length);
             foreach (Vector2 from in thisShots)
             {
-                WrapPool wrapPool = SeaBattleManager.Instance.poolCannon.GetPooledObject();
+                // WrapPool wrapPool = SeaBattleManager.Instance.poolCannon.GetPooledObject();
+                string poolCode = cannonType;
+                WrapPool wrapPool = SeaBattleManager.Instance.GetPoolCannon(poolCode).GetPooledObject();
                 Debug.Assert(wrapPool != null, "cannon should avaiable");
                 if (wrapPool != null)
                 {
 
-                    DeductCannonBall(1, true);//actual deduct cannon
+                    DeductCannonBall(ballType, 1, true);//actual deduct cannon
+                    BaseShot shot = wrapPool.poolObj.GetComponent<BaseShot>();
+                    shot.PrepareFire(this, from, directionFire); //include remove listener
+                    shot.OnEndProjectile.AddListener(delegate ()
+                    {
+                        SeaBattleManager.Instance.GetPoolCannon(poolCode).RePooledObject(wrapPool);
+                    });
+                    shot.Fire();
 
+                    /*
                     GameObject actualCannon = wrapPool.poolObj;
                     CannonShot shot = actualCannon.GetComponent<CannonShot>();
                     shot.ResetTravel();
@@ -1252,6 +1424,7 @@ public class Ship : MonoBehaviour
                     };
                     shot.gameObject.SetActive(true);
                     shot.StartTravel();
+                    */
 
                     // if (deck == 0) Debug.DrawLine(from, shot.Target, Color.red, 3f);
                 }
@@ -1321,7 +1494,7 @@ public class Ship : MonoBehaviour
             // fromList.Add((Vector2)transform.position + Rotate(fire, angel, true).normalized * areaOtherFace / 2);
 
         }
-        StartCoroutine(RandomFire(fromList, fire.normalized));
+        StartCoroutine(RandomFire(direction, fromList, fire.normalized));
         // foreach (Vector2 from in fromList)
         // {
         //     WrapPool wrapPool = SeaBattleManager.Instance.poolCannon.GetPooledObject();

@@ -51,12 +51,12 @@ public class ShipShieldSkill : ShipSkill
     {
         if (other.tag == GameSettings.TAG_CANNON)
         {
-            CannonShot cannon = other.gameObject.GetComponent<CannonShot>();
+            BaseShot cannon = other.gameObject.GetComponent<BaseShot>();
             if (cannon.owner.shipId != ship.shipId)
             {
-                cannon.PerformExplosion();
-                damageBlocked += cannon.GetDamage();
-                cannon.EndTravel(false);
+                cannon.MakeBlocked();
+                damageBlocked += cannon.GetDamageBlocked();
+                cannon.EndProjectileByBlocked();
 
                 if (damageBlocked >= maxDamage)
                 {

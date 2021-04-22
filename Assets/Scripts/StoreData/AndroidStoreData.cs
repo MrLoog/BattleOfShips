@@ -25,7 +25,7 @@ public class AndroidStoreData : BaseStoreData
         }
     }
 
-    public override bool SaveData(string key, BaseDataEntity data)
+    public override bool SaveData(string key, object data)
     {
         return base.SaveData(key, data);
     }

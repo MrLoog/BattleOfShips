@@ -9,11 +9,97 @@ using UnityEngine;
 public class BaseStoreData : IStoreData
 {
     public const string TEMPLATE_PATH = "{0}/{1}.save";
+
+    public const string version = "1.0.0";
+    public const string gameSystemFileName = "game_system";
+    public Dictionary<string, object> systemSettings;
+    public List<string> AllSaveFiles
+    {
+        get
+        {
+            if (!systemSettings.ContainsKey(SYSTEM_SETTINGS_KEY_ALL_FILES))
+            {
+                systemSettings.Add(SYSTEM_SETTINGS_KEY_ALL_FILES, new List<string>());
+            }
+            return (List<string>)systemSettings[SYSTEM_SETTINGS_KEY_ALL_FILES];
+        }
+    }
+    public const string SYSTEM_SETTINGS_KEY_VERSION = "version";
+    public const string SYSTEM_SETTINGS_KEY_ALL_FILES = "all_files";
+    protected bool isInit = false;
     protected BaseStoreData() { }
 
     public static Encoding EncodingUse = Encoding.UTF8;
-    public virtual T LoadData<T>(string key)
+
+    protected virtual void LoadSystemData(bool force = false)
     {
+        systemSettings = LoadData<Dictionary<string, object>>(gameSystemFileName, true);
+        if (systemSettings == null)
+        {
+            systemSettings = new Dictionary<string, object>();
+            AddSettings(SYSTEM_SETTINGS_KEY_VERSION, version, true);
+            AddSaveKey(gameSystemFileName);
+        }
+        if (systemSettings.ContainsKey(SYSTEM_SETTINGS_KEY_VERSION) && !systemSettings[SYSTEM_SETTINGS_KEY_VERSION].ToString().Equals(version))
+        {
+            OnChangeVersion();
+        }
+        isInit = true;
+    }
+
+    protected void AddSaveKey(string key)
+    {
+        if (!AllSaveFiles.Contains(key))
+        {
+            AllSaveFiles.Add(key);
+            AddSettings(SYSTEM_SETTINGS_KEY_ALL_FILES, AllSaveFiles);
+        }
+    }
+
+    public void AddSettings(string key, object value, bool save = true)
+    {
+        if (systemSettings.ContainsKey(key))
+        {
+            systemSettings[key] = value;
+        }
+        else
+        {
+            systemSettings.Add(key, value);
+        }
+        if (save)
+        {
+            SaveSystemSettings();
+        }
+    }
+
+    public void RemoveSettings(string key, bool save = true)
+    {
+        if (systemSettings.ContainsKey(key))
+        {
+            systemSettings.Remove(key);
+            if (save)
+            {
+                SaveSystemSettings();
+            }
+        }
+    }
+
+    public void SaveSystemSettings()
+    {
+        SaveData(gameSystemFileName, systemSettings);
+    }
+    protected virtual void OnChangeVersion()
+    {
+        //do whatever to update
+        AddSettings(SYSTEM_SETTINGS_KEY_VERSION, version); //done update save new version
+    }
+
+    public virtual T LoadData<T>(string key, bool ignoreCheckInit = false)
+    {
+        if (!isInit && !ignoreCheckInit)
+        {
+            LoadSystemData();
+        }
         string path = GetDataPath(key);
         Debug.Log("Store Load data from " + GetDataPath(key));
         if (!File.Exists(path)) return default(T);
@@ -48,7 +134,7 @@ public class BaseStoreData : IStoreData
         // }
     }
 
-    public virtual bool SaveData(string key, BaseDataEntity data)
+    public virtual bool SaveData(string key, object data)
     {
         try
         {
@@ -64,6 +150,7 @@ public class BaseStoreData : IStoreData
             byte[] save = EncodingUse.GetBytes(dataStr);
             Debug.Log("Store Save data to " + GetDataPath(key) + " : " + dataStr);
             File.WriteAllBytes(GetDataPath(key), save);
+            AddSaveKey(key);
             return true;
         }
         catch

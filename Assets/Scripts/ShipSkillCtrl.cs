@@ -17,7 +17,7 @@ public class ShipSkillCtrl : MonoBehaviour
     public Ship ship;
     public bool isSync = false;
 
-    public Sprite[] avatarSkills = new Sprite[3];
+    public Sprite[] avatarSkills = new Sprite[4];
     public GameObject[] buttonSkill;
     public Image[] imgSKill;
     // Start is called before the first frame update
@@ -51,7 +51,22 @@ public class ShipSkillCtrl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetKeyUp(KeyCode.Alpha1))
+        {
+            ActiveSkill(0);
+        }
+        if (Input.GetKeyUp(KeyCode.Alpha2))
+        {
+            ActiveSkill(1);
+        }
+        if (Input.GetKeyUp(KeyCode.Alpha3))
+        {
+            ActiveSkill(2);
+        }
+        if (Input.GetKeyUp(KeyCode.Alpha4))
+        {
+            ActiveSkill(3);
+        }
     }
 
     public void ActiveSkill(int i)

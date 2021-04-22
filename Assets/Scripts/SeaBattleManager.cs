@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Tilemaps;
+using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 public class SeaBattleManager : BaseSceneManager
@@ -35,6 +36,10 @@ public class SeaBattleManager : BaseSceneManager
     public PoolManager<WrapPool> poolCannon;
     public PoolManager<WrapPool> poolHumanFly;
     public GameObject prefabCannon;
+
+    public ScriptableCannonBall[] avaiableCannonBall;
+
+    public Dictionary<string, PoolManager<WrapPool>> dictCannons = new Dictionary<string, PoolManager<WrapPool>>();
     public GameObject prefabHumanFly;
     public GameObject prefabShip;
     public GameObject playerShip;
@@ -46,13 +51,19 @@ public class SeaBattleManager : BaseSceneManager
 
 
 
-    public Vector2 windForce;
+    public Vector2 wind;
+    public float windPower;
+
+
+    public float[] windChangeRandomTime;
     public float intervalWindChange = 30f;
 
 
     public float accumWindChangeInterval = 0f;
 
     public UnityEvent OnWindChange;
+
+    public Text WindTimeRemain;
 
     List<ScriptableCannonBall> ScriptableCannonBalls;
 
@@ -85,7 +96,6 @@ public class SeaBattleManager : BaseSceneManager
 
     public ScriptableStateShip[] ImgShipGroups;
 
-    public string GoodsCannonBallCode = "CannonBall";
 
     public ModalPopupCtrl PopupCtrl => gameManager.PopupCtrl;
 
@@ -107,6 +117,7 @@ public class SeaBattleManager : BaseSceneManager
     public const string INTENT_RESUME = "RESUME";
     public const string INTENT_BATTLE_LEVEL = "BATTLE_LEVEL";
     public const string INTENT_FIRST_BATTLE = "FIRST_BATTLE";
+    public const string PLAYER_SHIP_BATTLE_ID = "0";
 
     public override void Awake()
     {
@@ -139,23 +150,50 @@ public class SeaBattleManager : BaseSceneManager
     {
         StartBattle();
 
-        GameObject newCannon = Instantiate(prefabCannon);
-        newCannon.SetActive(false);
-        newCannon.GetComponent<CannonShot>().Data = ScriptableCannonBalls.Where(x => x.name == "RoundShot").First();
-        // CannonPool cannon = prefabCannon.Find
-        WrapPool cannon = ScriptableObject.CreateInstance<WrapPool>();
-        cannon.poolObj = newCannon;
-        poolCannon = new PoolManager<WrapPool>(cannon);
-        poolCannon.OnCreateNew = delegate ()
+        for (int i = 0; i < avaiableCannonBall.Length; i++)
         {
-            // WrapPool newInstance = poolCannon.pooledObjects.Last();
-            WrapPool newInstance = poolCannon.newInstance;
-            CannonShot cs = newInstance.poolObj.GetComponent<CannonShot>();
-            newInstance.poolObj = Instantiate(prefabCannon);
-            // newInstance.poolObj.GetComponent<CannonShot>().Data = cs.Data.Clone<ScriptableCannonBall>();
-            newInstance.poolObj.GetComponent<CannonShot>().Data = cs.Data;
-            // newInstance.SetActive(false);
-        };
+            ScriptableCannonBall cannonBallData = avaiableCannonBall[i].Clone<ScriptableCannonBall>();
+
+            GameObject newCannon = Instantiate(cannonBallData.prefab);
+            newCannon.SetActive(false);
+
+            newCannon.GetComponent<BaseShot>().Data = cannonBallData;
+            // CannonPool cannon = prefabCannon.Find
+            WrapPool poolItemSeed = ScriptableObject.CreateInstance<WrapPool>();
+            poolItemSeed.poolObj = newCannon;
+            PoolManager<WrapPool> pool = new PoolManager<WrapPool>(poolItemSeed);
+            pool.OnCreateNew = delegate ()
+            {
+                // WrapPool newInstance = poolCannon.pooledObjects.Last();
+                WrapPool newInstance = pool.newInstance;
+                BaseShot cs = newInstance.poolObj.GetComponent<BaseShot>();
+                newInstance.poolObj = Instantiate(cannonBallData.prefab);
+                // newInstance.poolObj.GetComponent<CannonShot>().Data = cs.Data.Clone<ScriptableCannonBall>();
+                newInstance.poolObj.GetComponent<BaseShot>().Data = cs.Data;
+                // newInstance.SetActive(false);
+            };
+            dictCannons.Add(cannonBallData.codeName, pool);
+        }
+
+        /*
+                GameObject newCannon = Instantiate(prefabCannon);
+                newCannon.SetActive(false);
+                newCannon.GetComponent<CannonShot>().Data = ScriptableCannonBalls.Where(x => x.name == "RoundShot").First();
+                // CannonPool cannon = prefabCannon.Find
+                WrapPool cannon = ScriptableObject.CreateInstance<WrapPool>();
+                cannon.poolObj = newCannon;
+                poolCannon = new PoolManager<WrapPool>(cannon);
+                poolCannon.OnCreateNew = delegate ()
+                {
+                    // WrapPool newInstance = poolCannon.pooledObjects.Last();
+                    WrapPool newInstance = poolCannon.newInstance;
+                    CannonShot cs = newInstance.poolObj.GetComponent<CannonShot>();
+                    newInstance.poolObj = Instantiate(prefabCannon);
+                    // newInstance.poolObj.GetComponent<CannonShot>().Data = cs.Data.Clone<ScriptableCannonBall>();
+                    newInstance.poolObj.GetComponent<CannonShot>().Data = cs.Data;
+                    // newInstance.SetActive(false);
+                };
+                */
 
         GameObject seedHUmanFly = Instantiate(prefabHumanFly);
         seedHUmanFly.SetActive(false);
@@ -170,6 +208,11 @@ public class SeaBattleManager : BaseSceneManager
             newInstance.poolObj = Instantiate(prefabHumanFly);
             // newInstance.SetActive(false);
         };
+    }
+
+    internal Ship FindShipByBattleId(string battleId)
+    {
+        return AllShip.FirstOrDefault(x => x.BattleId == battleId);
     }
 
     public void StartBattle()
@@ -231,32 +274,12 @@ public class SeaBattleManager : BaseSceneManager
         if (accumWindChangeInterval >= intervalWindChange)
         {
             RandomWindForce();
-            accumWindChangeInterval = 0f;
         }
+        //display wind reset time
+        TimeSpan time = TimeSpan.FromSeconds(intervalWindChange - accumWindChangeInterval);
+        WindTimeRemain.text = time.ToString(@"mm\:ss");
 
 
-    }
-
-    public void FireCannon(Vector2 from, Vector2 to, float speed)
-    {
-        WrapPool wrapPool = poolCannon.GetPooledObject();
-        if (wrapPool != null)
-        {
-            Debug.Log("fire");
-            GameObject actualCannon = wrapPool.poolObj;
-            CannonShot shot = actualCannon.GetComponent<CannonShot>();
-            shot.ResetTravel();
-            actualCannon.transform.position = from;
-            shot.owner = playerShip.GetComponent<Ship>();
-            shot.Target = to;
-            shot.speed = speed;
-            shot.OnImpactTarget = delegate ()
-            {
-                poolCannon.RePooledObject(wrapPool);
-            };
-            shot.gameObject.SetActive(true);
-            shot.StartTravel();
-        }
     }
 
     internal void PlayerFireCannon(CannonDirection direction)
@@ -273,15 +296,22 @@ public class SeaBattleManager : BaseSceneManager
     {
         // float force = (float)Math.Round(Random.Range(0.1f, 3f), 1);
         float force = RandomWindByConfig();
+        windPower = force;
         Debug.Log("force " + force);
         float direction = Random.Range(-180, 180);
 
-        windForce = VectorUtils.Rotate(Vector2.up, direction, true).normalized * force;
+        wind = VectorUtils.Rotate(Vector2.up, direction, true).normalized * force;
         OnWindChange.Invoke();
         foreach (Ship s in ships)
         {
-            s.ApplyWindForce(windForce);
+            s.ApplyWindForce(wind);
         }
+
+        if (!CommonUtils.IsArrayNullEmpty(windChangeRandomTime) && windChangeRandomTime.Length == 2)
+        {
+            intervalWindChange = Random.Range(windChangeRandomTime[0], windChangeRandomTime[1]);
+        }
+        accumWindChangeInterval = 0f;
     }
 
     public float RandomWindByConfig()
@@ -386,7 +416,7 @@ public class SeaBattleManager : BaseSceneManager
             }
             else
             {
-                s.ApplyWindForce(windForce);
+                s.ApplyWindForce(wind);
             }
             // s.ApplyWindForce(windForce);
             // s.RevalidMovement();
@@ -401,6 +431,7 @@ public class SeaBattleManager : BaseSceneManager
 
         Ship scriptShip = newShip.GetComponent<Ship>();
         customData.unions = new ScriptableShipCustom.Union[1] { ScriptableShipCustom.Union.Pirate };
+        customData.battleId = PLAYER_SHIP_BATTLE_ID;
         scriptShip.InitFromCustomData(customData);
 
         scriptShip.Group = 0;
@@ -416,7 +447,7 @@ public class SeaBattleManager : BaseSceneManager
         {
             GEventManager.Instance.InvokeEvent(GEventManager.EVENT_PLAYER_DEFEATED);
         });
-        scriptShip.ApplyWindForce(windForce);
+        scriptShip.ApplyWindForce(wind);
 
 
         PlayerSailCtrl.Instance.StartSync();
@@ -573,6 +604,22 @@ public class SeaBattleManager : BaseSceneManager
         transferCtrl.ShowInventory(ShipInventoryCtrl.InventoryMode.Transfer);
     }
 
+    public void ToggleInventory()
+    {
+        ShipInventoryCtrl transferCtrl = GameManager.Instance.ShipInventoryCtrl;
+        if (transferCtrl.isShow)
+        {
+            transferCtrl.HideInventory();
+        }
+        else
+        {
+            List<ScriptableShipCustom> shipCustoms = new List<ScriptableShipCustom>();
+            shipCustoms.Add(playerShip.GetComponent<Ship>().CustomData);
+            transferCtrl.RegisterAvaiableShip(shipCustoms.ToArray(), 0);
+            transferCtrl.ShowInventory(ShipInventoryCtrl.InventoryMode.View);
+        }
+    }
+
     private ShipTackedBattle CalculateTacked2Ship(Ship ship1, Ship ship2)
     {
         ShipTackedBattle battle = new ShipTackedBattle(ship1, ship2);
@@ -613,15 +660,15 @@ public class SeaBattleManager : BaseSceneManager
     {
         Debug.Log("Spawn Ship");
         GameObject newShip = Instantiate(prefabShip, ShipManager.transform, false);
-        newShip.GetComponent<ShipAI>().enabled = true;
         Ship scriptShip = newShip.GetComponent<Ship>();
         scriptShip.InitFromCustomData(customData);
+
         scriptShip.shipId = ships.Count + 1;
         scriptShip.Events.RegisterListener(Ship.EVENT_SHIP_DEFEATED).AddListener(delegate ()
         {
             GEventManager.Instance.InvokeEvent(GEventManager.EVENT_SHIP_DEFEAT);
         });
-        scriptShip.ApplyWindForce(windForce);
+        scriptShip.ApplyWindForce(wind);
         ships.Add(scriptShip);
         return newShip;
     }
@@ -707,7 +754,7 @@ public class SeaBattleManager : BaseSceneManager
         if (SeaBattleData == null)
             SeaBattleData = new SeaBattleData();
         SeaBattleData.SetShipData(ships.Select(x => x.GetComponent<Ship>()).ToArray());
-        SeaBattleData.SetWindData(windForce, accumWindChangeInterval);
+        SeaBattleData.SetWindData(wind, windPower, accumWindChangeInterval);
     }
 
     public void UpdateGameData()
@@ -746,7 +793,8 @@ public class SeaBattleManager : BaseSceneManager
     {
         if (SeaBattleData != null)
         {
-            windForce = JsonUtility.FromJson<Vector2>(SeaBattleData.windDataJson);
+            wind = JsonUtility.FromJson<Vector2>(SeaBattleData.windDataJson);
+            windPower = SeaBattleData.windPower == 0 ? wind.magnitude : SeaBattleData.windPower;
             OnWindChange.Invoke();
             accumWindChangeInterval = SeaBattleData.windAccumTime;
 
@@ -782,7 +830,7 @@ public class SeaBattleManager : BaseSceneManager
                     0,
                     SeaBattleData.transRotJsons[i]
                 );
-                newShip.GetComponent<Ship>().ApplyWindForce(windForce);
+                newShip.GetComponent<Ship>().ApplyWindForce(wind);
                 if (!donePlayerShip)
                 {
                     //init player ship first
@@ -792,5 +840,10 @@ public class SeaBattleManager : BaseSceneManager
             }
 
         }
+    }
+
+    internal PoolManager<WrapPool> GetPoolCannon(string cannonCodeName)
+    {
+        return dictCannons[cannonCodeName];
     }
 }

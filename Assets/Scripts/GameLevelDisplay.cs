@@ -97,4 +97,10 @@ public class GameLevelDisplay : MonoBehaviour
         selectedLevel = level;
         levelPreview.ShowPreview(level);
     }
+
+    public void CloseSelectPanel()
+    {
+        levelPreview?.PressClose();
+        gameObject.SetActive(false);
+    }
 }
