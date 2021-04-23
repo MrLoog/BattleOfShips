@@ -48,6 +48,8 @@ public class GameText
     public const string DIALOG_RESULT_COMBAT_TITLE = "dl_result_combat_tit";
     public const string DIALOG_RESULT_COMBAT_DRAW_CONTENT = "dl_result_combat_draw_cont";
     public const string DIALOG_RESULT_COMBAT_WIN_CONTENT = "dl_result_combat_win_cont";
+    public const string DIALOG_MARKET_CREW_OUT_TITLE = "dl_market_crew_out_tit";
+    public const string DIALOG_MARKET_CREW_OUT_CONTENT = "dl_market_crew_out_cont";
     public static Dictionary<string, string> dict = new Dictionary<string, string>()
     {
         {CONFIRM_REPAIR_TITLE,"Are You Sure?"},
@@ -93,6 +95,8 @@ public class GameText
         {TOAST_CLOSE_COMBAT_FAILED,"We failed conduct close combat, Captain!"},
         {TOAST_CLOSE_COMBAT_AVAIABLE,"Captain, We now can do close combat on that ship!"},
         {TOAST_LOOT_GOLD,"Captain! We found {0:N0} gold on Ship.\n+{0:N0}"},
+        {DIALOG_MARKET_CREW_OUT_TITLE,"No More Men"},
+        {DIALOG_MARKET_CREW_OUT_CONTENT,"No more men, Captain. Come back tomorrow."},
 
     };
 

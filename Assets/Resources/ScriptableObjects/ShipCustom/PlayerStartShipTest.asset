@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47ba2a5db735d2c47ab7e79044636f63, type: 3}
   m_Name: PlayerStartShipTest
   m_EditorClassIdentifier: 
+  active: 1
   shipName: 
   baseShipData: {fileID: 11400000, guid: ce93fd651fd874449b1423f6ee8fad71, type: 2}
   curShipData: {fileID: 11400000, guid: ce93fd651fd874449b1423f6ee8fad71, type: 2}
@@ -29,6 +30,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 815a06f490de5b3409c49c399e16ea08, type: 2}
   - {fileID: 11400000, guid: 031ecbde6f9b4b54289de5002aef181c, type: 2}
   - {fileID: 11400000, guid: 841195f77aa180b47b7af51f9869926f, type: 2}
+  - {fileID: 11400000, guid: 9bf48804aad7b924eb44c83f0f3c7d13, type: 2}
   hullMaterial: {fileID: 0}
   sailMaterial: {fileID: 0}
   battleId: 
@@ -37,3 +39,7 @@ MonoBehaviour:
     gold: 
     exp: 
     gem: 
+    goldModRate: 0
+    expModRate: 0
+    gemModRate: 0
+    goodsModRate: 0

@@ -101,6 +101,7 @@ public class GameManager : BaseSceneManager
     // Start is called before the first frame update
     void Start()
     {
+        Screen.orientation = ScreenOrientation.Landscape;
         // gameData.playerShip.test = new Test() { prop = "Test" };
         // GEventManager.Instance.InvokeEvent(GEventManager.EVENT_CLEAR_LEVEL);
         // if (!CommonUtils.IsArrayNullEmpty(otherShips))
