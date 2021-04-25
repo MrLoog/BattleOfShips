@@ -42,6 +42,11 @@ public class ShipManageMiniMenu : MonoBehaviour
         UpdatePosition();
     }
 
+    private void FixedUpdate()
+    {
+
+    }
+
     private void CheckInputInsideMenu()
     {
         if (focusShip != null)
@@ -130,11 +135,12 @@ public class ShipManageMiniMenu : MonoBehaviour
         if (focusShip != null)
         {
             Vector3 relativeTarget = focusShip.btnFunc.transform.InverseTransformPoint(transform.position);
-            if (relativeTarget.x != 0 && relativeTarget.y != 0)
+            Vector2 prePos = transform.position;
+            if (relativeTarget.x != 0 || relativeTarget.y != 0)
             {
-
                 transform.position -= relativeTarget;
             }
+            Debug.Log("Update Position " + relativeTarget + "/" + prePos + "/" + transform.position);
             // transform.position = focusShip.transform.position;
         }
     }
